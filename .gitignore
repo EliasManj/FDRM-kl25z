@@ -41,3 +41,5 @@ Thumbs.db
 RemoteLaunch/
 RemoteSystemsTempFiles/
 .metadata/
+*/FLASH/
+*.jlink
