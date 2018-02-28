@@ -25,6 +25,7 @@ int main(void) {
 	j = i = 0;
 
 	RGB_init();
+	portsInit();
 	LPTM_init();
 	adcInit();
 
@@ -33,14 +34,11 @@ int main(void) {
 
 void portsInit(void) {
 	SIM_SCGC5 |= (1 << 10);
-	PORTB_PCR0 =0x00000100; //PTB0 GPIO
-	PORTB_PCR1 =0x00000100; //PTB1 GPIO
-	PORTB_PCR2 =0x00000100; //PTB2 GPIO
-	PORTB_PCR3 =0x00000100; //PTB3 GPIO
-	PORTD_PCR4 =0x00000100; //PTB5 GPIO
-	PORTC_PCR2 =0x00000000; //PTC2 GPIO
-	GPIOB_PDDR = 0x0000000F;
-	GPIOD_PDDR = 0x00000000;
+	PORTB_PCR0 =(1<<8); 		//PTB0 GPIO
+	PORTB_PCR1 =(1<<8); 		//PTB1 GPIO
+	PORTB_PCR2 =(1<<8); 		//PTB2 GPIO
+	PORTB_PCR3 =(1<<8); 		//PTB3 GPIO
+	GPIOB_PDDR |= 0x0000000F;	//Set GPIOB as output
 }
 
 void adcInit(void) {
@@ -77,7 +75,7 @@ void RGB_init(void) {
 
 void ADC0_IRQHandler() {
 	if ((ADC0_SC1A &(1<<7))==(1<<7)) {
-		temp = ((ADC0_RA/255)*1000)+325;
+		temp = ((ADC0_RA/255)*1000)+225;
 		if(timerStateReached==1) {
 			LPTMR0_CMR = temp;
 			timerStateReached=0;
@@ -89,19 +87,19 @@ void ADC0_IRQHandler() {
 void LPTimer_IRQHandler() {
 	LPTMR0_CSR |= (1 << 7);	//Clear timer compare flag
 	timerStateReached = 1;
-	shiftLEDs();
 	shift();
+	shiftLEDs();
 }
 
 void shift(void) {
-	GPIOB_PDOR |= (secuencia[++i]&0x00000001);
+	GPIOB_PDOR = ((~secuencia[i++]) & 0x0000000F);
 	if (i == 8) {
 		i = 0;
 	}
 }
 
 void shiftLEDs(void) {
-	GPIOB_PDOR = (LEDs[0] << 18);
+	GPIOB_PDOR |= (LEDs[0] << 18);
 	GPIOB_PDOR |= (LEDs[1] << 19);
 	GPIOD_PDOR = (LEDs[2] << 1);
 	tmp0 = LEDs[0];
