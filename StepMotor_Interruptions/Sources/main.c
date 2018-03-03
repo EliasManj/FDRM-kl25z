@@ -3,8 +3,8 @@
 void LPTM_init(void);
 void RGB_init(void);
 void shiftLEDs(void);
-void adcInit(void);
-void portsInit(void);
+void ADC_init(void);
+void Ports_init(void);
 void shift(void);
 
 unsigned int temp;
@@ -22,13 +22,13 @@ int main(void) {
 	timerStateReached = 0;
 	i = 0;
 	RGB_init();
-	portsInit();
+	Ports_init();
 	LPTM_init();
-	adcInit();
+	ADC_init();
 	return 0;
 }
 
-void portsInit(void) {
+void Ports_init(void) {
 	SIM_SCGC5 |= (1 << 10);
 	PORTB_PCR0 =(1<<8); 		//PTB0 GPIO
 	PORTB_PCR1 =(1<<8); 		//PTB1 GPIO
@@ -37,7 +37,7 @@ void portsInit(void) {
 	GPIOB_PDDR |= 0x0000000F;	//Set GPIOB as output
 }
 
-void adcInit(void) {
+void ADC_init(void) {
 	SIM_SCGC6 |= (1 << 27);
 	SIM_SCGC5 |= (1 << 13);
 	NVIC_ICPR |= (1 << 15);
