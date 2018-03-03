@@ -38,8 +38,12 @@ Thumbs.db
 
 # Code Warrior files #
 ######################
+.metadata/
 RemoteLaunch/
 RemoteSystemsTempFiles/
-.metadata/
 */FLASH/
+*/.settings/
 *.jlink
+*.cproject
+*.cwGeneratedFileSetLog
+*.project
