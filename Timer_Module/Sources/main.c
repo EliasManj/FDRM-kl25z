@@ -9,7 +9,6 @@ void timerInit(void);
 void RGB_init(void);
 unsigned int i = 0;
 
-volatile unsigned long *pointerPTE29;
 
 int main(void) {
 
@@ -18,7 +17,7 @@ int main(void) {
 	GPIOE_PDOR = (1<<1);
 	pointerPTE29 = &GPIOE_PDIR;
 	
-	*((volatile unsigned long *)0x400FF0C0) = *pointerPTE29;
+	//*((volatile unsigned long *)GPIOD_PDOR) = *pointerPTE29;
 	GPIOB_PDOR = (1<<19);
 	GPIOB_PDOR |= (1<<18);
 	do {
@@ -26,8 +25,8 @@ int main(void) {
 		} while (!(TPM0_C2SC &(1<<7)));
 		TPM0_C2SC|=(1<<7);		//Apagar bandera
 		
-		//GPIOD_PDOR = (i<<1);
-		//i=~i&0x00000001;
+		GPIOD_PDOR = (i<<1);
+		i=~i&0x00000001;
 	} while(1);
 
 	return 0;
@@ -58,3 +57,18 @@ void RGB_init(void) {
 	GPIOB_PDDR |= (1 << 19);	//set PTB19 as output
 	GPIOD_PDDR = (1 << 1);		//Set PTD1 as output
 }
+
+void ADC_init(void) {
+	SIM_SCGC6 |= (1 << 27);
+	SIM_SCGC5 |= (1 << 13);
+	NVIC_ICPR |= (1 << 15);
+	NVIC_ISER |= (1 << 15);
+	//ADC0
+	ADC0_CFG1 = 0x00000000;
+	ADC0_CFG2 = (1 << 4);		//Seleccionar el canal B del ADC
+	ADC0_SC1A =0b1000100;		//Habilitar interrupciones del ADC y el canal AD4-> esta en el canal PTE30	
+}
+
+
+
+
