@@ -6,8 +6,10 @@ void shiftLEDs(void);
 void ADC_init(void);
 void Ports_init(void);
 void shift(void);
-void timer_Init(void);
+void Timer_init(void);
 void UART_init(void);
+void Set_timer_signal_GPIO(void);
+void Toggle_signal(void);
 
 unsigned int temp;
 unsigned long LEDs[3];
@@ -18,6 +20,7 @@ unsigned long secuencia[8] = { 0x00000008, 0x0000000C, 0x00000004, 0x00000006,
 		0x00000002, 0x00000003, 0x00000001, 0x00000009 };
 
 int main(void) {
+
 	LEDs[0] = 0;
 	LEDs[1] = 1;
 	LEDs[2] = 1;
@@ -25,21 +28,25 @@ int main(void) {
 	i = 0;
 	RGB_init();
 	Ports_init();
-	timer_Init();
-	//LPTM_init();
+	Timer_init();
+	LPTM_init();
 	ADC_init();
+	Set_timer_signal_GPIO();
+	//UART_init();
 	return 0;
 }
 
 void FTM0_IRQHandler() {
 	TPM0_SC |= (1 << 7); 		//TOF clear interrupt flag
 	TPM0_C2SC |= (1<<7);
-	timerStateReached = 1;
-	shift();
-	shiftLEDs();
+	Toggle_signal();
 }
 
-void timer_Init(void) {
+void TPM0_IRQHandler(void) {
+	TPM0_SC |= (1 << 7);
+}
+
+void Timer_init(void) {
 	//Setiing MCGIRCLK
 	SIM_SCGC6 |= (1 << 24);		//CLK TMP0
 	SIM_SCGC5 |= (1 << 13);		//PTE29
@@ -74,12 +81,12 @@ void ADC_init(void) {
 	//ADC0
 	ADC0_CFG1 = 0x00000000;
 	ADC0_CFG2 = (0 << 4);		//Seleccionar el canal A del ADC
-	ADC0_SC1A =0b1000100;//Habilitar interrupciones del ADC y el canal AD4-> esta en el canal PTE21
+	ADC0_SC1A =0b1000100;		//Habilitar interrupciones del ADC y el canal AD4-> esta en el canal PTE21
 }
 
 void LPTM_init(void) {
-	SIM_SCGC5 |= (1 << 0); //Activate the LPTMR in the system control gating register
-	LPTMR0_PSR = 0b00000101; //Bypass the preescaler and select the LPO(low power oscilator of 1Khz as the source of the timer)
+	SIM_SCGC5 |= (1 << 0); 		//Activate the LPTMR in the system control gating register
+	LPTMR0_PSR = 0b00000101; 	//Bypass the preescaler and select the LPO(low power oscilator of 1Khz as the source of the timer)
 	LPTMR0_CMR = 500;			//compare of 500 clock cycles = .5 secs
 	NVIC_ICPR |= (1 << 28);		//Clean flag of LPTM in the interrupt vector
 	NVIC_ISER |= (1 << 28);		//Activate the LPTM interrupt
@@ -102,7 +109,7 @@ void ADC0_IRQHandler() {
 	if ((ADC0_SC1A &(1<<7))==(1<<7)) {
 		temp = ((ADC0_RA*1000)/225)+225;
 		if(timerStateReached==1) {
-			//LPTMR0_CMR = temp;
+			LPTMR0_CMR = temp;
 			timerStateReached=0;
 		}
 		ADC0_SC1A |=4;
@@ -133,12 +140,23 @@ void shiftLEDs(void) {
 	LEDs[2] = tmp0;
 }
 
-void UART_init(void) {//Se configura un canal de recepción y transmisión E_20 Tx y E_21 Rx
+void UART_init(void) {			//Se configura un canal de recepción y transmisión E_20 Tx y E_21 Rx
 	SIM_SCGC5 |= (1 << 13);		//RELOJ PORTE
 	SIM_SCGC4 |= (1 << 10); 	//RELOJ UART
-	PORTE_PCR20 =(1<<10);	//UART0 pin Tx (alt4)
-	PORTE_PCR21 =(1<<10);	//UART0 pin RX (alt4)
-	UART0_BDL = 137;		//Clk=640*32768, baud rate 9600bps porqué BDL=137??
-	UART0_C2 = 12;			//Habilitando TX y RX (TE y RE en el registro)
+	PORTE_PCR20 =(1<<10);		//UART0 pin Tx (alt4)
+	PORTE_PCR21 =(1<<10);		//UART0 pin RX (alt4)
+	UART0_BDL = 137;			//Clk=640*32768, baud rate 9600bps porqué BDL=137??
+	UART0_C2 = 12;				//Habilitando TX y RX (TE y RE en el registro)
+}
 
+void Set_timer_signal_GPIO(void){
+	//Set PTC3 as a Test Point
+	SIM_SCGC5 |= (1<<11);		//Activate clock for port C
+	PORTC_PCR3 = (1<<8);		//PTC3 set GPIO
+	GPIOC_PDDR |= (1<<3);		//PTC3 set output
+	GPIOC_PDOR |= (1<<3);		//Set PTC3 in LOW initially (negated logic)
+}
+
+void Toggle_signal(void){
+	GPIOC_PTOR = (1<<3);
 }
