@@ -35,6 +35,10 @@ int main(void) {
 	return 0;
 }
 
+void UART0_IRQHandler(void) {
+
+}
+
 void buffer_push(bufferType *bf, char data) {
 	bf->data[bf->tail] = data;
 	bf->tail = buffer_inc(bf->tail, bf->size);
