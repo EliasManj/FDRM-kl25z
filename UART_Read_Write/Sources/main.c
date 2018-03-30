@@ -5,6 +5,10 @@
 
 #include "derivative.h" /* include peripheral declarations */
 
+#define NEW_LINE 	0x0A
+#define CARR_RETURN 0x0D
+#define BACKSPACE 	0x08
+
 #define BUFLEN 20
 int rx_status;
 char command[BUFLEN];
@@ -36,7 +40,25 @@ int main(void) {
 }
 
 void UART0_IRQHandler(void) {
+	//WRITE
+	if (((UART0_S1 & 0x80) >> 7) && (!buffer_isempty(rx_bf))) {
+		UART0_D = buffer_pop(rx_bf);
+		if (buffer_isempty(rx_bf)) {
+			UART0_C2 &= ~(0x80);
+		}
+	}
+	//READ
+	if ((UART0_S1 & 0x20) >> 5 && !(buffer_isfull(rx_bf))) {
+		val = UART0_D;
+		buffer_push(rx_bf, val);
+		if (val != CARR_RETURN) {
 
+		} else {
+			buffer_push(rx_bf, NEW_LINE);
+			rx_status = 1;
+		}
+		UART0_C2 |= 0x80;	//Turn on TX interrupt
+	}
 }
 
 void buffer_push(bufferType *bf, char data) {
