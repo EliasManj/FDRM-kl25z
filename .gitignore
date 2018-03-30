@@ -43,6 +43,7 @@ RemoteLaunch/
 RemoteSystemsTempFiles/
 */FLASH/
 */.settings/
+*/Project_Settings/Debugger
 *.jlink
 *.cproject
 *.cwGeneratedFileSetLog
