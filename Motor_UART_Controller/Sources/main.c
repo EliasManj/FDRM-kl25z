@@ -279,3 +279,88 @@ void uart_send_done(bufferType *bf) {
 	UART0_C2 |= 0x80;	//Turn on TX interrupt
 }
 
+uint8_t string_compare(volatile char *array1, volatile char *array2) {
+	int i;
+	int response = 0;
+	i = 0;
+	while (array1[i] == array2[i] && response == 0) {
+		if (array1[i] == '\0' || array2[i] == '\0') {
+			response = 1;
+		}
+		i++;
+	}
+	return response;
+}
+
+void strcopy(volatile char *dest, volatile char *source) {
+	char data;
+	do {
+		data = *dest++ = *source++;
+	} while (data);
+}
+
+void command_add_item(CommandString *commandString, char item) {
+	if (commandString->is_full == 0) {
+		commandString->data[commandString->n_items++] = item;
+	}
+	if (commandString->n_items >= (commandString->size - 1)) {
+		commandString->is_full = 1;
+	}
+}
+
+void command_clear(CommandString *commandString) {
+	uint8_t i = 0;
+	while (i < commandString->size) {
+		commandString->data[i++] = 0;
+	}
+	commandString->n_items = 0;
+	commandString->is_full = 0;
+}
+
+uint8_t command_compare_cmd_ugly(CommandString *commandString) {
+	//DIR:
+	if (commandString->data[0] == 'D' && commandString->data[1] == 'I'
+			&& commandString->data[2] == 'R' && commandString->data[3] == ':'
+			&& commandString->data[4] == 'C') {
+		if (commandString->data[5] == 'W' && commandString->data[6] == 0) {
+			return DIR_CW;
+		} else if (commandString->data[5] == 'C'
+				&& commandString->data[6] == 'W') {
+			return DIR_CCW;
+		} else
+			return 0;
+	}
+	//MOTOR
+	else if (commandString->data[0] == 'M' && commandString->data[1] == 'O'
+			&& commandString->data[2] == 'T' && commandString->data[3] == 'O'
+			&& commandString->data[4] == 'R' && commandString->data[5] == ':'
+			&& commandString->data[6] == 'O') {
+		if (commandString->data[7] == 'N' && commandString->data[8] == 0) {
+			return MOTOR_ON;
+		} else if (commandString->data[7] == 'F'
+				&& commandString->data[8] == 'F'
+				&& commandString->data[9] == 0) {
+			return MOTOR_OFF;
+		} else
+			return 0;
+	}
+	//STEPCW
+	else if (commandString->data[0] == 'S' && commandString->data[1] == 'T'
+			&& commandString->data[2] == 'E' && commandString->data[3] == 'P'
+			&& commandString->data[4] == 'C' && commandString->data[5] == 'W'
+			&& commandString->data[6] == ':' && commandString->data[10] == 0) {
+		return STEP_CW;
+	}
+	//TEMPLIMIT
+	else if (commandString->data[0] == 'T' && commandString->data[1] == 'E'
+			&& commandString->data[2] == 'M' && commandString->data[3] == 'P'
+			&& commandString->data[4] == 'L' && commandString->data[5] == 'I'
+			&& commandString->data[6] == 'M' && commandString->data[7] == 'I'
+			&& commandString->data[8] == 'T' && commandString->data[9] == ':'
+			&& commandString->data[15] == 0) {
+		return TEMPLIMIT;
+	}
+	return 0;
+}
+
+
