@@ -13,17 +13,20 @@
 #define MOTOR_OFF 	4
 #define STEP_CW		5
 #define TEMPLIMIT 	6
+#define RPS			7
 
 //Low power Timer and TPM
 void LPTM_init(void);
 void RGB_init(void);
-void shiftLEDs(void);
+void shift_rgb_leds(void);
 void Ports_init(void);
-void shift(void);
 void Timer_init(void);
-void UART_init(void);
 void Set_timer_signal_GPIO(void);
+
+//Step motor
 void Toggle_signal(void);
+void shift_step_motor(void);
+void shift_step_motor_manual(signed int motor_angle);
 
 //ADC
 void ADC_init(void);
@@ -48,6 +51,7 @@ void strcopy(volatile char *dest, volatile char *source);
 void command_add_item(CommandString *commandString, char item);
 void command_clear(CommandString *commandString);
 uint8_t command_compare_cmd_ugly(CommandString *commandString);
+signed int parse_motor_angle(CommandString *commandString);
 
 //Define Buffer
 struct Buffer {
@@ -61,7 +65,6 @@ typedef struct Buffer bufferType;
 bufferType Buffer_rx = { 0, 0, BUFLEN, { } };
 bufferType *rx_bf;
 
-void uart_init(void);
 void buffer_push(bufferType *bf, char data);
 char buffer_pop(bufferType *bf);
 uint8_t buffer_inc(uint8_t pointer, uint8_t size);
@@ -73,35 +76,116 @@ void uart_send_done(bufferType *bf);
 //Define variables
 int rx_status;
 char command[BUFLEN];
-char val;
+char uart_recive_value;
 int cmd_code;
-unsigned int temp;
 unsigned long LEDs[3];
-unsigned long tmp0;
+unsigned long led_temp;
+signed int motor_angle;
+unsigned long motor_sequence[8] = { 0x00000008, 0x0000000C, 0x00000004,
+		0x00000006, 0x00000002, 0x00000003, 0x00000001, 0x00000009 };
+
+//Indicators
+unsigned int motor_free_running_flag;
+unsigned int motor_dir_flag;
+unsigned int motor_manual_angle_flag;
 unsigned char timerStateReached;
-unsigned char motorSequenceIndex;
-unsigned long secuencia[8] = { 0x00000008, 0x0000000C, 0x00000004, 0x00000006,
-		0x00000002, 0x00000003, 0x00000001, 0x00000009 };
+signed char motorSequenceIndex;
 
-int main(void) {
-
+//Define global initializers
+void global_variables_initializer(void);
+void global_variables_initializer(void) {
 	LEDs[0] = 0;
 	LEDs[1] = 1;
 	LEDs[2] = 1;
 	timerStateReached = 0;
 	motorSequenceIndex = 0;
+	motor_free_running_flag = 0;
+	motor_dir_flag = 1;
+	rx_bf = &Buffer_rx;
+	commandString_p = &commandString;
+	uart_recive_value = 0;
+	motor_manual_angle_flag = 0;
+}
+void global_modules_initializer(void);
+void global_modules_initializer(void) {
 	RGB_init();
 	Ports_init();
-	Timer_init();
+	//Timer_init();
+	//Set_timer_signal_GPIO();
 	LPTM_init();
 	ADC_init();
-	Set_timer_signal_GPIO();
-	//uart_init();
+	uart_init();
+}
+
+int main(void) {
+
+	global_variables_initializer();
+	global_modules_initializer();
+
+	while (1) {
+		if (rx_status == 1) {
+			rx_status = 0;
+			if (commandString_p->is_full == 1) {
+				command_clear(commandString_p);
+			} else {
+				cmd_code = command_compare_cmd_ugly(commandString_p);
+				if (cmd_code != 0) {
+					uart_send_done(rx_bf);
+				}
+				switch (cmd_code) {
+				case DIR_CW:
+					motor_dir_flag = 1;
+					break;
+				case DIR_CCW:
+					motor_dir_flag = 0;
+					break;
+				case MOTOR_ON:
+					motor_free_running_flag = 1;
+					motor_manual_angle_flag = 0;
+					break;
+				case MOTOR_OFF:
+					motor_free_running_flag = 0;
+					motor_manual_angle_flag = 0;
+					break;
+				case STEP_CW:
+					motor_free_running_flag = 0;
+					motor_manual_angle_flag = 1;
+					motor_angle = parse_motor_angle(commandString_p);
+					break;
+				case TEMPLIMIT:
+					break;
+				default:
+					break;
+				}
+			}
+			command_clear(commandString_p);
+		}
+	}
+
 	return 0;
 }
 
 void UART0_IRQHandler(void) {
-	
+	//WRITE
+	if (((UART0_S1 & 0x80) >> 7) && (!buffer_isempty(rx_bf))) {
+		UART0_D = buffer_pop(rx_bf);
+		if (buffer_isempty(rx_bf)) {
+			UART0_C2 &= ~(0x80);
+		}
+	}
+
+	//READ
+	if ((UART0_S1 & 0x20) >> 5 && !(buffer_isfull(rx_bf))) {
+		uart_recive_value = UART0_D;
+		buffer_push(rx_bf, uart_recive_value);
+		if (uart_recive_value != CARR_RETURN) {
+			command_add_item(commandString_p, uart_recive_value);
+		} else {
+			buffer_push(rx_bf, NEW_LINE);
+			rx_status = 1;
+		}
+		UART0_C2 |= 0x80;	//Turn on TX interrupt
+	}
 }
 
 void FTM0_IRQHandler() {
@@ -116,7 +200,7 @@ void TPM0_IRQHandler(void) {
 
 void ADC0_IRQHandler() {
 	if ((ADC0_SC1A &(1<<7))==(1<<7)) {
-		temp = ((ADC0_RA*1000)/225)+225;
+		unsigned int temp = ((ADC0_RA*1000)/225)+225;
 		if(timerStateReached==1) {
 			LPTMR0_CMR = temp;
 			timerStateReached=0;
@@ -128,8 +212,11 @@ void ADC0_IRQHandler() {
 void LPTimer_IRQHandler() {
 	LPTMR0_CSR |= (1 << 7);	//Clear timer compare flag
 	timerStateReached = 1;
-	shift();
-	shiftLEDs();
+	if (motor_free_running_flag == 1)
+		shift_step_motor();
+	else if (motor_manual_angle_flag == 1)
+		shift_step_motor_manual(motor_angle);
+	shift_rgb_leds();
 }
 
 void Timer_init(void) {
@@ -144,7 +231,7 @@ void Timer_init(void) {
 	TPM0_SC |= (1 << 6);		//TOIE enable interrupt
 	TPM0_SC |= (1 << 8);		//DMA enable overflow
 	TPM0_C2SC = (5<<2);			//Output compare -> toggle mode FOR TMP0 CH2
-	TPM0_C2V =0x0000FFFF;		//Maximun value for 16 bits 65535 -> 65535 clock cycles of 1MHz
+	TPM0_C2V =0x0000FFFF;//Maximun value for 16 bits 65535 -> 65535 clock cycles of 1MHz
 	NVIC_ICPR |= (1 << 17);
 	NVIC_ISER |= (1 << 17);
 	TPM0_SC |= (1 << 3);		//CMOD select clock mode mux
@@ -167,12 +254,12 @@ void ADC_init(void) {
 	//ADC0
 	ADC0_CFG1 = 0x00000000;
 	ADC0_CFG2 = (0 << 4);		//Seleccionar el canal A del ADC
-	ADC0_SC1A =0b1000100;		//Habilitar interrupciones del ADC y el canal AD4-> esta en el canal PTE21
+	ADC0_SC1A =0b1000100;//Habilitar interrupciones del ADC y el canal AD4-> esta en el canal PTE21
 }
 
 void LPTM_init(void) {
-	SIM_SCGC5 |= (1 << 0); 		//Activate the LPTMR in the system control gating register
-	LPTMR0_PSR = 0b00000101; 	//Bypass the preescaler and select the LPO(low power oscilator of 1Khz as the source of the timer)
+	SIM_SCGC5 |= (1 << 0); //Activate the LPTMR in the system control gating register
+	LPTMR0_PSR = 0b00000101; //Bypass the preescaler and select the LPO(low power oscilator of 1Khz as the source of the timer)
 	LPTMR0_CMR = 500;			//compare of 500 clock cycles = .5 secs
 	NVIC_ICPR |= (1 << 28);		//Clean flag of LPTM in the interrupt vector
 	NVIC_ISER |= (1 << 28);		//Activate the LPTM interrupt
@@ -191,23 +278,6 @@ void RGB_init(void) {
 	GPIOD_PDDR = (1 << 1);		//Set PTD1 as output
 }
 
-void shift(void) {
-	GPIOB_PDOR = ~((secuencia[motorSequenceIndex++]) & 0x0000000F);
-	if (motorSequenceIndex == 8) {
-		motorSequenceIndex = 0;
-	}
-}
-
-void shiftLEDs(void) {
-	GPIOB_PDOR |= (LEDs[0] << 18);
-	GPIOB_PDOR |= (LEDs[1] << 19);
-	GPIOD_PDOR = (LEDs[2] << 1);
-	tmp0 = LEDs[0];
-	LEDs[0] = LEDs[1];
-	LEDs[1] = LEDs[2];
-	LEDs[2] = tmp0;
-}
-
 void uart_init(void) {
 	SIM_SCGC4 |= (1 << 10);	//CLK UART0
 	SIM_SCGC5 |= (1 << 9);	//CLOCK for PORTA
@@ -222,16 +292,54 @@ void uart_init(void) {
 	NVIC_ICPR |= (1 << 12);
 }
 
-void Set_timer_signal_GPIO(void){
-	//Set PTC3 as a Test Point
-	SIM_SCGC5 |= (1<<11);		//Activate clock for port C
-	PORTC_PCR3 = (1<<8);		//PTC3 set GPIO
-	GPIOC_PDDR |= (1<<3);		//PTC3 set output
-	GPIOC_PDOR |= (1<<3);		//Set PTC3 in LOW initially (negated logic)
+void shift_step_motor(void) {
+	if (motor_dir_flag == 1) {
+		GPIOB_PDOR = ((~motor_sequence[motorSequenceIndex++]) & 0x0000000F);
+		if (motorSequenceIndex >= 8)
+			motorSequenceIndex = 0;
+	} else {
+		GPIOB_PDOR = ((~motor_sequence[motorSequenceIndex--]) & 0x0000000F);
+		if (motorSequenceIndex <= 0)
+			motorSequenceIndex = 7;
+	}
 }
 
-void Toggle_signal(void){
-	GPIOC_PTOR = (1<<3);
+void shift_step_motor_manual(signed int motor_angle) {
+	if (motor_angle == -1)
+		return;
+	if (motorSequenceIndex == motor_angle)
+		return;
+	if (motorSequenceIndex > motor_angle) {
+		GPIOB_PDOR = ((~motor_sequence[motorSequenceIndex--]) & 0x0000000F);
+		if (motorSequenceIndex < 0)
+			motorSequenceIndex = 7;
+	} else if (motorSequenceIndex < motor_angle) {
+		GPIOB_PDOR = ((~motor_sequence[motorSequenceIndex++]) & 0x0000000F);
+		if (motorSequenceIndex >= 8)
+			motorSequenceIndex = 0;
+	}
+}
+
+void shift_rgb_leds(void) {
+	GPIOB_PDOR ^= (-LEDs[0] ^ GPIOB_PDOR ) & (1UL << 18);
+	GPIOB_PDOR ^= (-LEDs[1] ^ GPIOB_PDOR ) & (1UL << 19);
+	GPIOD_PDOR ^= (-LEDs[2] ^ GPIOD_PDOR ) & (1UL << 1);
+	led_temp = LEDs[0];
+	LEDs[0] = LEDs[1];
+	LEDs[1] = LEDs[2];
+	LEDs[2] = led_temp;
+}
+
+void Set_timer_signal_GPIO(void) {
+	//Set PTC3 as a Test Point
+	SIM_SCGC5 |= (1 << 11);		//Activate clock for port C
+	PORTC_PCR3 = (1<<8);		//PTC3 set GPIO
+	GPIOC_PDDR |= (1 << 3);		//PTC3 set output
+	GPIOC_PDOR |= (1 << 3);		//Set PTC3 in LOW initially (negated logic)
+}
+
+void Toggle_signal(void) {
+	GPIOC_PTOR = (1 << 3);
 }
 
 void buffer_push(bufferType *bf, char data) {
@@ -348,7 +456,7 @@ uint8_t command_compare_cmd_ugly(CommandString *commandString) {
 	else if (commandString->data[0] == 'S' && commandString->data[1] == 'T'
 			&& commandString->data[2] == 'E' && commandString->data[3] == 'P'
 			&& commandString->data[4] == 'C' && commandString->data[5] == 'W'
-			&& commandString->data[6] == ':' && commandString->data[10] == 0) {
+			&& commandString->data[6] == ':' && commandString->data[10] == 0 && commandString->n_items<11) {
 		return STEP_CW;
 	}
 	//TEMPLIMIT
@@ -360,7 +468,34 @@ uint8_t command_compare_cmd_ugly(CommandString *commandString) {
 			&& commandString->data[15] == 0) {
 		return TEMPLIMIT;
 	}
+	//RPS
+	else if (commandString->data[0] == 'R' && commandString->data[1] == 'P'
+			&& commandString->data[2] == 'S' && commandString->data[3] == ':'
+			&& commandString->data[6] == '.' && commandString->data[8] == 0 && commandString->n_items<8)
+		return RPS;
 	return 0;
 }
 
-
+signed int parse_motor_angle(CommandString *commandString) {
+	unsigned long val = (unsigned long) (100 * (commandString->data[7] - 0x30)
+			+ 10 * (commandString->data[8] - 0x30)
+			+ (commandString->data[9] - 0x30));
+	if (0 <= val && val <= 124)
+		return 0;
+	else if (125 <= val && val <= 249)
+		return 1;
+	else if (250 <= val && val <= 374)
+		return 2;
+	else if (375 <= val && val <= 499)
+		return 3;
+	else if (500 <= val && val <= 624)
+		return 4;
+	else if (625 <= val && val <= 749)
+		return 5;
+	else if (750 <= val && val <= 874)
+		return 6;
+	else if (875 <= val && val <= 999)
+		return 7;
+	else
+		return -1;
+}
