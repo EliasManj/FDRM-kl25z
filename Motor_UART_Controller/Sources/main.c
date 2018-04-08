@@ -2,7 +2,7 @@
 
 //ASCII codes
 #define BUFLEN 		30
-#define CMDLEN		16
+#define CMDLEN		18
 #define NEW_LINE 	0x0A
 #define CARR_RETURN 0x0D
 #define BACKSPACE 	0x08
@@ -79,6 +79,7 @@ uint8_t buffer_len(bufferType *bf);
 uint8_t buffer_isfull(bufferType *bf);
 void uart_send_done(bufferType *bf);
 void uart_send_temperature(bufferType *bf);
+void uart_send_overtemperature_detected(bufferType *bf);
 
 //Define variables
 int rx_status;
@@ -130,6 +131,7 @@ void global_variables_initializer(void) {
 	tmp_counter_1sec = 0;
 	tmp_counter_5sec = 0;
 	temperature = 0;
+	temperature_limit = 9999;
 }
 void global_modules_initializer(void);
 void global_modules_initializer(void) {
@@ -232,7 +234,7 @@ void TPM0_IRQHandler(void) {
 void ADC0_IRQHandler() {
 	if ((ADC0_SC1A &(1<<7))==(1<<7)) {
 		//unsigned int temp = ((ADC0_RA*1000)/225)+225;
-		unsigned int temp = ((ADC0_RA*9999)/225);
+		unsigned int temp = ((ADC0_RA*9999)/255);
 		if(timerStateReached==1) {
 			//LPTMR0_CMR = temp;
 			temperature = temp;
@@ -544,10 +546,10 @@ unsigned int parse_motor_velocity(CommandString *commandString) {
 }
 
 unsigned int parse_temperature_limit(CommandString *commandString) {
-	unsigned int val = (signed long) (1000 * (commandString->data[9] - 0x30)
-			+ 100 * (commandString->data[10] - 0x30)
-			+ 10 * (commandString->data[11] - 0x30)
-			+ (commandString->data[13] - 0x30));
+	unsigned int val = (signed long) (1000 * (commandString->data[10] - 0x30)
+			+ 100 * (commandString->data[11] - 0x30)
+			+ 10 * (commandString->data[12] - 0x30)
+			+ (commandString->data[14] - 0x30));
 	return val;
 }
 
@@ -561,16 +563,16 @@ void tmp_counter_50ms_tick() {
 
 void tmp_counter_1sec_tick() {
 	tmp_counter_1sec++;
-	if (tmp_counter_1sec >= 5) {
+	Toggle_signal();
+	if (tmp_counter_1sec >= 15) {
 		tmp_counter_1sec = 0;
-		Toggle_signal();
 		tmp_counter_5sec_tick();
 	}
 }
 
 void tmp_counter_5sec_tick() {
 	if(temperature>=temperature_limit){
-		uart_send_overtemperature_detected();
+		uart_send_overtemperature_detected(tx_bf);
 	} else {
 		uart_send_temperature(tx_bf);
 	}
@@ -586,6 +588,7 @@ void uart_send_temperature(bufferType *bf) {
 	buffer_push(bf, temperature_string[3]);
 	buffer_push(bf, temperature_string[2]);
 	buffer_push(bf, temperature_string[1]);
+	buffer_push(bf, '.');
 	buffer_push(bf, temperature_string[0]);
 	buffer_push(bf, 0x0D);
 	buffer_push(bf, 0x0A);
@@ -608,7 +611,7 @@ void uart_send_overtemperature_detected(bufferType *bf) {
 	buffer_push(bf, 'u');
 	buffer_push(bf, 'r');
 	buffer_push(bf, 'e');
-	buffer_push(bf, SPACE);
+	buffer_push(bf, ' ');
 	buffer_push(bf, 'D');
 	buffer_push(bf, 'e');
 	buffer_push(bf, 't');
@@ -617,6 +620,8 @@ void uart_send_overtemperature_detected(bufferType *bf) {
 	buffer_push(bf, 't');
 	buffer_push(bf, 'e');
 	buffer_push(bf, 'd');
+	buffer_push(bf, 0x0D);
+	buffer_push(bf, 0x0A);
 	UART0_C2 |= 0x80;	//Turn on TX interrupt
 }
 
