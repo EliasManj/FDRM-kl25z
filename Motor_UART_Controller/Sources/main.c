@@ -72,6 +72,7 @@ uint8_t buffer_isempty(bufferType *bf);
 uint8_t buffer_len(bufferType *bf);
 uint8_t buffer_isfull(bufferType *bf);
 void uart_send_done(bufferType *bf);
+void uart_send_temperature(bufferType *bf);
 
 //Define variables
 int rx_status;
@@ -99,7 +100,7 @@ unsigned int tmp_counter_5sec;
 void tmp_counter_50ms_tick(void);
 void tmp_counter_1sec_tick(void);
 void tmp_counter_5sec_tick(void);
-void uart_send_temperature(void);
+
 
 //Define global initializers
 void global_variables_initializer(void);
@@ -124,11 +125,11 @@ void global_modules_initializer(void);
 void global_modules_initializer(void) {
 	RGB_init();
 	Ports_init();
-	//Timer_init();
-	//Set_timer_signal_GPIO();
 	LPTM_init();
 	ADC_init();
 	uart_init();
+	Timer_init();
+	Set_timer_signal_GPIO();
 }
 
 int main(void) {
@@ -532,5 +533,16 @@ void tmp_counter_1sec_tick(){
 }
 
 void tmp_counter_5sec_tick(){
-	
+	uart_send_temperature(rx_bf);
+}
+
+void uart_send_temperature(bufferType *bf) {
+	buffer_push(bf, 'T');
+	buffer_push(bf, 'E');
+	buffer_push(bf, 'M');
+	buffer_push(bf, 'P');
+	buffer_push(bf, ':');
+	buffer_push(bf, 0x0D);
+	buffer_push(bf, 0x0A);
+	UART0_C2 |= 0x80;	//Turn on TX interrupt
 }
