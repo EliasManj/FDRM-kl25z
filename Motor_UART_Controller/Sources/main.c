@@ -52,6 +52,7 @@ void command_add_item(CommandString *commandString, char item);
 void command_clear(CommandString *commandString);
 uint8_t command_compare_cmd_ugly(CommandString *commandString);
 signed int parse_motor_angle(CommandString *commandString);
+unsigned int parse_motor_velocity(CommandString *commandString);
 
 //Define Buffer
 struct Buffer {
@@ -64,6 +65,8 @@ struct Buffer {
 typedef struct Buffer bufferType;
 bufferType Buffer_rx = { 0, 0, BUFLEN, { } };
 bufferType *rx_bf;
+bufferType Buffer_tx = { 0, 0, BUFLEN, { } };
+bufferType *tx_bf;
 
 void buffer_push(bufferType *bf, char data);
 char buffer_pop(bufferType *bf);
@@ -76,6 +79,7 @@ void uart_send_temperature(bufferType *bf);
 
 //Define variables
 int rx_status;
+unsigned int motor_vel;
 char command[BUFLEN];
 char uart_recive_value;
 int cmd_code;
@@ -115,6 +119,7 @@ void global_variables_initializer(void) {
 	motor_free_running_flag = 0;
 	motor_dir_flag = 1;
 	rx_bf = &Buffer_rx;
+	tx_bf = &Buffer_tx;
 	commandString_p = &commandString;
 	uart_recive_value = 0;
 	motor_manual_angle_flag = 0;
@@ -147,7 +152,7 @@ int main(void) {
 			} else {
 				cmd_code = command_compare_cmd_ugly(commandString_p);
 				if (cmd_code != 0) {
-					uart_send_done(rx_bf);
+					uart_send_done(tx_bf);
 				}
 				switch (cmd_code) {
 				case DIR_CW:
@@ -171,6 +176,10 @@ int main(void) {
 					break;
 				case TEMPLIMIT:
 					break;
+				case RPS:
+					motor_vel = parse_motor_velocity(commandString_p);
+					LPTMR0_CMR = motor_vel;
+					break;
 				default:
 					break;
 				}
@@ -184,9 +193,9 @@ int main(void) {
 
 void UART0_IRQHandler(void) {
 	//WRITE
-	if (((UART0_S1 & 0x80) >> 7) && (!buffer_isempty(rx_bf))) {
-		UART0_D = buffer_pop(rx_bf);
-		if (buffer_isempty(rx_bf)) {
+	if (((UART0_S1 & 0x80) >> 7) && (!buffer_isempty(tx_bf))) {
+		UART0_D = buffer_pop(tx_bf);
+		if (buffer_isempty(tx_bf)) {
 			UART0_C2 &= ~(0x80);
 		}
 	}
@@ -194,11 +203,12 @@ void UART0_IRQHandler(void) {
 	//READ
 	if ((UART0_S1 & 0x20) >> 5 && !(buffer_isfull(rx_bf))) {
 		uart_recive_value = UART0_D;
-		buffer_push(rx_bf, uart_recive_value);
+		buffer_push(tx_bf, uart_recive_value);
 		if (uart_recive_value != CARR_RETURN) {
 			command_add_item(commandString_p, uart_recive_value);
 		} else {
 			buffer_push(rx_bf, NEW_LINE);
+			buffer_push(tx_bf, NEW_LINE);
 			rx_status = 1;
 		}
 		UART0_C2 |= 0x80;	//Turn on TX interrupt
@@ -208,7 +218,6 @@ void UART0_IRQHandler(void) {
 void FTM0_IRQHandler() {
 	TPM0_SC |= (1 << 7); 		//TOF clear interrupt flag
 	TPM0_C2SC |= (1<<7);
-	Toggle_signal();
 	tmp_counter_50ms_tick();
 }
 
@@ -220,7 +229,7 @@ void ADC0_IRQHandler() {
 	if ((ADC0_SC1A &(1<<7))==(1<<7)) {
 		unsigned int temp = ((ADC0_RA*1000)/225)+225;
 		if(timerStateReached==1) {
-			LPTMR0_CMR = temp;
+			//LPTMR0_CMR = temp;
 			temperature = temp;
 			timerStateReached=0;
 		}
@@ -490,7 +499,7 @@ uint8_t command_compare_cmd_ugly(CommandString *commandString) {
 	//RPS
 	else if (commandString->data[0] == 'R' && commandString->data[1] == 'P'
 			&& commandString->data[2] == 'S' && commandString->data[3] == ':'
-			&& commandString->data[6] == '.' && commandString->data[8] == 0 && commandString->n_items<8)
+			&& commandString->data[6] == '.' && commandString->data[8] == 0 && commandString->n_items<9)
 		return RPS;
 	return 0;
 }
@@ -531,12 +540,13 @@ void tmp_counter_1sec_tick(){
 	tmp_counter_1sec++;
 	if(tmp_counter_1sec>=5){
 		tmp_counter_1sec = 0;
+		Toggle_signal();
 		tmp_counter_5sec_tick();
 	}
 }
 
 void tmp_counter_5sec_tick(){
-	uart_send_temperature(rx_bf);
+	uart_send_temperature(tx_bf);
 }
 
 void uart_send_temperature(bufferType *bf) {
@@ -563,4 +573,12 @@ void dec2str(unsigned int n, unsigned char data[4]){
 	data[2] = n/10 + 0x30;
 	n = n%10;
 	data[3] = n + 0x30;
+}
+
+unsigned int parse_motor_velocity(CommandString *commandString){
+	signed long val = (signed long) (100 * (commandString->data[4] - 0x30)
+				+ 10 * (commandString->data[5] - 0x30)
+				+ (commandString->data[7] - 0x30));
+	val = (-49)*val+49451;
+	return (unsigned int)val;
 }
