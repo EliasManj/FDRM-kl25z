@@ -1,10 +1,12 @@
 #include "derivative.h" 
 
 //ASCII codes
-#define BUFLEN 		16
+#define BUFLEN 		30
+#define CMDLEN		16
 #define NEW_LINE 	0x0A
 #define CARR_RETURN 0x0D
 #define BACKSPACE 	0x08
+#define SPACE 	0x32
 
 //Commands encoding
 #define DIR_CW 		1
@@ -39,11 +41,11 @@ struct Command {
 	volatile uint8_t size;
 	volatile uint8_t n_items;
 	volatile uint8_t is_full;
-	volatile char data[BUFLEN];
+	volatile char data[CMDLEN];
 };
 
 typedef struct Command CommandString;
-CommandString commandString = { BUFLEN, 0, 0, { } };
+CommandString commandString = { CMDLEN, 0, 0, { } };
 CommandString *commandString_p;
 
 uint8_t string_compare(volatile char *array1, volatile char *array2);
@@ -53,6 +55,7 @@ void command_clear(CommandString *commandString);
 uint8_t command_compare_cmd_ugly(CommandString *commandString);
 signed int parse_motor_angle(CommandString *commandString);
 unsigned int parse_motor_velocity(CommandString *commandString);
+unsigned int parse_temperature_limit(CommandString *commandString);
 
 //Define Buffer
 struct Buffer {
@@ -96,7 +99,8 @@ unsigned int motor_manual_angle_flag;
 unsigned char timerStateReached;
 signed char motorSequenceIndex;
 unsigned int temperature;
-unsigned char temperature_string[4]; 
+unsigned int temperature_limit;
+unsigned char temperature_string[4];
 
 //TMP Timer
 unsigned int tmp_counter_50ms;
@@ -106,7 +110,6 @@ void tmp_counter_50ms_tick(void);
 void tmp_counter_1sec_tick(void);
 void tmp_counter_5sec_tick(void);
 void dec2str(unsigned int number, unsigned char data[4]);
-
 
 //Define global initializers
 void global_variables_initializer(void);
@@ -175,6 +178,7 @@ int main(void) {
 					motor_angle = parse_motor_angle(commandString_p);
 					break;
 				case TEMPLIMIT:
+					temperature_limit = parse_temperature_limit(commandString_p);
 					break;
 				case RPS:
 					motor_vel = parse_motor_velocity(commandString_p);
@@ -227,7 +231,8 @@ void TPM0_IRQHandler(void) {
 
 void ADC0_IRQHandler() {
 	if ((ADC0_SC1A &(1<<7))==(1<<7)) {
-		unsigned int temp = ((ADC0_RA*1000)/225)+225;
+		//unsigned int temp = ((ADC0_RA*1000)/225)+225;
+		unsigned int temp = ((ADC0_RA*9999)/225);
 		if(timerStateReached==1) {
 			//LPTMR0_CMR = temp;
 			temperature = temp;
@@ -484,7 +489,8 @@ uint8_t command_compare_cmd_ugly(CommandString *commandString) {
 	else if (commandString->data[0] == 'S' && commandString->data[1] == 'T'
 			&& commandString->data[2] == 'E' && commandString->data[3] == 'P'
 			&& commandString->data[4] == 'C' && commandString->data[5] == 'W'
-			&& commandString->data[6] == ':' && commandString->data[10] == 0 && commandString->n_items<11) {
+			&& commandString->data[6] == ':' && commandString->data[10] == 0
+			&& commandString->n_items < 11) {
 		return STEP_CW;
 	}
 	//TEMPLIMIT
@@ -499,7 +505,8 @@ uint8_t command_compare_cmd_ugly(CommandString *commandString) {
 	//RPS
 	else if (commandString->data[0] == 'R' && commandString->data[1] == 'P'
 			&& commandString->data[2] == 'S' && commandString->data[3] == ':'
-			&& commandString->data[6] == '.' && commandString->data[8] == 0 && commandString->n_items<9)
+			&& commandString->data[6] == '.' && commandString->data[8] == 0
+			&& commandString->n_items < 9)
 		return RPS;
 	return 0;
 }
@@ -528,25 +535,45 @@ signed int parse_motor_angle(CommandString *commandString) {
 		return -1;
 }
 
-void tmp_counter_50ms_tick(){
+unsigned int parse_motor_velocity(CommandString *commandString) {
+	signed long val = (signed long) (100 * (commandString->data[4] - 0x30)
+			+ 10 * (commandString->data[5] - 0x30)
+			+ (commandString->data[7] - 0x30));
+	val = (-49) * val + 49451;
+	return (unsigned int) val;
+}
+
+unsigned int parse_temperature_limit(CommandString *commandString) {
+	unsigned int val = (signed long) (1000 * (commandString->data[9] - 0x30)
+			+ 100 * (commandString->data[10] - 0x30)
+			+ 10 * (commandString->data[11] - 0x30)
+			+ (commandString->data[13] - 0x30));
+	return val;
+}
+
+void tmp_counter_50ms_tick() {
 	tmp_counter_50ms++;
-	if(tmp_counter_50ms>=20){
+	if (tmp_counter_50ms >= 20) {
 		tmp_counter_50ms = 0;
 		tmp_counter_1sec_tick();
 	}
 }
 
-void tmp_counter_1sec_tick(){
+void tmp_counter_1sec_tick() {
 	tmp_counter_1sec++;
-	if(tmp_counter_1sec>=5){
+	if (tmp_counter_1sec >= 5) {
 		tmp_counter_1sec = 0;
 		Toggle_signal();
 		tmp_counter_5sec_tick();
 	}
 }
 
-void tmp_counter_5sec_tick(){
-	uart_send_temperature(tx_bf);
+void tmp_counter_5sec_tick() {
+	if(temperature>=temperature_limit){
+		uart_send_overtemperature_detected();
+	} else {
+		uart_send_temperature(tx_bf);
+	}
 }
 
 void uart_send_temperature(bufferType *bf) {
@@ -565,20 +592,41 @@ void uart_send_temperature(bufferType *bf) {
 	UART0_C2 |= 0x80;	//Turn on TX interrupt
 }
 
-void dec2str(unsigned int n, unsigned char data[4]){
-	data[0] = n/1000 + 0x30;
-	n = n%1000;
-	data[1] = n/100 + 0x30;
-	n = n%100;
-	data[2] = n/10 + 0x30;
-	n = n%10;
-	data[3] = n + 0x30;
+void uart_send_overtemperature_detected(bufferType *bf) {
+	buffer_push(bf, 'O');
+	buffer_push(bf, 'v');
+	buffer_push(bf, 'e');
+	buffer_push(bf, 'r');
+	buffer_push(bf, 't');
+	buffer_push(bf, 'e');
+	buffer_push(bf, 'm');
+	buffer_push(bf, 'p');
+	buffer_push(bf, 'e');
+	buffer_push(bf, 'r');
+	buffer_push(bf, 'a');
+	buffer_push(bf, 't');
+	buffer_push(bf, 'u');
+	buffer_push(bf, 'r');
+	buffer_push(bf, 'e');
+	buffer_push(bf, SPACE);
+	buffer_push(bf, 'D');
+	buffer_push(bf, 'e');
+	buffer_push(bf, 't');
+	buffer_push(bf, 'e');
+	buffer_push(bf, 'c');
+	buffer_push(bf, 't');
+	buffer_push(bf, 'e');
+	buffer_push(bf, 'd');
+	UART0_C2 |= 0x80;	//Turn on TX interrupt
 }
 
-unsigned int parse_motor_velocity(CommandString *commandString){
-	signed long val = (signed long) (100 * (commandString->data[4] - 0x30)
-				+ 10 * (commandString->data[5] - 0x30)
-				+ (commandString->data[7] - 0x30));
-	val = (-49)*val+49451;
-	return (unsigned int)val;
+void dec2str(unsigned int n, unsigned char data[4]) {
+	data[3] = n / 1000 + 0x30;
+	n = n % 1000;
+	data[2] = n / 100 + 0x30;
+	n = n % 100;
+	data[1] = n / 10 + 0x30;
+	n = n % 10;
+	data[0] = n + 0x30;
 }
+
