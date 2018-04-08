@@ -90,6 +90,7 @@ unsigned int motor_dir_flag;
 unsigned int motor_manual_angle_flag;
 unsigned char timerStateReached;
 signed char motorSequenceIndex;
+unsigned int temperature;
 
 //TMP Timer
 unsigned int tmp_counter_50ms;
@@ -98,6 +99,7 @@ unsigned int tmp_counter_5sec;
 void tmp_counter_50ms_tick(void);
 void tmp_counter_1sec_tick(void);
 void tmp_counter_5sec_tick(void);
+void uart_send_temperature(void);
 
 //Define global initializers
 void global_variables_initializer(void);
@@ -116,6 +118,7 @@ void global_variables_initializer(void) {
 	tmp_counter_50ms = 0;
 	tmp_counter_1sec = 0;
 	tmp_counter_5sec = 0;
+	temperature = 0;
 }
 void global_modules_initializer(void);
 void global_modules_initializer(void) {
@@ -203,6 +206,7 @@ void FTM0_IRQHandler() {
 	TPM0_SC |= (1 << 7); 		//TOF clear interrupt flag
 	TPM0_C2SC |= (1<<7);
 	Toggle_signal();
+	tmp_counter_50ms_tick();
 }
 
 void TPM0_IRQHandler(void) {
@@ -509,4 +513,24 @@ signed int parse_motor_angle(CommandString *commandString) {
 		return 7;
 	else
 		return -1;
+}
+
+void tmp_counter_50ms_tick(){
+	tmp_counter_50ms++;
+	if(tmp_counter_50ms>=20){
+		tmp_counter_50ms = 0;
+		tmp_counter_1sec_tick();
+	}
+}
+
+void tmp_counter_1sec_tick(){
+	tmp_counter_1sec++;
+	if(tmp_counter_1sec>=5){
+		tmp_counter_1sec = 0;
+		tmp_counter_5sec_tick();
+	}
+}
+
+void tmp_counter_5sec_tick(){
+	
 }
