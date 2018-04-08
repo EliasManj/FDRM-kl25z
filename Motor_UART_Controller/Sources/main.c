@@ -91,6 +91,14 @@ unsigned int motor_manual_angle_flag;
 unsigned char timerStateReached;
 signed char motorSequenceIndex;
 
+//TMP Timer
+unsigned int tmp_counter_50ms;
+unsigned int tmp_counter_1sec;
+unsigned int tmp_counter_5sec;
+void tmp_counter_50ms_tick(void);
+void tmp_counter_1sec_tick(void);
+void tmp_counter_5sec_tick(void);
+
 //Define global initializers
 void global_variables_initializer(void);
 void global_variables_initializer(void) {
@@ -105,6 +113,9 @@ void global_variables_initializer(void) {
 	commandString_p = &commandString;
 	uart_recive_value = 0;
 	motor_manual_angle_flag = 0;
+	tmp_counter_50ms = 0;
+	tmp_counter_1sec = 0;
+	tmp_counter_5sec = 0;
 }
 void global_modules_initializer(void);
 void global_modules_initializer(void) {
@@ -231,7 +242,7 @@ void Timer_init(void) {
 	TPM0_SC |= (1 << 6);		//TOIE enable interrupt
 	TPM0_SC |= (1 << 8);		//DMA enable overflow
 	TPM0_C2SC = (5<<2);			//Output compare -> toggle mode FOR TMP0 CH2
-	TPM0_C2V =0x0000FFFF;//Maximun value for 16 bits 65535 -> 65535 clock cycles of 1MHz
+	TPM0_C2V =0x0000C350;		//50,000 -> 50000 clock cycles of 1MHz -> 50ms
 	NVIC_ICPR |= (1 << 17);
 	NVIC_ISER |= (1 << 17);
 	TPM0_SC |= (1 << 3);		//CMOD select clock mode mux
