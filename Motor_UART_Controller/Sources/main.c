@@ -92,6 +92,7 @@ unsigned int motor_manual_angle_flag;
 unsigned char timerStateReached;
 signed char motorSequenceIndex;
 unsigned int temperature;
+unsigned char temperature_string[4]; 
 
 //TMP Timer
 unsigned int tmp_counter_50ms;
@@ -100,6 +101,7 @@ unsigned int tmp_counter_5sec;
 void tmp_counter_50ms_tick(void);
 void tmp_counter_1sec_tick(void);
 void tmp_counter_5sec_tick(void);
+void dec2str(unsigned int number, unsigned char data[4]);
 
 
 //Define global initializers
@@ -219,6 +221,7 @@ void ADC0_IRQHandler() {
 		unsigned int temp = ((ADC0_RA*1000)/225)+225;
 		if(timerStateReached==1) {
 			LPTMR0_CMR = temp;
+			temperature = temp;
 			timerStateReached=0;
 		}
 		ADC0_SC1A |=4;
@@ -542,7 +545,22 @@ void uart_send_temperature(bufferType *bf) {
 	buffer_push(bf, 'M');
 	buffer_push(bf, 'P');
 	buffer_push(bf, ':');
+	dec2str(temperature, temperature_string);
+	buffer_push(bf, temperature_string[3]);
+	buffer_push(bf, temperature_string[2]);
+	buffer_push(bf, temperature_string[1]);
+	buffer_push(bf, temperature_string[0]);
 	buffer_push(bf, 0x0D);
 	buffer_push(bf, 0x0A);
 	UART0_C2 |= 0x80;	//Turn on TX interrupt
+}
+
+void dec2str(unsigned int n, unsigned char data[4]){
+	data[0] = n/1000 + 0x30;
+	n = n%1000;
+	data[1] = n/100 + 0x30;
+	n = n%100;
+	data[2] = n/10 + 0x30;
+	n = n%10;
+	data[3] = n + 0x30;
 }
