@@ -1,138 +1,39 @@
 #include "derivative.h" 
-
-//ASCII codes
-#define BUFLEN 		30
-#define CMDLEN		18
-#define NEW_LINE 	0x0A
-#define CARR_RETURN 0x0D
-#define BACKSPACE 	0x08
-#define SPACE 	0x32
-
-//Commands encoding
-#define DIR_CW 		1
-#define DIR_CCW		2
-#define MOTOR_ON 	3
-#define MOTOR_OFF 	4
-#define STEP_CW		5
-#define TEMPLIMIT 	6
-#define RPS			7
+#include "global_variables.h"
+#include "buffer.h"
+#include "command.h"
+#include "uart.h"
+#include "gpio.h"
 
 //Low power Timer and TPM
 void LPTM_init(void);
-void RGB_init(void);
-void shift_rgb_leds(void);
-void Ports_init(void);
 void Timer_init(void);
-void Set_timer_signal_GPIO(void);
 
 //Step motor
-void Toggle_signal(void);
+void toggle_signal(void);
 void shift_step_motor(void);
 void shift_step_motor_manual(signed int motor_angle);
 
 //ADC
 void ADC_init(void);
 
-//UART
-void uart_init(void);
-
-//Define Command struct
-struct Command {
-	volatile uint8_t size;
-	volatile uint8_t n_items;
-	volatile uint8_t is_full;
-	volatile char data[CMDLEN];
-};
-
-typedef struct Command CommandString;
-CommandString commandString = { CMDLEN, 0, 0, { } };
-CommandString *commandString_p;
-
-uint8_t string_compare(volatile char *array1, volatile char *array2);
-void strcopy(volatile char *dest, volatile char *source);
-void command_add_item(CommandString *commandString, char item);
-void command_clear(CommandString *commandString);
-uint8_t command_compare_cmd_ugly(CommandString *commandString);
-signed int parse_motor_angle(CommandString *commandString);
-unsigned int parse_motor_velocity(CommandString *commandString);
-unsigned int parse_temperature_limit(CommandString *commandString);
-
-//Define Buffer
-struct Buffer {
-	volatile uint8_t head;
-	volatile uint8_t tail;
-	volatile uint8_t size;
-	volatile char data[BUFLEN];
-};
-
-typedef struct Buffer bufferType;
+//Buffer
 bufferType Buffer_rx = { 0, 0, BUFLEN, { } };
 bufferType *rx_bf;
 bufferType Buffer_tx = { 0, 0, BUFLEN, { } };
 bufferType *tx_bf;
 
-void buffer_push(bufferType *bf, char data);
-char buffer_pop(bufferType *bf);
-uint8_t buffer_inc(uint8_t pointer, uint8_t size);
-uint8_t buffer_isempty(bufferType *bf);
-uint8_t buffer_len(bufferType *bf);
-uint8_t buffer_isfull(bufferType *bf);
-void uart_send_done(bufferType *bf);
-void uart_send_temperature(bufferType *bf);
-void uart_send_overtemperature_detected(bufferType *bf);
+//Command
+CommandString commandString = { CMDLEN, 0, 0, { } };
+CommandString *commandString_p;
 
-//Define variables
-int rx_status;
-unsigned int motor_vel;
-char command[BUFLEN];
-char uart_recive_value;
-int cmd_code;
-unsigned long LEDs[3];
-unsigned long led_temp;
-signed int motor_angle;
-unsigned long motor_sequence[8] = { 0x00000008, 0x0000000C, 0x00000004,
-		0x00000006, 0x00000002, 0x00000003, 0x00000001, 0x00000009 };
-
-//Indicators
-unsigned int motor_free_running_flag;
-unsigned int motor_dir_flag;
-unsigned int motor_manual_angle_flag;
-unsigned char timerStateReached;
-signed char motorSequenceIndex;
-unsigned int temperature;
-unsigned int temperature_limit;
-unsigned char temperature_string[4];
-
-//TMP Timer
-unsigned int tmp_counter_50ms;
-unsigned int tmp_counter_1sec;
-unsigned int tmp_counter_5sec;
 void tmp_counter_50ms_tick(void);
 void tmp_counter_1sec_tick(void);
 void tmp_counter_5sec_tick(void);
-void dec2str(unsigned int number, unsigned char data[4]);
 
-//Define global initializers
-void global_variables_initializer(void);
-void global_variables_initializer(void) {
-	LEDs[0] = 0;
-	LEDs[1] = 1;
-	LEDs[2] = 1;
-	timerStateReached = 0;
-	motorSequenceIndex = 0;
-	motor_free_running_flag = 0;
-	motor_dir_flag = 1;
-	rx_bf = &Buffer_rx;
-	tx_bf = &Buffer_tx;
-	commandString_p = &commandString;
-	uart_recive_value = 0;
-	motor_manual_angle_flag = 0;
-	tmp_counter_50ms = 0;
-	tmp_counter_1sec = 0;
-	tmp_counter_5sec = 0;
-	temperature = 0;
-	temperature_limit = 9999;
-}
+unsigned long motor_sequence[8] = { 0x00000008, 0x0000000C, 0x00000004,
+		0x00000006, 0x00000002, 0x00000003, 0x00000001, 0x00000009 };
+
 void global_modules_initializer(void);
 void global_modules_initializer(void) {
 	RGB_init();
@@ -145,6 +46,10 @@ void global_modules_initializer(void) {
 }
 
 int main(void) {
+
+	rx_bf = &Buffer_rx;
+	tx_bf = &Buffer_tx;
+	commandString_p = &commandString;
 
 	global_variables_initializer();
 	global_modules_initializer();
@@ -180,7 +85,8 @@ int main(void) {
 					motor_angle = parse_motor_angle(commandString_p);
 					break;
 				case TEMPLIMIT:
-					temperature_limit = parse_temperature_limit(commandString_p);
+					temperature_limit = parse_temperature_limit(
+							commandString_p);
 					break;
 				case RPS:
 					motor_vel = parse_motor_velocity(commandString_p);
@@ -272,15 +178,6 @@ void Timer_init(void) {
 	TPM0_SC |= (1 << 3);		//CMOD select clock mode mux
 }
 
-void Ports_init(void) {
-	SIM_SCGC5 |= (1 << 10);
-	PORTB_PCR0 =(1<<8); 		//PTB0 GPIO
-	PORTB_PCR1 =(1<<8); 		//PTB1 GPIO
-	PORTB_PCR2 =(1<<8); 		//PTB2 GPIO
-	PORTB_PCR3 =(1<<8); 		//PTB3 GPIO
-	GPIOB_PDDR |= 0x0000000F;	//Set GPIOB as output
-}
-
 void ADC_init(void) {
 	SIM_SCGC6 |= (1 << 27);
 	SIM_SCGC5 |= (1 << 13);
@@ -301,31 +198,6 @@ void LPTM_init(void) {
 	LPTMR0_CSR = 0b01000001;	//Activate the timer and enable interrupts	
 }
 
-void RGB_init(void) {
-	//Activate SIM_SCGC5 (system control gating register 5) for port B and D
-	SIM_SCGC5 |= (1 << 10);		//Port B
-	SIM_SCGC5 |= (1 << 12);		//Port D
-	PORTB_PCR18 = (1<<8);		//Set PTB18 as GPIO
-	PORTB_PCR19 = (1<<8);		//set PTB19 as GPIO
-	PORTD_PCR1 = (1<<8);		//Set PTD1 as GPIO
-	GPIOB_PDDR = (1 << 18);		//Set PTB18 as output
-	GPIOB_PDDR |= (1 << 19);	//set PTB19 as output
-	GPIOD_PDDR = (1 << 1);		//Set PTD1 as output
-}
-
-void uart_init(void) {
-	SIM_SCGC4 |= (1 << 10);	//CLK UART0
-	SIM_SCGC5 |= (1 << 9);	//CLOCK for PORTA
-	SIM_SOPT2 |= (1 << 26);	//Enable UART0 clock with MCGFLLCLK clock or MCGPLLCLK/2 clock
-	PORTA_PCR1 = (1<<9);	//Port control for UART_0
-	PORTA_PCR2 = (1<<9);	//Port control for UART_0
-	UART0_BDL = 137;		//clock=640*32768, baud rate 9600
-	UART0_C2 |= (1 << 5);		//reciver interrupt enable for RDRF
-	UART0_C2 |= (1 << 2);		//RE reciver enable
-	UART0_C2 |= (1 << 3);		//TE Transmiter enable
-	NVIC_ISER |= (1 << 12);
-	NVIC_ICPR |= (1 << 12);
-}
 
 void shift_step_motor(void) {
 	if (motor_dir_flag == 1) {
@@ -355,204 +227,6 @@ void shift_step_motor_manual(signed int motor_angle) {
 	}
 }
 
-void shift_rgb_leds(void) {
-	GPIOB_PDOR ^= (-LEDs[0] ^ GPIOB_PDOR ) & (1UL << 18);
-	GPIOB_PDOR ^= (-LEDs[1] ^ GPIOB_PDOR ) & (1UL << 19);
-	GPIOD_PDOR ^= (-LEDs[2] ^ GPIOD_PDOR ) & (1UL << 1);
-	led_temp = LEDs[0];
-	LEDs[0] = LEDs[1];
-	LEDs[1] = LEDs[2];
-	LEDs[2] = led_temp;
-}
-
-void Set_timer_signal_GPIO(void) {
-	//Set PTC3 as a Test Point
-	SIM_SCGC5 |= (1 << 11);		//Activate clock for port C
-	PORTC_PCR3 = (1<<8);		//PTC3 set GPIO
-	GPIOC_PDDR |= (1 << 3);		//PTC3 set output
-	GPIOC_PDOR |= (1 << 3);		//Set PTC3 in LOW initially (negated logic)
-}
-
-void Toggle_signal(void) {
-	GPIOC_PTOR = (1 << 3);
-}
-
-void buffer_push(bufferType *bf, char data) {
-	bf->data[bf->tail] = data;
-	bf->tail = buffer_inc(bf->tail, bf->size);
-}
-
-char buffer_pop(bufferType *bf) {
-	uint8_t item = bf->data[bf->head];
-	bf->head = buffer_inc(bf->head, bf->size);
-	return item;
-}
-
-uint8_t buffer_inc(uint8_t pointer, uint8_t size) {
-	uint8_t i = pointer;
-	if (++i >= size) {
-		i = 0;
-	}
-	return i;
-}
-
-uint8_t buffer_isempty(bufferType *bf) {
-	return bf->head == bf->tail;
-}
-
-uint8_t buffer_isfull(bufferType *bf) {
-	return buffer_len(bf) == (bf->size - 1);
-}
-
-uint8_t buffer_len(bufferType *bf) {
-	uint8_t len = bf->tail - bf->head;
-	if (len < 0) {
-		len += bf->size;
-	}
-	return len;
-}
-
-void uart_send_done(bufferType *bf) {
-	buffer_push(bf, 'D');
-	buffer_push(bf, 'O');
-	buffer_push(bf, 'N');
-	buffer_push(bf, 'E');
-	buffer_push(bf, 0x0D);
-	buffer_push(bf, 0x0A);
-	UART0_C2 |= 0x80;	//Turn on TX interrupt
-}
-
-uint8_t string_compare(volatile char *array1, volatile char *array2) {
-	int i;
-	int response = 0;
-	i = 0;
-	while (array1[i] == array2[i] && response == 0) {
-		if (array1[i] == '\0' || array2[i] == '\0') {
-			response = 1;
-		}
-		i++;
-	}
-	return response;
-}
-
-void strcopy(volatile char *dest, volatile char *source) {
-	char data;
-	do {
-		data = *dest++ = *source++;
-	} while (data);
-}
-
-void command_add_item(CommandString *commandString, char item) {
-	if (commandString->is_full == 0) {
-		commandString->data[commandString->n_items++] = item;
-	}
-	if (commandString->n_items >= (commandString->size - 1)) {
-		commandString->is_full = 1;
-	}
-}
-
-void command_clear(CommandString *commandString) {
-	uint8_t i = 0;
-	while (i < commandString->size) {
-		commandString->data[i++] = 0;
-	}
-	commandString->n_items = 0;
-	commandString->is_full = 0;
-}
-
-uint8_t command_compare_cmd_ugly(CommandString *commandString) {
-	//DIR:
-	if (commandString->data[0] == 'D' && commandString->data[1] == 'I'
-			&& commandString->data[2] == 'R' && commandString->data[3] == ':'
-			&& commandString->data[4] == 'C') {
-		if (commandString->data[5] == 'W' && commandString->data[6] == 0) {
-			return DIR_CW;
-		} else if (commandString->data[5] == 'C'
-				&& commandString->data[6] == 'W') {
-			return DIR_CCW;
-		} else
-			return 0;
-	}
-	//MOTOR
-	else if (commandString->data[0] == 'M' && commandString->data[1] == 'O'
-			&& commandString->data[2] == 'T' && commandString->data[3] == 'O'
-			&& commandString->data[4] == 'R' && commandString->data[5] == ':'
-			&& commandString->data[6] == 'O') {
-		if (commandString->data[7] == 'N' && commandString->data[8] == 0) {
-			return MOTOR_ON;
-		} else if (commandString->data[7] == 'F'
-				&& commandString->data[8] == 'F'
-				&& commandString->data[9] == 0) {
-			return MOTOR_OFF;
-		} else
-			return 0;
-	}
-	//STEPCW
-	else if (commandString->data[0] == 'S' && commandString->data[1] == 'T'
-			&& commandString->data[2] == 'E' && commandString->data[3] == 'P'
-			&& commandString->data[4] == 'C' && commandString->data[5] == 'W'
-			&& commandString->data[6] == ':' && commandString->data[10] == 0
-			&& commandString->n_items < 11) {
-		return STEP_CW;
-	}
-	//TEMPLIMIT
-	else if (commandString->data[0] == 'T' && commandString->data[1] == 'E'
-			&& commandString->data[2] == 'M' && commandString->data[3] == 'P'
-			&& commandString->data[4] == 'L' && commandString->data[5] == 'I'
-			&& commandString->data[6] == 'M' && commandString->data[7] == 'I'
-			&& commandString->data[8] == 'T' && commandString->data[9] == ':'
-			&& commandString->data[15] == 0) {
-		return TEMPLIMIT;
-	}
-	//RPS
-	else if (commandString->data[0] == 'R' && commandString->data[1] == 'P'
-			&& commandString->data[2] == 'S' && commandString->data[3] == ':'
-			&& commandString->data[6] == '.' && commandString->data[8] == 0
-			&& commandString->n_items < 9)
-		return RPS;
-	return 0;
-}
-
-signed int parse_motor_angle(CommandString *commandString) {
-	unsigned long val = (unsigned long) (100 * (commandString->data[7] - 0x30)
-			+ 10 * (commandString->data[8] - 0x30)
-			+ (commandString->data[9] - 0x30));
-	if (0 <= val && val <= 124)
-		return 0;
-	else if (125 <= val && val <= 249)
-		return 1;
-	else if (250 <= val && val <= 374)
-		return 2;
-	else if (375 <= val && val <= 499)
-		return 3;
-	else if (500 <= val && val <= 624)
-		return 4;
-	else if (625 <= val && val <= 749)
-		return 5;
-	else if (750 <= val && val <= 874)
-		return 6;
-	else if (875 <= val && val <= 999)
-		return 7;
-	else
-		return -1;
-}
-
-unsigned int parse_motor_velocity(CommandString *commandString) {
-	signed long val = (signed long) (100 * (commandString->data[4] - 0x30)
-			+ 10 * (commandString->data[5] - 0x30)
-			+ (commandString->data[7] - 0x30));
-	val = (-49) * val + 49451;
-	return (unsigned int) val;
-}
-
-unsigned int parse_temperature_limit(CommandString *commandString) {
-	unsigned int val = (signed long) (1000 * (commandString->data[10] - 0x30)
-			+ 100 * (commandString->data[11] - 0x30)
-			+ 10 * (commandString->data[12] - 0x30)
-			+ (commandString->data[14] - 0x30));
-	return val;
-}
-
 void tmp_counter_50ms_tick() {
 	tmp_counter_50ms++;
 	if (tmp_counter_50ms >= 20) {
@@ -563,7 +237,7 @@ void tmp_counter_50ms_tick() {
 
 void tmp_counter_1sec_tick() {
 	tmp_counter_1sec++;
-	Toggle_signal();
+	toggle_signal();
 	if (tmp_counter_1sec >= 15) {
 		tmp_counter_1sec = 0;
 		tmp_counter_5sec_tick();
@@ -571,67 +245,9 @@ void tmp_counter_1sec_tick() {
 }
 
 void tmp_counter_5sec_tick() {
-	if(temperature>=temperature_limit){
+	if (temperature >= temperature_limit) {
 		uart_send_overtemperature_detected(tx_bf);
 	} else {
 		uart_send_temperature(tx_bf);
 	}
 }
-
-void uart_send_temperature(bufferType *bf) {
-	buffer_push(bf, 'T');
-	buffer_push(bf, 'E');
-	buffer_push(bf, 'M');
-	buffer_push(bf, 'P');
-	buffer_push(bf, ':');
-	dec2str(temperature, temperature_string);
-	buffer_push(bf, temperature_string[3]);
-	buffer_push(bf, temperature_string[2]);
-	buffer_push(bf, temperature_string[1]);
-	buffer_push(bf, '.');
-	buffer_push(bf, temperature_string[0]);
-	buffer_push(bf, 0x0D);
-	buffer_push(bf, 0x0A);
-	UART0_C2 |= 0x80;	//Turn on TX interrupt
-}
-
-void uart_send_overtemperature_detected(bufferType *bf) {
-	buffer_push(bf, 'O');
-	buffer_push(bf, 'v');
-	buffer_push(bf, 'e');
-	buffer_push(bf, 'r');
-	buffer_push(bf, 't');
-	buffer_push(bf, 'e');
-	buffer_push(bf, 'm');
-	buffer_push(bf, 'p');
-	buffer_push(bf, 'e');
-	buffer_push(bf, 'r');
-	buffer_push(bf, 'a');
-	buffer_push(bf, 't');
-	buffer_push(bf, 'u');
-	buffer_push(bf, 'r');
-	buffer_push(bf, 'e');
-	buffer_push(bf, ' ');
-	buffer_push(bf, 'D');
-	buffer_push(bf, 'e');
-	buffer_push(bf, 't');
-	buffer_push(bf, 'e');
-	buffer_push(bf, 'c');
-	buffer_push(bf, 't');
-	buffer_push(bf, 'e');
-	buffer_push(bf, 'd');
-	buffer_push(bf, 0x0D);
-	buffer_push(bf, 0x0A);
-	UART0_C2 |= 0x80;	//Turn on TX interrupt
-}
-
-void dec2str(unsigned int n, unsigned char data[4]) {
-	data[3] = n / 1000 + 0x30;
-	n = n % 1000;
-	data[2] = n / 100 + 0x30;
-	n = n % 100;
-	data[1] = n / 10 + 0x30;
-	n = n % 10;
-	data[0] = n + 0x30;
-}
-
