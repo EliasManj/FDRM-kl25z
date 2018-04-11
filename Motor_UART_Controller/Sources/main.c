@@ -77,11 +77,10 @@ int main(void) {
 					break;
 				case MOTOR_OFF:
 					motor_free_running_flag = 0;
-					motor_manual_angle_flag = 0;
+					motor_manual_angle_flag = 1;
+					motor_angle = current_angle;
 					break;
 				case STEP_CW:
-					motor_free_running_flag = 0;
-					motor_manual_angle_flag = 1;
 					motor_angle = parse_motor_angle(commandString_p);
 					break;
 				case TEMPLIMIT:
@@ -90,7 +89,10 @@ int main(void) {
 					break;
 				case RPS:
 					motor_vel = parse_motor_velocity(commandString_p);
+					LPTMR0_CSR = 0b01000000; //Activate the timer and enable interrupts	
+					LPTMR0_CSR |= (1 << 7);		//Clear timer compare flag
 					LPTMR0_CMR = motor_vel;
+					LPTMR0_CSR = 0b01000001;//Activate the timer and enable interrupts	
 					break;
 				default:
 					break;
@@ -198,32 +200,45 @@ void LPTM_init(void) {
 	LPTMR0_CSR = 0b01000001;	//Activate the timer and enable interrupts	
 }
 
-
 void shift_step_motor(void) {
 	if (motor_dir_flag == 1) {
+		current_angle++;
 		GPIOB_PDOR = ((~motor_sequence[motorSequenceIndex++]) & 0x0000000F);
 		if (motorSequenceIndex >= 8)
 			motorSequenceIndex = 0;
+		if (current_angle > 0) {
+			current_angle = 96;
+		}
 	} else {
 		GPIOB_PDOR = ((~motor_sequence[motorSequenceIndex--]) & 0x0000000F);
 		if (motorSequenceIndex <= 0)
 			motorSequenceIndex = 7;
+		current_angle--;
+		if (current_angle < 0) {
+			current_angle = 96;
+		}
 	}
 }
 
 void shift_step_motor_manual(signed int motor_angle) {
-	if (motor_angle == -1)
+	if (current_angle == motor_angle)
 		return;
-	if (motorSequenceIndex == motor_angle)
-		return;
-	if (motorSequenceIndex > motor_angle) {
+	if (current_angle > motor_angle) {
 		GPIOB_PDOR = ((~motor_sequence[motorSequenceIndex--]) & 0x0000000F);
 		if (motorSequenceIndex < 0)
 			motorSequenceIndex = 7;
-	} else if (motorSequenceIndex < motor_angle) {
+		current_angle--;
+		if (current_angle < 0) {
+			current_angle = 96;
+		}
+	} else if (current_angle < motor_angle) {
 		GPIOB_PDOR = ((~motor_sequence[motorSequenceIndex++]) & 0x0000000F);
 		if (motorSequenceIndex >= 8)
 			motorSequenceIndex = 0;
+		current_angle++;
+		if (current_angle > 96) {
+			current_angle = 0;
+		}
 	}
 }
 
@@ -238,7 +253,7 @@ void tmp_counter_50ms_tick() {
 void tmp_counter_1sec_tick() {
 	tmp_counter_1sec++;
 	toggle_signal();
-	if (tmp_counter_1sec >= 15) {
+	if (tmp_counter_1sec >= 5) {
 		tmp_counter_1sec = 0;
 		tmp_counter_5sec_tick();
 	}

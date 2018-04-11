@@ -45,6 +45,7 @@ signed char motorSequenceIndex;
 unsigned int temperature;
 unsigned int temperature_limit;
 unsigned char temperature_string[4];
+unsigned int current_angle;
 
 //TMP Timer
 unsigned int tmp_counter_50ms;

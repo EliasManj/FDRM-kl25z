@@ -102,31 +102,15 @@ signed int parse_motor_angle(CommandString *commandString) {
 	unsigned long val = (unsigned long) (100 * (commandString->data[7] - 0x30)
 			+ 10 * (commandString->data[8] - 0x30)
 			+ (commandString->data[9] - 0x30));
-	if (0 <= val && val <= 124)
-		return 0;
-	else if (125 <= val && val <= 249)
-		return 1;
-	else if (250 <= val && val <= 374)
-		return 2;
-	else if (375 <= val && val <= 499)
-		return 3;
-	else if (500 <= val && val <= 624)
-		return 4;
-	else if (625 <= val && val <= 749)
-		return 5;
-	else if (750 <= val && val <= 874)
-		return 6;
-	else if (875 <= val && val <= 999)
-		return 7;
-	else
-		return -1;
+	val = (val*96)/999;
+	return val;
 }
 
 unsigned int parse_motor_velocity(CommandString *commandString) {
-	signed long val = (signed long) (100 * (commandString->data[4] - 0x30)
+	unsigned long val = (signed long) (100 * (commandString->data[4] - 0x30)
 			+ 10 * (commandString->data[5] - 0x30)
 			+ (commandString->data[7] - 0x30));
-	val = (-49) * val + 49451;
+	val = (625*10)/val;
 	return (unsigned int) val;
 }
 

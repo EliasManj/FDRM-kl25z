@@ -23,4 +23,5 @@ void global_variables_initializer(void) {
 	tmp_counter_5sec = 0;
 	temperature = 0;
 	temperature_limit = 9999;
+	current_angle = 0;
 }
