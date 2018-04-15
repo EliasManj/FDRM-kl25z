@@ -202,11 +202,10 @@ void lcd_initialize(bufferType *bf) {
 	buffer_push(bf, 0x03);
 	buffer_push(bf, 0x02);
 	buffer_push(bf, 0x02);
-	buffer_push(bf, 0x02);
 	buffer_push(bf, 0x00);
-	buffer_push(bf, 0x08);
 	buffer_push(bf, 0x00);
-	buffer_push(bf, 0x01);
+	buffer_push(bf, 0x0E);
+	buffer_push(bf, 0x00);
 	buffer_push(bf, 0x06);
 	buffer_push(bf, 0x14);
 	buffer_push(bf, 0x18);
