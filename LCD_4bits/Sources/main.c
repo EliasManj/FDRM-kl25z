@@ -21,11 +21,11 @@ unsigned long led_temp;
 
 //LCD display
 
-#define IDLE		0
-#define ENABLE_SET0	1
-#define DATA0		2
-#define ENABLE_SET2	3
-#define DATA1		4
+#define IDLE			0
+#define SET_RS			1
+#define DATA_ENABLE_SET	2
+#define ENABLE_CLEAR	3
+#define DATA_CLEAR		4
 
 unsigned char DB7_4;
 
@@ -44,12 +44,13 @@ unsigned char lcd_db6 = 0;
 unsigned char lcd_db5 = 0;
 unsigned char lcd_db4 = 0;
 unsigned char lcd_bf_empty = 1;
+char lcd_data;
 
-LcdEncoding lcdEncoding[5] = { { { 0, 1 }, 0, { ENABLE_SET0, IDLE } },	//IDLE
-		{ { 0, 1 }, 1, { DATA0, DATA0 } },					//ENABLE0
-		{ { 0, 1 }, 0, { ENABLE_SET2, ENABLE_SET2 } },		//DATA0
-		{ { 0, 1 }, 1, { DATA1, DATA1 } },					//ENABLE1
-		{ { 0, 1 }, 0, { IDLE, IDLE } },					//DATA1
+LcdEncoding lcdEncoding[5] = { { { 0, 1 }, 0, { SET_RS, IDLE } },		//IDLE
+		{ { 0, 1 }, 0, { DATA_ENABLE_SET, DATA_ENABLE_SET } },	//SET_RS
+		{ { 0, 1 }, 1, { ENABLE_CLEAR, ENABLE_CLEAR } },	//DATA_ENABLE_SET
+		{ { 0, 1 }, 0, { DATA_CLEAR, DATA_CLEAR } },			//ENABLE_CLEAR 
+		{ { 0, 1 }, 0, { IDLE, IDLE } },						//DATA_CLEAR
 		};
 
 bufferType Buffer_lcd = { 0, 0, BUFLEN, { } };
@@ -117,12 +118,12 @@ void LPTM_init(void) {
 
 void LPTimer_IRQHandler() {
 	LPTMR0_CSR |= (1 << 7);	//Clear timer compare flag
-	//shift_rgb_leds();
 }
 
 void FTM0_IRQHandler() {
 	TPM0_SC |= (1 << 7); 		//TOF clear interrupt flag
 	TPM0_C2SC |= (1<<7);
+	shift_rgb_leds();
 	tmp_counter_50ms_tick();
 }
 
@@ -154,13 +155,20 @@ void RGB_init(void) {
 }
 
 void tmp_counter_50ms_tick(void) {
-	if (!buffer_isempty(lcd_bf)) {
-		lcd_bf_empty = 0;
-		write_to_lcd(lcd_bf);
-	} else {
-		lcd_bf_empty = 1;
+	lcd_en = lcdEncoding[current_lcd_state].EN;
+	GPIOA_PDOR ^= (-(lcd_en) ^ GPIOA_PDOR ) & (1UL << 17); //SET EN
+	if (!buffer_isempty(lcd_bf) && current_lcd_state != 0) {
+		if (current_lcd_state == SET_RS) {
+			lcd_data = buffer_pop(lcd_bf);
+			lcd_rs = lcdEncoding[current_lcd_state].RS[(lcd_data & 0x10) >> 4];
+			GPIOA_PDOR ^= (-(lcd_rs) ^ GPIOA_PDOR ) & (1UL << 16); //SET RS
+		}
+		if (current_lcd_state == DATA_ENABLE_SET) {
+			write_to_lcd(lcd_bf);
+		}
 	}
-	current_lcd_state = lcdEncoding[current_lcd_state].nextState[lcd_bf_empty];
+	current_lcd_state = lcdEncoding[current_lcd_state].nextState[buffer_isempty(
+			lcd_bf)];
 }
 
 void gpio_lcd_ports_init(void) {
@@ -178,15 +186,10 @@ void gpio_lcd_ports_init(void) {
 }
 
 void write_to_lcd(bufferType *bf) {
-	char lcd_data = buffer_pop(bf);
 	lcd_db7 = (lcd_data & 0x08) >> 3;
 	lcd_db6 = (lcd_data & 0x04) >> 2;
 	lcd_db5 = (lcd_data & 0x02) >> 1;
 	lcd_db4 = (lcd_data & 0x01) >> 0;
-	lcd_rs = lcdEncoding[current_lcd_state].RS[(lcd_data & 0x10) >> 8];
-	lcd_en = lcdEncoding[current_lcd_state].EN;
-	GPIOA_PDOR ^= (-(lcd_rs) ^ GPIOA_PDOR ) & (1UL << 16); //SET RS
-	GPIOA_PDOR ^= (-(lcd_en) ^ GPIOA_PDOR ) & (1UL << 17); //SET EN
 	GPIOC_PDOR ^= ((-(lcd_db7)) ^ GPIOC_PDOR ) & (1UL << 12); //PTC12 GPIO = DB7
 	GPIOC_PDOR ^= ((-(lcd_db6)) ^ GPIOC_PDOR ) & (1UL << 13); //PTC13 GPIO = DB6
 	GPIOC_PDOR ^= ((-(lcd_db5)) ^ GPIOC_PDOR ) & (1UL << 16); //PTC16 GPIO  = DB5
