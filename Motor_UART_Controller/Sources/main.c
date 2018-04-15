@@ -7,7 +7,7 @@
 
 //Low power Timer and TPM
 void LPTM_init(void);
-void Timer_init(void);
+void timer0_init(void);
 
 //Step motor
 void toggle_signal(void);
@@ -34,6 +34,7 @@ void tmp_counter_5sec_tick(void);
 unsigned long motor_sequence[8] = { 0x00000008, 0x0000000C, 0x00000004,
 		0x00000006, 0x00000002, 0x00000003, 0x00000001, 0x00000009 };
 
+
 void global_modules_initializer(void);
 void global_modules_initializer(void) {
 	RGB_init();
@@ -41,7 +42,7 @@ void global_modules_initializer(void) {
 	LPTM_init();
 	ADC_init();
 	uart_init();
-	Timer_init();
+	timer0_init();
 	Set_timer_signal_GPIO();
 }
 
@@ -162,7 +163,7 @@ void LPTimer_IRQHandler() {
 	shift_rgb_leds();
 }
 
-void Timer_init(void) {
+void timer0_init(void) {
 	//Setiing MCGIRCLK
 	SIM_SCGC6 |= (1 << 24);		//CLK TMP0
 	SIM_SCGC5 |= (1 << 13);		//PTE29
@@ -175,6 +176,7 @@ void Timer_init(void) {
 	TPM0_SC |= (1 << 8);		//DMA enable overflow
 	TPM0_C2SC = (5<<2);			//Output compare -> toggle mode FOR TMP0 CH2
 	TPM0_C2V =0x0000C350;		//50,000 -> 50000 clock cycles of 1MHz -> 50ms
+	//TPM0_MOD =0x00001111;		//MOD
 	NVIC_ICPR |= (1 << 17);
 	NVIC_ISER |= (1 << 17);
 	TPM0_SC |= (1 << 3);		//CMOD select clock mode mux
@@ -203,14 +205,14 @@ void LPTM_init(void) {
 void shift_step_motor(void) {
 	if (motor_dir_flag == 1) {
 		current_angle++;
-		GPIOB_PDOR = ((~motor_sequence[motorSequenceIndex++]) & 0x0000000F);
+		GPIOB_PDOR = ((motor_sequence[motorSequenceIndex++]) & 0x0000000F);
 		if (motorSequenceIndex >= 8)
 			motorSequenceIndex = 0;
 		if (current_angle > 0) {
 			current_angle = 96;
 		}
 	} else {
-		GPIOB_PDOR = ((~motor_sequence[motorSequenceIndex--]) & 0x0000000F);
+		GPIOB_PDOR = ((motor_sequence[motorSequenceIndex--]) & 0x0000000F);
 		if (motorSequenceIndex <= 0)
 			motorSequenceIndex = 7;
 		current_angle--;
@@ -224,7 +226,7 @@ void shift_step_motor_manual(signed int motor_angle) {
 	if (current_angle == motor_angle)
 		return;
 	if (current_angle > motor_angle) {
-		GPIOB_PDOR = ((~motor_sequence[motorSequenceIndex--]) & 0x0000000F);
+		GPIOB_PDOR = ((motor_sequence[motorSequenceIndex--]) & 0x0000000F);
 		if (motorSequenceIndex < 0)
 			motorSequenceIndex = 7;
 		current_angle--;
@@ -232,7 +234,7 @@ void shift_step_motor_manual(signed int motor_angle) {
 			current_angle = 96;
 		}
 	} else if (current_angle < motor_angle) {
-		GPIOB_PDOR = ((~motor_sequence[motorSequenceIndex++]) & 0x0000000F);
+		GPIOB_PDOR = ((motor_sequence[motorSequenceIndex++]) & 0x0000000F);
 		if (motorSequenceIndex >= 8)
 			motorSequenceIndex = 0;
 		current_angle++;
@@ -266,3 +268,5 @@ void tmp_counter_5sec_tick() {
 		uart_send_temperature(tx_bf);
 	}
 }
+
+
