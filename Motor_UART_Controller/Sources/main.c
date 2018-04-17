@@ -27,13 +27,56 @@ bufferType *tx_bf;
 CommandString commandString = { CMDLEN, 0, 0, { } };
 CommandString *commandString_p;
 
-void tmp_counter_50ms_tick(void);
+void tmp_counter_10ms_tick(void);
 void tmp_counter_1sec_tick(void);
 void tmp_counter_5sec_tick(void);
 
 unsigned long motor_sequence[8] = { 0x00000008, 0x0000000C, 0x00000004,
 		0x00000006, 0x00000002, 0x00000003, 0x00000001, 0x00000009 };
 
+//LCD display
+
+void lcd_initialize(bufferType *bf);
+void write_to_lcd(bufferType *bf);
+void lcd_send_temperature(bufferType *bf);
+void gpio_lcd_ports_init(void);
+void lcd_10ms_check_buffer(void);
+
+#define IDLE			0
+#define SET_RS			1
+#define DATA_ENABLE_SET	2
+#define ENABLE_CLEAR	3
+#define DATA_CLEAR		4
+
+unsigned char DB7_4;
+
+struct lcdState {
+	unsigned char RS[2];
+	unsigned int EN;
+	unsigned int nextState[2];
+};
+
+typedef const struct lcdState LcdEncoding;
+unsigned int current_lcd_state = IDLE;
+unsigned char lcd_en = 0;
+unsigned char lcd_rs = 0;
+unsigned char lcd_db7 = 0;
+unsigned char lcd_db6 = 0;
+unsigned char lcd_db5 = 0;
+unsigned char lcd_db4 = 0;
+unsigned char buffer_almost = 0;
+char lcd_data;
+unsigned char lcd_rs_was_set = 0;
+
+LcdEncoding lcdEncoding[5] = { { { 0, 1 }, 0, { SET_RS, IDLE } },		//IDLE
+		{ { 0, 1 }, 0, { DATA_ENABLE_SET, DATA_ENABLE_SET } },	//SET_RS
+		{ { 0, 1 }, 1, { ENABLE_CLEAR, ENABLE_CLEAR } },	//DATA_ENABLE_SET
+		{ { 0, 1 }, 0, { DATA_CLEAR, DATA_CLEAR } },			//ENABLE_CLEAR 
+		{ { 0, 1 }, 0, { IDLE, IDLE } },						//DATA_CLEAR
+		};
+
+bufferType Buffer_lcd = { 0, 0, BUFLEN, { } };
+bufferType *lcd_bf;
 
 void global_modules_initializer(void);
 void global_modules_initializer(void) {
@@ -48,12 +91,15 @@ void global_modules_initializer(void) {
 
 int main(void) {
 
+	lcd_bf = &Buffer_lcd;
 	rx_bf = &Buffer_rx;
 	tx_bf = &Buffer_tx;
 	commandString_p = &commandString;
 
 	global_variables_initializer();
 	global_modules_initializer();
+	gpio_lcd_ports_init();
+	lcd_initialize(lcd_bf);
 
 	while (1) {
 		if (rx_status == 1) {
@@ -133,7 +179,7 @@ void UART0_IRQHandler(void) {
 void FTM0_IRQHandler() {
 	TPM0_SC |= (1 << 7); 		//TOF clear interrupt flag
 	TPM0_C2SC |= (1<<7);
-	tmp_counter_50ms_tick();
+	tmp_counter_10ms_tick();
 }
 
 void TPM0_IRQHandler(void) {
@@ -175,8 +221,8 @@ void timer0_init(void) {
 	TPM0_SC |= (1 << 6);		//TOIE enable interrupt
 	TPM0_SC |= (1 << 8);		//DMA enable overflow
 	TPM0_C2SC = (5<<2);			//Output compare -> toggle mode FOR TMP0 CH2
-	TPM0_C2V =0x0000C350;		//50,000 -> 50000 clock cycles of 1MHz -> 50ms
-	//TPM0_MOD =0x00001111;		//MOD
+	//TPM0_C2V =0x0000C350;		//50,000 -> 50000 clock cycles of 1MHz -> 50ms
+	TPM0_MOD = 0x00002710;
 	NVIC_ICPR |= (1 << 17);
 	NVIC_ISER |= (1 << 17);
 	TPM0_SC |= (1 << 3);		//CMOD select clock mode mux
@@ -244,10 +290,11 @@ void shift_step_motor_manual(signed int motor_angle) {
 	}
 }
 
-void tmp_counter_50ms_tick() {
-	tmp_counter_50ms++;
-	if (tmp_counter_50ms >= 20) {
-		tmp_counter_50ms = 0;
+void tmp_counter_10ms_tick() {
+	tmp_counter_10ms++;
+	lcd_10ms_check_buffer();
+	if (tmp_counter_10ms >= 100) {
+		tmp_counter_10ms = 0;
 		tmp_counter_1sec_tick();
 	}
 }
@@ -266,7 +313,118 @@ void tmp_counter_5sec_tick() {
 		uart_send_overtemperature_detected(tx_bf);
 	} else {
 		uart_send_temperature(tx_bf);
+		lcd_send_temperature(lcd_bf);
 	}
 }
 
+void gpio_lcd_ports_init(void) {
+	SIM_SCGC5 |= (1 << 9);
+	SIM_SCGC5 |= (1 << 11);
+	PORTA_PCR17 =(1<<8); 		//PTA17 GPIO = EN
+	PORTA_PCR16 =(1<<8); 		//PTA16 GPIO = RS
+	PORTC_PCR12 =(1<<8); 		//PTC12 GPIO = DB7
+	PORTC_PCR13 =(1<<8); 		//PTC13 GPIO = DB6
+	PORTC_PCR16 =(1<<8); 		//PTC16 GPIO  = DB5
+	PORTC_PCR17 =(1<<8); 		//PTC17 GPIO  = DB4
+	GPIOA_PDDR |= (1 << 17);		//Set GPIOA17 as output
+	GPIOA_PDDR |= (1 << 16);		//Set GPIOA16 as output
+	GPIOC_PDDR |= 0x00033000;	//Set GPIOC as output
+}
 
+void lcd_initialize(bufferType *bf) {
+	buffer_push(bf, 0x03);
+	buffer_push(bf, 0x03);
+	buffer_push(bf, 0x03);
+	buffer_push(bf, 0x02);
+	buffer_push(bf, 0x02);
+	buffer_push(bf, 0x08);
+	buffer_push(bf, 0x00);
+	buffer_push(bf, 0x0E);
+	buffer_push(bf, 0x00);
+	buffer_push(bf, 0x06);
+	buffer_push(bf, 0x00);
+	buffer_push(bf, 0x01);
+	//Characteres
+	buffer_push(bf, 0x14);
+	buffer_push(bf, 0x18);
+
+	buffer_push(bf, 0x14);
+	buffer_push(bf, 0x1F);
+
+	buffer_push(bf, 0x14);
+	buffer_push(bf, 0x1C);
+
+	buffer_push(bf, 0x14);
+	buffer_push(bf, 0x11);
+
+	buffer_push(bf, 0x12);
+	buffer_push(bf, 0x10);
+
+	//buffer_push(bf, 0x12);
+}
+
+void write_to_lcd(bufferType *bf) {
+	lcd_db7 = (lcd_data & 0x08) >> 3;
+	lcd_db6 = (lcd_data & 0x04) >> 2;
+	lcd_db5 = (lcd_data & 0x02) >> 1;
+	lcd_db4 = (lcd_data & 0x01) >> 0;
+	GPIOC_PDOR ^= ((-(lcd_db7)) ^ GPIOC_PDOR ) & (1UL << 12); //PTC12 GPIO = DB7
+	GPIOC_PDOR ^= ((-(lcd_db6)) ^ GPIOC_PDOR ) & (1UL << 13); //PTC13 GPIO = DB6
+	GPIOC_PDOR ^= ((-(lcd_db5)) ^ GPIOC_PDOR ) & (1UL << 16); //PTC16 GPIO  = DB5
+	GPIOC_PDOR ^= ((-(lcd_db4)) ^ GPIOC_PDOR ) & (1UL << 17); //PTC17 GPIO  = DB4
+}
+
+void lcd_10ms_check_buffer(void) {
+	lcd_en = lcdEncoding[current_lcd_state].EN;
+	GPIOA_PDOR ^= (-(lcd_en) ^ GPIOA_PDOR ) & (1UL << 17); //SET EN
+	if ((!buffer_isempty(lcd_bf)) && current_lcd_state != 0) {
+		if (current_lcd_state == SET_RS) {
+			lcd_data = buffer_pop(lcd_bf);
+			lcd_rs_was_set = 1;
+			lcd_rs = lcdEncoding[current_lcd_state].RS[(lcd_data & 0x10) >> 4];
+			GPIOA_PDOR ^= (-(lcd_rs) ^ GPIOA_PDOR ) & (1UL << 16); //SET RS
+		}
+
+	}
+	if (current_lcd_state == DATA_ENABLE_SET) {
+		write_to_lcd(lcd_bf);
+	}
+	current_lcd_state = lcdEncoding[current_lcd_state].nextState[buffer_isempty(
+			lcd_bf)];
+}
+
+void lcd_send_temperature(bufferType *bf) {
+	if (motor_dir_flag) {
+		//DIR_CW
+		buffer_push(bf, 0x14);
+		buffer_push(bf, 0x13);
+	} else {
+		buffer_push(bf, 0x14);
+		buffer_push(bf, 0x13);
+		buffer_push(bf, 0x14);
+		buffer_push(bf, 0x13);
+	}
+	buffer_push(bf, 0x15);
+	buffer_push(bf, 0x17);
+
+	buffer_push(bf, 0x12);
+	buffer_push(bf, 0x10);
+
+	buffer_push(bf, 0x12);
+	buffer_push(bf, 0x1D);
+
+	buffer_push(bf, 0x12);
+	buffer_push(bf, 0x10);
+
+	dec2str(temperature, temperature_string);
+	buffer_push(bf, 0x10 | ((temperature_string[3]&0xF0)>>4));
+	buffer_push(bf, 0x10 | ((temperature_string[3]&0x0F)));
+	buffer_push(bf, 0x10 | ((temperature_string[2]&0xF0)>>4));
+	buffer_push(bf, 0x10 | ((temperature_string[2]&0x0F)));
+	buffer_push(bf, 0x10 | ((temperature_string[1]&0xF0)>>4));
+	buffer_push(bf, 0x10 | ((temperature_string[1]&0x0F)));
+	buffer_push(bf, 0x12);
+	buffer_push(bf, 0x1E);
+	buffer_push(bf, 0x10 | ((temperature_string[0]&0xF0)>>4));
+	buffer_push(bf, 0x10 | ((temperature_string[0]&0x0F)));
+}

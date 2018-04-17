@@ -17,6 +17,10 @@ char buffer_pop(bufferType *bf) {
 	return item;
 }
 
+uint8_t buffer_size(bufferType *bf) {
+	return bf->size;
+}
+
 uint8_t buffer_inc(uint8_t pointer, uint8_t size) {
 	uint8_t i = pointer;
 	if (++i >= size) {
@@ -27,6 +31,10 @@ uint8_t buffer_inc(uint8_t pointer, uint8_t size) {
 
 uint8_t buffer_isempty(bufferType *bf) {
 	return bf->head == bf->tail;
+}
+
+uint8_t buffer_almost_empty(bufferType *bf) {
+	return bf->head == bf->tail-1;
 }
 
 uint8_t buffer_isfull(bufferType *bf) {

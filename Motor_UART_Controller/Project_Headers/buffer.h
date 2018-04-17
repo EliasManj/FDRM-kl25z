@@ -25,6 +25,7 @@ char buffer_pop(bufferType *bf);
 uint8_t buffer_inc(uint8_t pointer, uint8_t size);
 uint8_t buffer_isempty(bufferType *bf);
 uint8_t buffer_len(bufferType *bf);
+uint8_t buffer_size(bufferType *bf);
 uint8_t buffer_isfull(bufferType *bf);
 void uart_send_done(bufferType *bf);
 void uart_send_temperature(bufferType *bf);

@@ -10,7 +10,7 @@
 #define GLOBAL_VARIABLES_H_
 
 //ASCII codes
-#define BUFLEN 		30
+#define BUFLEN 		50
 #define CMDLEN		18
 #define NEW_LINE 	0x0A
 #define CARR_RETURN 0x0D
@@ -48,7 +48,7 @@ unsigned char temperature_string[4];
 unsigned int current_angle;
 
 //TMP Timer
-unsigned int tmp_counter_50ms;
+unsigned int tmp_counter_10ms;
 unsigned int tmp_counter_1sec;
 unsigned int tmp_counter_5sec;
 

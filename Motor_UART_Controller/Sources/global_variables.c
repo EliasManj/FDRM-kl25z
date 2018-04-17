@@ -18,7 +18,7 @@ void global_variables_initializer(void) {
 	motor_dir_flag = 1;
 	uart_recive_value = 0;
 	motor_manual_angle_flag = 0;
-	tmp_counter_50ms = 0;
+	tmp_counter_10ms = 0;
 	tmp_counter_1sec = 0;
 	tmp_counter_5sec = 0;
 	temperature = 0;
