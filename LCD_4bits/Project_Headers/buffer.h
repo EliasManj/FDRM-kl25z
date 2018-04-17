@@ -8,7 +8,7 @@
 #include "derivative.h"
 #ifndef BUFFER_H_
 #define BUFFER_H_
-#define BUFLEN 16
+#define BUFLEN 90
 //Define Buffer
 struct Buffer {
 	volatile uint8_t head;
@@ -23,6 +23,7 @@ void buffer_push(bufferType *bf, char data);
 char buffer_pop(bufferType *bf);
 uint8_t buffer_inc(uint8_t pointer, uint8_t size);
 uint8_t buffer_isempty(bufferType *bf);
+uint8_t buffer_almost_empty(bufferType *bf);
 uint8_t buffer_len(bufferType *bf);
 uint8_t buffer_isfull(bufferType *bf);
 void uart_send_done(bufferType *bf);
