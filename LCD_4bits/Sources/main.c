@@ -12,7 +12,7 @@ void timer1_init(void);
 void RGB_init(void);
 void shift_rgb_leds(void);
 void gpio_lcd_ports_init(void);
-void tmp_counter_50ms_tick(void);
+void tmp_counter_10ms_tick(void);
 void lcd_initialize(bufferType *bf);
 void write_to_lcd(bufferType *bf);
 
@@ -64,7 +64,7 @@ int main(void) {
 	RGB_init();
 	gpio_lcd_ports_init();
 	timer0_init();
-	timer1_init();
+	//timer1_init();
 	LPTM_init();
 	lcd_initialize(lcd_bf);
 	return 0;
@@ -82,29 +82,11 @@ void timer0_init(void) {
 	TPM0_SC |= (1 << 6);		//TOIE enable interrupt
 	TPM0_SC |= (1 << 8);		//DMA enable overflow
 	TPM0_C2SC = (5<<2);			//Output compare -> toggle mode FOR TMP0 CH2
-	TPM0_C2V =0x0000C350;		//50,000 -> 50000 clock cycles of 1MHz -> 50ms
+	//TPM0_C2V =0x0000C350;		//50,000 -> 50000 clock cycles of 1MHz -> 50ms
+	TPM0_MOD = 0x00002710;
 	NVIC_ICPR |= (1 << 17);
 	NVIC_ISER |= (1 << 17);
 	TPM0_SC |= (1 << 3);		//CMOD select clock mode mux
-}
-
-void timer1_init(void) {
-	//Setiing MCGIRCLK
-	SIM_SCGC6 |= (1 << 25);		//CLK TMP1
-	SIM_SCGC5 |= (1 << 9);		//PTA12
-	PORTA_PCR12 = (3<<8);		//TMP1_CH2 for PTA12
-	MCG_C1 |= (1 << 1);			//IRCLKEN
-	MCG_C2 |= 1;				//IRCS = 1 (Fast clock) 4MHz
-	MCG_SC = (2 << 1);			//FCRDIV = 4, divide by 4 = 1MHz
-	SIM_SOPT2 |= (3 << 24);		//TPM clock source select TMPSRC
-	TPM1_SC |= (1 << 6);		//TOIE enable interrupt
-	TPM1_SC |= (1 << 8);		//DMA enable overflow
-	TPM1_C0SC = (5<<2);			//Output compare -> toggle mode FOR TMP1 CH0
-	TPM1_C0SC |= (1<<6);			//Output compare -> toggle mode FOR TMP1 CH0
-	TPM1_C0V =0x000003E8;		//1,000 -> 1000 clock cycles of 1MHz -> 1ms
-	NVIC_ICPR |= (1 << 17);
-	NVIC_ISER |= (1 << 17);
-	TPM1_SC |= (1 << 3);		//CMOD select clock mode mux
 }
 
 void LPTM_init(void) {
@@ -124,7 +106,7 @@ void FTM0_IRQHandler() {
 	TPM0_SC |= (1 << 7); 		//TOF clear interrupt flag
 	TPM0_C2SC |= (1<<7);
 	shift_rgb_leds();
-	tmp_counter_50ms_tick();
+	tmp_counter_10ms_tick();
 }
 
 void FTM1_IRQHandler() {
@@ -154,7 +136,7 @@ void RGB_init(void) {
 	GPIOD_PDDR = (1 << 1);		//Set PTD1 as output
 }
 
-void tmp_counter_50ms_tick(void) {
+void tmp_counter_10ms_tick(void) {
 	lcd_en = lcdEncoding[current_lcd_state].EN;
 	GPIOA_PDOR ^= (-(lcd_en) ^ GPIOA_PDOR ) & (1UL << 17); //SET EN
 	if (!buffer_isempty(lcd_bf) && current_lcd_state != 0) {
@@ -202,11 +184,25 @@ void lcd_initialize(bufferType *bf) {
 	buffer_push(bf, 0x03);
 	buffer_push(bf, 0x02);
 	buffer_push(bf, 0x02);
-	buffer_push(bf, 0x00);
+	buffer_push(bf, 0x08);
 	buffer_push(bf, 0x00);
 	buffer_push(bf, 0x0E);
 	buffer_push(bf, 0x00);
 	buffer_push(bf, 0x06);
+	buffer_push(bf, 0x00);
+	buffer_push(bf, 0x01);
+	//Characteres
 	buffer_push(bf, 0x14);
 	buffer_push(bf, 0x18);
+	
+	buffer_push(bf, 0x14);
+	buffer_push(bf, 0x1F);
+	
+	buffer_push(bf, 0x14);
+	buffer_push(bf, 0x1C);
+	
+	buffer_push(bf, 0x14);
+	buffer_push(bf, 0x11);
+	
+	buffer_push(bf, 0x11);
 }
