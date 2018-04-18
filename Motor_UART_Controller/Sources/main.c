@@ -39,6 +39,7 @@ unsigned long motor_sequence[8] = { 0x00000008, 0x0000000C, 0x00000004,
 void lcd_initialize(bufferType *bf);
 void write_to_lcd(bufferType *bf);
 void lcd_send_temperature(bufferType *bf);
+void lcd_send_velocity(bufferType *bf);
 void gpio_lcd_ports_init(void);
 void lcd_10ms_check_buffer(void);
 
@@ -311,10 +312,12 @@ void tmp_counter_1sec_tick() {
 void tmp_counter_5sec_tick() {
 	if (temperature >= temperature_limit) {
 		uart_send_overtemperature_detected(tx_bf);
+		motor_free_running_flag = 0;
 	} else {
 		uart_send_temperature(tx_bf);
-		lcd_send_temperature(lcd_bf);
 	}
+	lcd_send_temperature(lcd_bf);
+	lcd_send_velocity(lcd_bf);
 }
 
 void gpio_lcd_ports_init(void) {
@@ -394,6 +397,12 @@ void lcd_10ms_check_buffer(void) {
 }
 
 void lcd_send_temperature(bufferType *bf) {
+
+	buffer_push(bf, 0x00);
+	buffer_push(bf, 0x01);
+	buffer_push(bf, 0x00);
+	buffer_push(bf, 0x02);
+
 	if (motor_dir_flag) {
 		//DIR_CW
 		buffer_push(bf, 0x14);
@@ -416,15 +425,40 @@ void lcd_send_temperature(bufferType *bf) {
 	buffer_push(bf, 0x12);
 	buffer_push(bf, 0x10);
 
-	dec2str(temperature, temperature_string);
-	buffer_push(bf, 0x10 | ((temperature_string[3]&0xF0)>>4));
-	buffer_push(bf, 0x10 | ((temperature_string[3]&0x0F)));
-	buffer_push(bf, 0x10 | ((temperature_string[2]&0xF0)>>4));
-	buffer_push(bf, 0x10 | ((temperature_string[2]&0x0F)));
-	buffer_push(bf, 0x10 | ((temperature_string[1]&0xF0)>>4));
-	buffer_push(bf, 0x10 | ((temperature_string[1]&0x0F)));
+	dec2str4(temperature, temperature_string);
+	buffer_push(bf, 0x10 | ((temperature_string[3] & 0xF0) >> 4));
+	buffer_push(bf, 0x10 | ((temperature_string[3] & 0x0F)));
+	buffer_push(bf, 0x10 | ((temperature_string[2] & 0xF0) >> 4));
+	buffer_push(bf, 0x10 | ((temperature_string[2] & 0x0F)));
+	buffer_push(bf, 0x10 | ((temperature_string[1] & 0xF0) >> 4));
+	buffer_push(bf, 0x10 | ((temperature_string[1] & 0x0F)));
 	buffer_push(bf, 0x12);
 	buffer_push(bf, 0x1E);
-	buffer_push(bf, 0x10 | ((temperature_string[0]&0xF0)>>4));
-	buffer_push(bf, 0x10 | ((temperature_string[0]&0x0F)));
+	buffer_push(bf, 0x10 | ((temperature_string[0] & 0xF0) >> 4));
+	buffer_push(bf, 0x10 | ((temperature_string[0] & 0x0F)));
+}
+
+void lcd_send_velocity(bufferType *bf) {
+
+	dec2str3(motor_vel, motor_vel_string);
+
+	buffer_push(bf, 0x0C);
+	buffer_push(bf, 0x00);
+
+	buffer_push(bf, 0x10 | ((motor_vel_string[2] & 0xF0) >> 4));
+	buffer_push(bf, 0x10 | ((motor_vel_string[2] & 0x0F)));
+	buffer_push(bf, 0x10 | ((motor_vel_string[1] & 0xF0) >> 4));
+	buffer_push(bf, 0x10 | ((motor_vel_string[1] & 0x0F)));
+	buffer_push(bf, 0x12);
+	buffer_push(bf, 0x1E);
+	buffer_push(bf, 0x10 | ((motor_vel_string[0] & 0xF0) >> 4));
+	buffer_push(bf, 0x10 | ((motor_vel_string[0] & 0x0F)));
+	buffer_push(bf, 0x12);
+	buffer_push(bf, 0x10);
+	buffer_push(bf, 0x15);
+	buffer_push(bf, 0x12);
+	buffer_push(bf, 0x15);
+	buffer_push(bf, 0x10);
+	buffer_push(bf, 0x15);
+	buffer_push(bf, 0x13);
 }

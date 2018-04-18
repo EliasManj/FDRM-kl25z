@@ -121,3 +121,7 @@ unsigned int parse_temperature_limit(CommandString *commandString) {
 			+ (commandString->data[14] - 0x30));
 	return val;
 }
+
+void get_motor_vel_string(volatile char *dest, CommandString *commandString){
+	strcopy(dest, commandString->data);
+}

@@ -46,6 +46,7 @@ unsigned int temperature;
 unsigned int temperature_limit;
 unsigned char temperature_string[4];
 unsigned int current_angle;
+unsigned char motor_vel_string[3];
 
 //TMP Timer
 unsigned int tmp_counter_10ms;

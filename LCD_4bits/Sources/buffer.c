@@ -51,7 +51,7 @@ void uart_send_done(bufferType *bf) {
 	UART0_C2 |= 0x80;	//Turn on TX interrupt
 }
 
-void dec2str(unsigned int n, unsigned char data[4]) {
+void dec2str4(unsigned int n, unsigned char data[4]) {
 	data[3] = n / 1000 + 0x30;
 	n = n % 1000;
 	data[2] = n / 100 + 0x30;

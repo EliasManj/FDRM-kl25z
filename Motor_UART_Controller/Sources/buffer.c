@@ -65,7 +65,7 @@ void uart_send_temperature(bufferType *bf) {
 	buffer_push(bf, 'M');
 	buffer_push(bf, 'P');
 	buffer_push(bf, ':');
-	dec2str(temperature, temperature_string);
+	dec2str4(temperature, temperature_string);
 	buffer_push(bf, temperature_string[3]);
 	buffer_push(bf, temperature_string[2]);
 	buffer_push(bf, temperature_string[1]);
@@ -106,9 +106,17 @@ void uart_send_overtemperature_detected(bufferType *bf) {
 	UART0_C2 |= 0x80;	//Turn on TX interrupt
 }
 
-void dec2str(unsigned int n, unsigned char data[4]) {
+void dec2str4(unsigned int n, unsigned char data[4]) {
 	data[3] = n / 1000 + 0x30;
 	n = n % 1000;
+	data[2] = n / 100 + 0x30;
+	n = n % 100;
+	data[1] = n / 10 + 0x30;
+	n = n % 10;
+	data[0] = n + 0x30;
+}
+
+void dec2str3(unsigned int n, unsigned char data[3]) {
 	data[2] = n / 100 + 0x30;
 	n = n % 100;
 	data[1] = n / 10 + 0x30;
