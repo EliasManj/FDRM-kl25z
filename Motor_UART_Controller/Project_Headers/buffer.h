@@ -31,5 +31,4 @@ void uart_send_done(bufferType *bf);
 void uart_send_temperature(bufferType *bf);
 void uart_send_overtemperature_detected(bufferType *bf);
 void dec2str4(unsigned int number, unsigned char data[4]);
-void dec2str3(unsigned int n, unsigned char data[3]);
 #endif /* BUFFER_H_ */

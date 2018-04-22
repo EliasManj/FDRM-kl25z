@@ -4,6 +4,7 @@
 #include "command.h"
 #include "uart.h"
 #include "gpio.h"
+#include "adc.h"
 
 //Low power Timer and TPM
 void LPTM_init(void);
@@ -13,9 +14,6 @@ void timer0_init(void);
 void toggle_signal(void);
 void shift_step_motor(void);
 void shift_step_motor_manual(signed int motor_angle);
-
-//ADC
-void ADC_init(void);
 
 //Buffer
 bufferType Buffer_rx = { 0, 0, BUFLEN, { } };
@@ -43,11 +41,7 @@ void lcd_send_velocity(bufferType *bf);
 void gpio_lcd_ports_init(void);
 void lcd_10ms_check_buffer(void);
 
-#define IDLE			0
-#define SET_RS			1
-#define DATA_ENABLE_SET	2
-#define ENABLE_CLEAR	3
-#define DATA_CLEAR		4
+
 
 unsigned char DB7_4;
 
@@ -58,16 +52,7 @@ struct lcdState {
 };
 
 typedef const struct lcdState LcdEncoding;
-unsigned int current_lcd_state = IDLE;
-unsigned char lcd_en = 0;
-unsigned char lcd_rs = 0;
-unsigned char lcd_db7 = 0;
-unsigned char lcd_db6 = 0;
-unsigned char lcd_db5 = 0;
-unsigned char lcd_db4 = 0;
-unsigned char buffer_almost = 0;
-char lcd_data;
-unsigned char lcd_rs_was_set = 0;
+
 
 LcdEncoding lcdEncoding[5] = { { { 0, 1 }, 0, { SET_RS, IDLE } },		//IDLE
 		{ { 0, 1 }, 0, { DATA_ENABLE_SET, DATA_ENABLE_SET } },	//SET_RS
@@ -136,6 +121,7 @@ int main(void) {
 							commandString_p);
 					break;
 				case RPS:
+					get_motor_vel_string(motor_vel_string, commandString_p);
 					motor_vel = parse_motor_velocity(commandString_p);
 					LPTMR0_CSR = 0b01000000; //Activate the timer and enable interrupts	
 					LPTMR0_CSR |= (1 << 7);		//Clear timer compare flag
@@ -229,17 +215,6 @@ void timer0_init(void) {
 	TPM0_SC |= (1 << 3);		//CMOD select clock mode mux
 }
 
-void ADC_init(void) {
-	SIM_SCGC6 |= (1 << 27);
-	SIM_SCGC5 |= (1 << 13);
-	NVIC_ICPR |= (1 << 15);
-	NVIC_ISER |= (1 << 15);
-	//ADC0
-	ADC0_CFG1 = 0x00000000;
-	ADC0_CFG2 = (0 << 4);		//Seleccionar el canal A del ADC
-	ADC0_SC1A =0b1000100;//Habilitar interrupciones del ADC y el canal AD4-> esta en el canal PTE21
-}
-
 void LPTM_init(void) {
 	SIM_SCGC5 |= (1 << 0); //Activate the LPTMR in the system control gating register
 	LPTMR0_PSR = 0b00000101; //Bypass the preescaler and select the LPO(low power oscilator of 1Khz as the source of the timer)
@@ -251,21 +226,21 @@ void LPTM_init(void) {
 
 void shift_step_motor(void) {
 	if (motor_dir_flag == 1) {
-		current_angle++;
 		GPIOB_PDOR = ((motor_sequence[motorSequenceIndex++]) & 0x0000000F);
 		if (motorSequenceIndex >= 8)
 			motorSequenceIndex = 0;
-		if (current_angle > 0) {
-			current_angle = 96;
+		if (current_angle > 96) {
+			current_angle = 0;
 		}
+		current_angle++;
 	} else {
 		GPIOB_PDOR = ((motor_sequence[motorSequenceIndex--]) & 0x0000000F);
 		if (motorSequenceIndex <= 0)
 			motorSequenceIndex = 7;
+		if (current_angle == 0 || current_angle > 96) {
+					current_angle = 96;
+				}
 		current_angle--;
-		if (current_angle < 0) {
-			current_angle = 96;
-		}
 	}
 }
 
@@ -276,18 +251,18 @@ void shift_step_motor_manual(signed int motor_angle) {
 		GPIOB_PDOR = ((motor_sequence[motorSequenceIndex--]) & 0x0000000F);
 		if (motorSequenceIndex < 0)
 			motorSequenceIndex = 7;
-		current_angle--;
-		if (current_angle < 0) {
+		if (current_angle == 0 || current_angle > 96) {
 			current_angle = 96;
 		}
+		current_angle--;
 	} else if (current_angle < motor_angle) {
 		GPIOB_PDOR = ((motor_sequence[motorSequenceIndex++]) & 0x0000000F);
 		if (motorSequenceIndex >= 8)
 			motorSequenceIndex = 0;
-		current_angle++;
 		if (current_angle > 96) {
 			current_angle = 0;
 		}
+		current_angle++;
 	}
 }
 
@@ -397,12 +372,10 @@ void lcd_10ms_check_buffer(void) {
 }
 
 void lcd_send_temperature(bufferType *bf) {
-
 	buffer_push(bf, 0x00);
 	buffer_push(bf, 0x01);
 	buffer_push(bf, 0x00);
 	buffer_push(bf, 0x02);
-
 	if (motor_dir_flag) {
 		//DIR_CW
 		buffer_push(bf, 0x14);
@@ -415,16 +388,12 @@ void lcd_send_temperature(bufferType *bf) {
 	}
 	buffer_push(bf, 0x15);
 	buffer_push(bf, 0x17);
-
 	buffer_push(bf, 0x12);
 	buffer_push(bf, 0x10);
-
 	buffer_push(bf, 0x12);
 	buffer_push(bf, 0x1D);
-
 	buffer_push(bf, 0x12);
 	buffer_push(bf, 0x10);
-
 	dec2str4(temperature, temperature_string);
 	buffer_push(bf, 0x10 | ((temperature_string[3] & 0xF0) >> 4));
 	buffer_push(bf, 0x10 | ((temperature_string[3] & 0x0F)));
@@ -439,12 +408,8 @@ void lcd_send_temperature(bufferType *bf) {
 }
 
 void lcd_send_velocity(bufferType *bf) {
-
-	dec2str3(motor_vel, motor_vel_string);
-
 	buffer_push(bf, 0x0C);
 	buffer_push(bf, 0x00);
-
 	buffer_push(bf, 0x10 | ((motor_vel_string[2] & 0xF0) >> 4));
 	buffer_push(bf, 0x10 | ((motor_vel_string[2] & 0x0F)));
 	buffer_push(bf, 0x10 | ((motor_vel_string[1] & 0xF0) >> 4));

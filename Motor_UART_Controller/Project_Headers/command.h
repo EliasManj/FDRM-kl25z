@@ -28,6 +28,7 @@ uint8_t command_compare_cmd_ugly(CommandString *commandString);
 signed int parse_motor_angle(CommandString *commandString);
 unsigned int parse_motor_velocity(CommandString *commandString);
 unsigned int parse_temperature_limit(CommandString *commandString);
-void get_motor_vel_string(volatile char *dest, CommandString *commandString);
+void dec2str3(unsigned int n, unsigned char data[3]);
+void get_motor_vel_string(volatile unsigned char *dest, CommandString *commandString);
 
 #endif /* COMMAND_H_ */

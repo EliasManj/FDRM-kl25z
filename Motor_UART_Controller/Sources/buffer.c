@@ -116,10 +116,4 @@ void dec2str4(unsigned int n, unsigned char data[4]) {
 	data[0] = n + 0x30;
 }
 
-void dec2str3(unsigned int n, unsigned char data[3]) {
-	data[2] = n / 100 + 0x30;
-	n = n % 100;
-	data[1] = n / 10 + 0x30;
-	n = n % 10;
-	data[0] = n + 0x30;
-}
+

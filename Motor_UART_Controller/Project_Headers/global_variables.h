@@ -9,6 +9,13 @@
 #ifndef GLOBAL_VARIABLES_H_
 #define GLOBAL_VARIABLES_H_
 
+//LCD FSM
+#define IDLE			0
+#define SET_RS			1
+#define DATA_ENABLE_SET	2
+#define ENABLE_CLEAR	3
+#define DATA_CLEAR		4
+
 //ASCII codes
 #define BUFLEN 		50
 #define CMDLEN		18
@@ -46,12 +53,24 @@ unsigned int temperature;
 unsigned int temperature_limit;
 unsigned char temperature_string[4];
 unsigned int current_angle;
-unsigned char motor_vel_string[3];
+volatile unsigned char motor_vel_string[3];
 
 //TMP Timer
 unsigned int tmp_counter_10ms;
 unsigned int tmp_counter_1sec;
 unsigned int tmp_counter_5sec;
+
+//LCD
+unsigned int current_lcd_state;
+unsigned char lcd_en;
+unsigned char lcd_rs;
+unsigned char lcd_db7;
+unsigned char lcd_db6;
+unsigned char lcd_db5;
+unsigned char lcd_db4;
+unsigned char buffer_almost;
+char lcd_data;
+unsigned char lcd_rs_was_set;
 
 void global_variables_initializer(void);
 
