@@ -145,9 +145,9 @@ void tmp_counter_10ms_tick(void) {
 			lcd_rs = lcdEncoding[current_lcd_state].RS[(lcd_data & 0x10) >> 4];
 			GPIOA_PDOR ^= (-(lcd_rs) ^ GPIOA_PDOR ) & (1UL << 16); //SET RS
 		}
-		if (current_lcd_state == DATA_ENABLE_SET) {
-			write_to_lcd(lcd_bf);
-		}
+	}
+	if (current_lcd_state == DATA_ENABLE_SET) {
+		write_to_lcd(lcd_bf);
 	}
 	current_lcd_state = lcdEncoding[current_lcd_state].nextState[buffer_isempty(
 			lcd_bf)];
@@ -194,15 +194,15 @@ void lcd_initialize(bufferType *bf) {
 	//Characteres
 	buffer_push(bf, 0x14);
 	buffer_push(bf, 0x18);
-	
+
 	buffer_push(bf, 0x14);
 	buffer_push(bf, 0x1F);
-	
+
 	buffer_push(bf, 0x14);
 	buffer_push(bf, 0x1C);
-	
+
 	buffer_push(bf, 0x14);
 	buffer_push(bf, 0x11);
-	
+
 	buffer_push(bf, 0x11);
 }
