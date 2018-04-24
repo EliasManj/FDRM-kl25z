@@ -1,0 +1,3105 @@
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"i2c_lcd.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.i2c_send,"ax",%progbits
+  20              		.align	2
+  21              		.global	i2c_send
+  22              		.code	16
+  23              		.thumb_func
+  24              		.type	i2c_send, %function
+  25              	i2c_send:
+  26              	.LFB0:
+  27              		.file 1 "i2c_lcd.c"
+   1:i2c_lcd.c     **** #include "i2c_lcd.h"
+   2:i2c_lcd.c     **** 
+   3:i2c_lcd.c     **** static unsigned int ohm;
+   4:i2c_lcd.c     **** static unsigned int pt;
+   5:i2c_lcd.c     **** unsigned char rti_flag = 0;
+   6:i2c_lcd.c     **** unsigned char wr_dir = 0x4E;
+   7:i2c_lcd.c     **** unsigned char state;
+   8:i2c_lcd.c     **** unsigned char bit4_mode = 0;
+   9:i2c_lcd.c     **** unsigned char dir;
+  10:i2c_lcd.c     **** unsigned char tmp_bf;
+  11:i2c_lcd.c     **** 
+  12:i2c_lcd.c     **** void i2c_send(unsigned char data) {
+  28              		.loc 1 12 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 10B5     		push	{r4, lr}
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 4, -8
+  36              		.cfi_offset 14, -4
+  37 0002 0400     		movs	r4, r0
+  13:i2c_lcd.c     **** 	I2CP_I2CMasterSendStart(0x27, 0x00);
+  38              		.loc 1 13 0
+  39 0004 0021     		movs	r1, #0
+  40 0006 2720     		movs	r0, #39
+  41              	.LVL1:
+  42 0008 FFF7FEFF 		bl	I2CP_I2CMasterSendStart
+  43              	.LVL2:
+  14:i2c_lcd.c     **** 	I2CP_I2CMasterWriteByte(data);
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 2
+
+
+  44              		.loc 1 14 0
+  45 000c 2000     		movs	r0, r4
+  46 000e FFF7FEFF 		bl	I2CP_I2CMasterWriteByte
+  47              	.LVL3:
+  15:i2c_lcd.c     **** 	rti_flag = 0;
+  48              		.loc 1 15 0
+  49 0012 0022     		movs	r2, #0
+  50 0014 014B     		ldr	r3, .L2
+  51 0016 1A70     		strb	r2, [r3]
+  16:i2c_lcd.c     **** }
+  52              		.loc 1 16 0
+  53              		@ sp needed
+  54 0018 10BD     		pop	{r4, pc}
+  55              	.L3:
+  56 001a C046     		.align	2
+  57              	.L2:
+  58 001c 00000000 		.word	.LANCHOR0
+  59              		.cfi_endproc
+  60              	.LFE0:
+  61              		.size	i2c_send, .-i2c_send
+  62              		.section	.text.i2c_idle,"ax",%progbits
+  63              		.align	2
+  64              		.global	i2c_idle
+  65              		.code	16
+  66              		.thumb_func
+  67              		.type	i2c_idle, %function
+  68              	i2c_idle:
+  69              	.LFB1:
+  17:i2c_lcd.c     **** 
+  18:i2c_lcd.c     **** void i2c_idle(void) {
+  70              		.loc 1 18 0
+  71              		.cfi_startproc
+  72              		@ args = 0, pretend = 0, frame = 0
+  73              		@ frame_needed = 0, uses_anonymous_args = 0
+  74 0000 10B5     		push	{r4, lr}
+  75              		.cfi_def_cfa_offset 8
+  76              		.cfi_offset 4, -8
+  77              		.cfi_offset 14, -4
+  19:i2c_lcd.c     **** 	I2CP_I2CMasterSendStop();
+  78              		.loc 1 19 0
+  79 0002 FFF7FEFF 		bl	I2CP_I2CMasterSendStop
+  80              	.LVL4:
+  20:i2c_lcd.c     **** }
+  81              		.loc 1 20 0
+  82              		@ sp needed
+  83 0006 10BD     		pop	{r4, pc}
+  84              		.cfi_endproc
+  85              	.LFE1:
+  86              		.size	i2c_idle, .-i2c_idle
+  87              		.section	.text.delay_ms,"ax",%progbits
+  88              		.align	2
+  89              		.global	delay_ms
+  90              		.code	16
+  91              		.thumb_func
+  92              		.type	delay_ms, %function
+  93              	delay_ms:
+  94              	.LFB13:
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 3
+
+
+  21:i2c_lcd.c     **** 
+  22:i2c_lcd.c     **** void I2C_LCD_Init(unsigned char address) {
+  23:i2c_lcd.c     **** 	dir = address << 1;
+  24:i2c_lcd.c     **** 	i2c_send(0x08);
+  25:i2c_lcd.c     **** 	state = 0x08;
+  26:i2c_lcd.c     **** 	i2c_idle();
+  27:i2c_lcd.c     **** 	CyDelay(20);
+  28:i2c_lcd.c     **** 	lcd_write_uchar(0b00110000, 0);
+  29:i2c_lcd.c     **** 	CyDelay(5);
+  30:i2c_lcd.c     **** 	lcd_write_uchar(0b00110000, 0);
+  31:i2c_lcd.c     **** 	CyDelay(1);
+  32:i2c_lcd.c     **** 	lcd_write_uchar(0b00110000, 0);
+  33:i2c_lcd.c     **** 	lcd_4_bit();
+  34:i2c_lcd.c     **** 	lcd_cursor_inc();
+  35:i2c_lcd.c     **** 	lcd_cursor_on();
+  36:i2c_lcd.c     **** 	lcd_clear();
+  37:i2c_lcd.c     **** }
+  38:i2c_lcd.c     **** 
+  39:i2c_lcd.c     **** void lcd_clear(void) {
+  40:i2c_lcd.c     **** 	lcd_write_uchar(0b00000001, 0);
+  41:i2c_lcd.c     **** }
+  42:i2c_lcd.c     **** 
+  43:i2c_lcd.c     **** void lcd_4_bit(void) {
+  44:i2c_lcd.c     **** 	lcd_write_uchar(0b00101000, 0);
+  45:i2c_lcd.c     **** 	bit4_mode = 1;
+  46:i2c_lcd.c     **** }
+  47:i2c_lcd.c     **** 
+  48:i2c_lcd.c     **** void lcd_cursor_inc(void) {
+  49:i2c_lcd.c     **** 	lcd_write_uchar(0b00000110, 0);
+  50:i2c_lcd.c     **** }
+  51:i2c_lcd.c     **** 
+  52:i2c_lcd.c     **** void lcd_line0(unsigned char posicion) {
+  53:i2c_lcd.c     **** 	lcd_write_uchar(0b10000000 + posicion, 0);
+  54:i2c_lcd.c     **** }
+  55:i2c_lcd.c     **** 
+  56:i2c_lcd.c     **** void lcd_line1_pos(unsigned char posicion) {
+  57:i2c_lcd.c     **** 	lcd_write_uchar_pos(0b10000000 + posicion, 0);
+  58:i2c_lcd.c     **** }
+  59:i2c_lcd.c     **** 
+  60:i2c_lcd.c     **** void lcd_line1(unsigned char posicion) {
+  61:i2c_lcd.c     **** 	lcd_write_uchar(0b11000000 + posicion, 0);
+  62:i2c_lcd.c     **** }
+  63:i2c_lcd.c     **** 
+  64:i2c_lcd.c     **** void lcd_line2_pos(unsigned char posicion) {
+  65:i2c_lcd.c     **** 	lcd_write_uchar_pos(0b11000000 + posicion, 0);
+  66:i2c_lcd.c     **** }
+  67:i2c_lcd.c     **** 
+  68:i2c_lcd.c     **** void lcd_cursor_on(void) {
+  69:i2c_lcd.c     **** 	lcd_write_uchar(0b00001110, 0);
+  70:i2c_lcd.c     **** }
+  71:i2c_lcd.c     **** 
+  72:i2c_lcd.c     **** void lcd_write_char(unsigned char character) {
+  73:i2c_lcd.c     **** 	lcd_write_uchar(character, 1);
+  74:i2c_lcd.c     **** }
+  75:i2c_lcd.c     **** 
+  76:i2c_lcd.c     **** void lcd_write_int(unsigned char character) {
+  77:i2c_lcd.c     **** 	lcd_write_uchar_pos(character, 1);
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 4
+
+
+  78:i2c_lcd.c     **** }
+  79:i2c_lcd.c     **** 
+  80:i2c_lcd.c     **** 
+  81:i2c_lcd.c     **** void delay_ms(unsigned int delay) {
+  95              		.loc 1 81 0
+  96              		.cfi_startproc
+  97              		@ args = 0, pretend = 0, frame = 0
+  98              		@ frame_needed = 0, uses_anonymous_args = 0
+  99              		@ link register save eliminated.
+ 100              	.LVL5:
+  82:i2c_lcd.c     **** 	unsigned int contador;
+  83:i2c_lcd.c     **** 	delay = (int) (delay * 4000);
+ 101              		.loc 1 83 0
+ 102 0000 FA23     		movs	r3, #250
+ 103 0002 1B01     		lsls	r3, r3, #4
+ 104 0004 5843     		muls	r0, r3
+ 105              	.LVL6:
+  84:i2c_lcd.c     **** 	for (contador = 0; contador < delay; contador++)
+ 106              		.loc 1 84 0
+ 107 0006 0023     		movs	r3, #0
+ 108 0008 01E0     		b	.L6
+ 109              	.LVL7:
+ 110              	.L7:
+  85:i2c_lcd.c     **** 		asm ("nop");
+ 111              		.loc 1 85 0 discriminator 3
+ 112              		.syntax divided
+ 113              	@ 85 "i2c_lcd.c" 1
+ 114 000a C046     		nop
+ 115              	@ 0 "" 2
+  84:i2c_lcd.c     **** 	for (contador = 0; contador < delay; contador++)
+ 116              		.loc 1 84 0 discriminator 3
+ 117              		.thumb
+ 118              		.syntax unified
+ 119 000c 0133     		adds	r3, r3, #1
+ 120              	.LVL8:
+ 121              	.L6:
+  84:i2c_lcd.c     **** 	for (contador = 0; contador < delay; contador++)
+ 122              		.loc 1 84 0 is_stmt 0 discriminator 1
+ 123 000e 8342     		cmp	r3, r0
+ 124 0010 FBD3     		bcc	.L7
+  86:i2c_lcd.c     **** }
+ 125              		.loc 1 86 0 is_stmt 1
+ 126              		@ sp needed
+ 127 0012 7047     		bx	lr
+ 128              		.cfi_endproc
+ 129              	.LFE13:
+ 130              		.size	delay_ms, .-delay_ms
+ 131              		.section	.text.delay_us,"ax",%progbits
+ 132              		.align	2
+ 133              		.global	delay_us
+ 134              		.code	16
+ 135              		.thumb_func
+ 136              		.type	delay_us, %function
+ 137              	delay_us:
+ 138              	.LFB14:
+  87:i2c_lcd.c     **** 
+  88:i2c_lcd.c     **** void delay_us(unsigned int delay) {
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 5
+
+
+ 139              		.loc 1 88 0
+ 140              		.cfi_startproc
+ 141              		@ args = 0, pretend = 0, frame = 0
+ 142              		@ frame_needed = 0, uses_anonymous_args = 0
+ 143              		@ link register save eliminated.
+ 144              	.LVL9:
+  89:i2c_lcd.c     **** 	unsigned int contador;
+  90:i2c_lcd.c     **** 	delay = (int) (delay * 4);
+ 145              		.loc 1 90 0
+ 146 0000 8000     		lsls	r0, r0, #2
+ 147              	.LVL10:
+  91:i2c_lcd.c     **** 	for (contador = 0; contador < delay; contador++)
+ 148              		.loc 1 91 0
+ 149 0002 0023     		movs	r3, #0
+ 150 0004 01E0     		b	.L9
+ 151              	.LVL11:
+ 152              	.L10:
+  92:i2c_lcd.c     **** 		asm ("nop");
+ 153              		.loc 1 92 0 discriminator 3
+ 154              		.syntax divided
+ 155              	@ 92 "i2c_lcd.c" 1
+ 156 0006 C046     		nop
+ 157              	@ 0 "" 2
+  91:i2c_lcd.c     **** 	for (contador = 0; contador < delay; contador++)
+ 158              		.loc 1 91 0 discriminator 3
+ 159              		.thumb
+ 160              		.syntax unified
+ 161 0008 0133     		adds	r3, r3, #1
+ 162              	.LVL12:
+ 163              	.L9:
+  91:i2c_lcd.c     **** 	for (contador = 0; contador < delay; contador++)
+ 164              		.loc 1 91 0 is_stmt 0 discriminator 1
+ 165 000a 8342     		cmp	r3, r0
+ 166 000c FBD3     		bcc	.L10
+  93:i2c_lcd.c     **** }
+ 167              		.loc 1 93 0 is_stmt 1
+ 168              		@ sp needed
+ 169 000e 7047     		bx	lr
+ 170              		.cfi_endproc
+ 171              	.LFE14:
+ 172              		.size	delay_us, .-delay_us
+ 173              		.section	.text.delay_micro,"ax",%progbits
+ 174              		.align	2
+ 175              		.global	delay_micro
+ 176              		.code	16
+ 177              		.thumb_func
+ 178              		.type	delay_micro, %function
+ 179              	delay_micro:
+ 180              	.LFB15:
+  94:i2c_lcd.c     **** 
+  95:i2c_lcd.c     **** void delay_micro(unsigned int delay) {
+ 181              		.loc 1 95 0
+ 182              		.cfi_startproc
+ 183              		@ args = 0, pretend = 0, frame = 0
+ 184              		@ frame_needed = 0, uses_anonymous_args = 0
+ 185              		@ link register save eliminated.
+ 186              	.LVL13:
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 6
+
+
+  96:i2c_lcd.c     **** 	delay = (int) (delay / 4);
+ 187              		.loc 1 96 0
+ 188 0000 8008     		lsrs	r0, r0, #2
+ 189              	.LVL14:
+  97:i2c_lcd.c     **** 	if (pt < delay)
+ 190              		.loc 1 97 0
+ 191 0002 064B     		ldr	r3, .L14
+ 192 0004 5B68     		ldr	r3, [r3, #4]
+ 193 0006 9842     		cmp	r0, r3
+ 194 0008 03D9     		bls	.L12
+  98:i2c_lcd.c     **** 		pt++;
+ 195              		.loc 1 98 0
+ 196 000a 0133     		adds	r3, r3, #1
+ 197 000c 034A     		ldr	r2, .L14
+ 198 000e 5360     		str	r3, [r2, #4]
+ 199 0010 02E0     		b	.L11
+ 200              	.L12:
+  99:i2c_lcd.c     **** 	else
+ 100:i2c_lcd.c     **** 		pt = 0;
+ 201              		.loc 1 100 0
+ 202 0012 0022     		movs	r2, #0
+ 203 0014 014B     		ldr	r3, .L14
+ 204 0016 5A60     		str	r2, [r3, #4]
+ 205              	.L11:
+ 101:i2c_lcd.c     **** }
+ 206              		.loc 1 101 0
+ 207              		@ sp needed
+ 208 0018 7047     		bx	lr
+ 209              	.L15:
+ 210 001a C046     		.align	2
+ 211              	.L14:
+ 212 001c 00000000 		.word	.LANCHOR0
+ 213              		.cfi_endproc
+ 214              	.LFE15:
+ 215              		.size	delay_micro, .-delay_micro
+ 216              		.section	.text.delay_mili,"ax",%progbits
+ 217              		.align	2
+ 218              		.global	delay_mili
+ 219              		.code	16
+ 220              		.thumb_func
+ 221              		.type	delay_mili, %function
+ 222              	delay_mili:
+ 223              	.LFB16:
+ 102:i2c_lcd.c     **** 
+ 103:i2c_lcd.c     **** void delay_mili(unsigned int delay) {
+ 224              		.loc 1 103 0
+ 225              		.cfi_startproc
+ 226              		@ args = 0, pretend = 0, frame = 0
+ 227              		@ frame_needed = 0, uses_anonymous_args = 0
+ 228              		@ link register save eliminated.
+ 229              	.LVL15:
+ 104:i2c_lcd.c     **** 	delay = (int) (delay * 2); //250
+ 230              		.loc 1 104 0
+ 231 0000 4000     		lsls	r0, r0, #1
+ 232              	.LVL16:
+ 105:i2c_lcd.c     **** 	if (ohm < delay)
+ 233              		.loc 1 105 0
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 7
+
+
+ 234 0002 064B     		ldr	r3, .L19
+ 235 0004 9B68     		ldr	r3, [r3, #8]
+ 236 0006 9842     		cmp	r0, r3
+ 237 0008 03D9     		bls	.L17
+ 106:i2c_lcd.c     **** 		ohm++;
+ 238              		.loc 1 106 0
+ 239 000a 0133     		adds	r3, r3, #1
+ 240 000c 034A     		ldr	r2, .L19
+ 241 000e 9360     		str	r3, [r2, #8]
+ 242 0010 02E0     		b	.L16
+ 243              	.L17:
+ 107:i2c_lcd.c     **** 	else
+ 108:i2c_lcd.c     **** 		ohm = 0;
+ 244              		.loc 1 108 0
+ 245 0012 0022     		movs	r2, #0
+ 246 0014 014B     		ldr	r3, .L19
+ 247 0016 9A60     		str	r2, [r3, #8]
+ 248              	.L16:
+ 109:i2c_lcd.c     **** }
+ 249              		.loc 1 109 0
+ 250              		@ sp needed
+ 251 0018 7047     		bx	lr
+ 252              	.L20:
+ 253 001a C046     		.align	2
+ 254              	.L19:
+ 255 001c 00000000 		.word	.LANCHOR0
+ 256              		.cfi_endproc
+ 257              	.LFE16:
+ 258              		.size	delay_mili, .-delay_mili
+ 259              		.section	.text.delay_op,"ax",%progbits
+ 260              		.align	2
+ 261              		.global	delay_op
+ 262              		.code	16
+ 263              		.thumb_func
+ 264              		.type	delay_op, %function
+ 265              	delay_op:
+ 266              	.LFB17:
+ 110:i2c_lcd.c     **** 
+ 111:i2c_lcd.c     **** void delay_op(void) {
+ 267              		.loc 1 111 0
+ 268              		.cfi_startproc
+ 269              		@ args = 0, pretend = 0, frame = 0
+ 270              		@ frame_needed = 0, uses_anonymous_args = 0
+ 271              		@ link register save eliminated.
+ 112:i2c_lcd.c     **** 	asm ("nop");
+ 272              		.loc 1 112 0
+ 273              		.syntax divided
+ 274              	@ 112 "i2c_lcd.c" 1
+ 275 0000 C046     		nop
+ 276              	@ 0 "" 2
+ 113:i2c_lcd.c     **** 	asm ("nop");
+ 277              		.loc 1 113 0
+ 278              	@ 113 "i2c_lcd.c" 1
+ 279 0002 C046     		nop
+ 280              	@ 0 "" 2
+ 114:i2c_lcd.c     **** 	asm ("nop");
+ 281              		.loc 1 114 0
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 8
+
+
+ 282              	@ 114 "i2c_lcd.c" 1
+ 283 0004 C046     		nop
+ 284              	@ 0 "" 2
+ 115:i2c_lcd.c     **** 	asm ("nop");
+ 285              		.loc 1 115 0
+ 286              	@ 115 "i2c_lcd.c" 1
+ 287 0006 C046     		nop
+ 288              	@ 0 "" 2
+ 116:i2c_lcd.c     **** 	asm ("nop");
+ 289              		.loc 1 116 0
+ 290              	@ 116 "i2c_lcd.c" 1
+ 291 0008 C046     		nop
+ 292              	@ 0 "" 2
+ 117:i2c_lcd.c     **** }
+ 293              		.loc 1 117 0
+ 294              		.thumb
+ 295              		.syntax unified
+ 296              		@ sp needed
+ 297 000a 7047     		bx	lr
+ 298              		.cfi_endproc
+ 299              	.LFE17:
+ 300              		.size	delay_op, .-delay_op
+ 301              		.section	.text.lcd_write_uchar_pos,"ax",%progbits
+ 302              		.align	2
+ 303              		.global	lcd_write_uchar_pos
+ 304              		.code	16
+ 305              		.thumb_func
+ 306              		.type	lcd_write_uchar_pos, %function
+ 307              	lcd_write_uchar_pos:
+ 308              	.LFB18:
+ 118:i2c_lcd.c     **** 
+ 119:i2c_lcd.c     **** void lcd_write_uchar_pos(unsigned char dato, unsigned char tipo) {
+ 309              		.loc 1 119 0
+ 310              		.cfi_startproc
+ 311              		@ args = 0, pretend = 0, frame = 0
+ 312              		@ frame_needed = 0, uses_anonymous_args = 0
+ 313              	.LVL17:
+ 314 0000 70B5     		push	{r4, r5, r6, lr}
+ 315              		.cfi_def_cfa_offset 16
+ 316              		.cfi_offset 4, -16
+ 317              		.cfi_offset 5, -12
+ 318              		.cfi_offset 6, -8
+ 319              		.cfi_offset 14, -4
+ 320 0002 0500     		movs	r5, r0
+ 321 0004 0E00     		movs	r6, r1
+ 120:i2c_lcd.c     **** 	state = 0x08;
+ 322              		.loc 1 120 0
+ 323 0006 0822     		movs	r2, #8
+ 324 0008 2D4B     		ldr	r3, .L29
+ 325 000a 1A70     		strb	r2, [r3]
+ 121:i2c_lcd.c     **** 
+ 122:i2c_lcd.c     **** 	if (tipo == 0)
+ 326              		.loc 1 122 0
+ 327 000c 0029     		cmp	r1, #0
+ 328 000e 03D1     		bne	.L23
+ 123:i2c_lcd.c     **** 		i2c_send(state);
+ 329              		.loc 1 123 0
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 9
+
+
+ 330 0010 0820     		movs	r0, #8
+ 331              	.LVL18:
+ 332 0012 FFF7FEFF 		bl	i2c_send
+ 333              	.LVL19:
+ 334 0016 05E0     		b	.L24
+ 335              	.LVL20:
+ 336              	.L23:
+ 124:i2c_lcd.c     **** 	else {
+ 125:i2c_lcd.c     **** 		state = 0b00000001 | state;
+ 337              		.loc 1 125 0
+ 338 0018 0922     		movs	r2, #9
+ 339 001a 294B     		ldr	r3, .L29
+ 340 001c 1A70     		strb	r2, [r3]
+ 126:i2c_lcd.c     **** 		i2c_send(state);
+ 341              		.loc 1 126 0
+ 342 001e 0920     		movs	r0, #9
+ 343              	.LVL21:
+ 344 0020 FFF7FEFF 		bl	i2c_send
+ 345              	.LVL22:
+ 346              	.L24:
+ 127:i2c_lcd.c     **** 	}
+ 128:i2c_lcd.c     **** 
+ 129:i2c_lcd.c     **** 	state = 0b00000100 | state;
+ 347              		.loc 1 129 0
+ 348 0024 264C     		ldr	r4, .L29
+ 349 0026 2078     		ldrb	r0, [r4]
+ 350 0028 0423     		movs	r3, #4
+ 351 002a 1843     		orrs	r0, r3
+ 352 002c C0B2     		uxtb	r0, r0
+ 353 002e 2070     		strb	r0, [r4]
+ 130:i2c_lcd.c     **** 	i2c_send(state);
+ 354              		.loc 1 130 0
+ 355 0030 FFF7FEFF 		bl	i2c_send
+ 356              	.LVL23:
+ 131:i2c_lcd.c     **** 
+ 132:i2c_lcd.c     **** 	state = state | (dato & 0b11110000);
+ 357              		.loc 1 132 0
+ 358 0034 0F23     		movs	r3, #15
+ 359 0036 2800     		movs	r0, r5
+ 360 0038 9843     		bics	r0, r3
+ 361 003a 2378     		ldrb	r3, [r4]
+ 362 003c 1843     		orrs	r0, r3
+ 363 003e 2070     		strb	r0, [r4]
+ 133:i2c_lcd.c     **** 	i2c_send(state);
+ 364              		.loc 1 133 0
+ 365 0040 FFF7FEFF 		bl	i2c_send
+ 366              	.LVL24:
+ 134:i2c_lcd.c     **** 
+ 135:i2c_lcd.c     **** 	state = 0b11111001 & state;
+ 367              		.loc 1 135 0
+ 368 0044 2078     		ldrb	r0, [r4]
+ 369 0046 0623     		movs	r3, #6
+ 370 0048 9843     		bics	r0, r3
+ 371 004a 2070     		strb	r0, [r4]
+ 136:i2c_lcd.c     **** 	i2c_send(state);
+ 372              		.loc 1 136 0
+ 373 004c FFF7FEFF 		bl	i2c_send
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 10
+
+
+ 374              	.LVL25:
+ 137:i2c_lcd.c     **** 
+ 138:i2c_lcd.c     **** 	i2c_idle();
+ 375              		.loc 1 138 0
+ 376 0050 FFF7FEFF 		bl	i2c_idle
+ 377              	.LVL26:
+ 139:i2c_lcd.c     **** 	delay_op();
+ 378              		.loc 1 139 0
+ 379 0054 FFF7FEFF 		bl	delay_op
+ 380              	.LVL27:
+ 140:i2c_lcd.c     **** 
+ 141:i2c_lcd.c     **** 	if (tipo == 0)
+ 381              		.loc 1 141 0
+ 382 0058 002E     		cmp	r6, #0
+ 383 005a 03D1     		bne	.L25
+ 142:i2c_lcd.c     **** 		delay_mili(2);
+ 384              		.loc 1 142 0
+ 385 005c 0220     		movs	r0, #2
+ 386 005e FFF7FEFF 		bl	delay_mili
+ 387              	.LVL28:
+ 388 0062 02E0     		b	.L26
+ 389              	.L25:
+ 143:i2c_lcd.c     **** 	else
+ 144:i2c_lcd.c     **** 		delay_micro(50);
+ 390              		.loc 1 144 0
+ 391 0064 3220     		movs	r0, #50
+ 392 0066 FFF7FEFF 		bl	delay_micro
+ 393              	.LVL29:
+ 394              	.L26:
+ 145:i2c_lcd.c     **** 
+ 146:i2c_lcd.c     **** 	if (bit4_mode == 1) {
+ 395              		.loc 1 146 0
+ 396 006a 164B     		ldr	r3, .L29+4
+ 397 006c 1B7B     		ldrb	r3, [r3, #12]
+ 398 006e 012B     		cmp	r3, #1
+ 399 0070 25D1     		bne	.L22
+ 147:i2c_lcd.c     **** 		state = state & 0b00001111;
+ 400              		.loc 1 147 0
+ 401 0072 134C     		ldr	r4, .L29
+ 402 0074 2378     		ldrb	r3, [r4]
+ 403 0076 0F20     		movs	r0, #15
+ 404 0078 1840     		ands	r0, r3
+ 148:i2c_lcd.c     **** 		state = 0b00000100 | (state & 0b00001001);
+ 405              		.loc 1 148 0
+ 406 007a 0923     		movs	r3, #9
+ 407 007c 1840     		ands	r0, r3
+ 408 007e 0423     		movs	r3, #4
+ 409 0080 1843     		orrs	r0, r3
+ 410 0082 C0B2     		uxtb	r0, r0
+ 411 0084 2070     		strb	r0, [r4]
+ 149:i2c_lcd.c     **** 		i2c_send(state);
+ 412              		.loc 1 149 0
+ 413 0086 FFF7FEFF 		bl	i2c_send
+ 414              	.LVL30:
+ 150:i2c_lcd.c     **** 		state = state | (dato << 4);
+ 415              		.loc 1 150 0
+ 416 008a 2D01     		lsls	r5, r5, #4
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 11
+
+
+ 417 008c 2078     		ldrb	r0, [r4]
+ 418 008e 0543     		orrs	r5, r0
+ 419 0090 E8B2     		uxtb	r0, r5
+ 420 0092 2070     		strb	r0, [r4]
+ 151:i2c_lcd.c     **** 		i2c_send(state);
+ 421              		.loc 1 151 0
+ 422 0094 FFF7FEFF 		bl	i2c_send
+ 423              	.LVL31:
+ 152:i2c_lcd.c     **** 		state = 0b11111001 & state;
+ 424              		.loc 1 152 0
+ 425 0098 2078     		ldrb	r0, [r4]
+ 426 009a 0623     		movs	r3, #6
+ 427 009c 9843     		bics	r0, r3
+ 428 009e 2070     		strb	r0, [r4]
+ 153:i2c_lcd.c     **** 		i2c_send(state);
+ 429              		.loc 1 153 0
+ 430 00a0 FFF7FEFF 		bl	i2c_send
+ 431              	.LVL32:
+ 154:i2c_lcd.c     **** 		i2c_idle();
+ 432              		.loc 1 154 0
+ 433 00a4 FFF7FEFF 		bl	i2c_idle
+ 434              	.LVL33:
+ 155:i2c_lcd.c     **** 		delay_op();
+ 435              		.loc 1 155 0
+ 436 00a8 FFF7FEFF 		bl	delay_op
+ 437              	.LVL34:
+ 156:i2c_lcd.c     **** 		if (tipo == 0)
+ 438              		.loc 1 156 0
+ 439 00ac 002E     		cmp	r6, #0
+ 440 00ae 03D1     		bne	.L28
+ 157:i2c_lcd.c     **** 			delay_mili(2);
+ 441              		.loc 1 157 0
+ 442 00b0 0220     		movs	r0, #2
+ 443 00b2 FFF7FEFF 		bl	delay_mili
+ 444              	.LVL35:
+ 445 00b6 02E0     		b	.L22
+ 446              	.L28:
+ 158:i2c_lcd.c     **** 		else
+ 159:i2c_lcd.c     **** 			delay_micro(50);
+ 447              		.loc 1 159 0
+ 448 00b8 3220     		movs	r0, #50
+ 449 00ba FFF7FEFF 		bl	delay_micro
+ 450              	.LVL36:
+ 451              	.L22:
+ 160:i2c_lcd.c     **** 	}
+ 161:i2c_lcd.c     **** 
+ 162:i2c_lcd.c     **** }
+ 452              		.loc 1 162 0
+ 453              		@ sp needed
+ 454 00be 70BD     		pop	{r4, r5, r6, pc}
+ 455              	.L30:
+ 456              		.align	2
+ 457              	.L29:
+ 458 00c0 00000000 		.word	state
+ 459 00c4 00000000 		.word	.LANCHOR0
+ 460              		.cfi_endproc
+ 461              	.LFE18:
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 12
+
+
+ 462              		.size	lcd_write_uchar_pos, .-lcd_write_uchar_pos
+ 463              		.section	.text.lcd_line1_pos,"ax",%progbits
+ 464              		.align	2
+ 465              		.global	lcd_line1_pos
+ 466              		.code	16
+ 467              		.thumb_func
+ 468              		.type	lcd_line1_pos, %function
+ 469              	lcd_line1_pos:
+ 470              	.LFB7:
+  56:i2c_lcd.c     **** 	lcd_write_uchar_pos(0b10000000 + posicion, 0);
+ 471              		.loc 1 56 0
+ 472              		.cfi_startproc
+ 473              		@ args = 0, pretend = 0, frame = 0
+ 474              		@ frame_needed = 0, uses_anonymous_args = 0
+ 475              	.LVL37:
+ 476 0000 10B5     		push	{r4, lr}
+ 477              		.cfi_def_cfa_offset 8
+ 478              		.cfi_offset 4, -8
+ 479              		.cfi_offset 14, -4
+  57:i2c_lcd.c     **** }
+ 480              		.loc 1 57 0
+ 481 0002 8038     		subs	r0, r0, #128
+ 482              	.LVL38:
+ 483 0004 C0B2     		uxtb	r0, r0
+ 484 0006 0021     		movs	r1, #0
+ 485 0008 FFF7FEFF 		bl	lcd_write_uchar_pos
+ 486              	.LVL39:
+  58:i2c_lcd.c     **** 
+ 487              		.loc 1 58 0
+ 488              		@ sp needed
+ 489 000c 10BD     		pop	{r4, pc}
+ 490              		.cfi_endproc
+ 491              	.LFE7:
+ 492              		.size	lcd_line1_pos, .-lcd_line1_pos
+ 493 000e C046     		.section	.text.lcd_line2_pos,"ax",%progbits
+ 494              		.align	2
+ 495              		.global	lcd_line2_pos
+ 496              		.code	16
+ 497              		.thumb_func
+ 498              		.type	lcd_line2_pos, %function
+ 499              	lcd_line2_pos:
+ 500              	.LFB9:
+  64:i2c_lcd.c     **** 	lcd_write_uchar_pos(0b11000000 + posicion, 0);
+ 501              		.loc 1 64 0
+ 502              		.cfi_startproc
+ 503              		@ args = 0, pretend = 0, frame = 0
+ 504              		@ frame_needed = 0, uses_anonymous_args = 0
+ 505              	.LVL40:
+ 506 0000 10B5     		push	{r4, lr}
+ 507              		.cfi_def_cfa_offset 8
+ 508              		.cfi_offset 4, -8
+ 509              		.cfi_offset 14, -4
+  65:i2c_lcd.c     **** }
+ 510              		.loc 1 65 0
+ 511 0002 4038     		subs	r0, r0, #64
+ 512              	.LVL41:
+ 513 0004 C0B2     		uxtb	r0, r0
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 13
+
+
+ 514 0006 0021     		movs	r1, #0
+ 515 0008 FFF7FEFF 		bl	lcd_write_uchar_pos
+ 516              	.LVL42:
+  66:i2c_lcd.c     **** 
+ 517              		.loc 1 66 0
+ 518              		@ sp needed
+ 519 000c 10BD     		pop	{r4, pc}
+ 520              		.cfi_endproc
+ 521              	.LFE9:
+ 522              		.size	lcd_line2_pos, .-lcd_line2_pos
+ 523 000e C046     		.section	.text.lcd_write_int,"ax",%progbits
+ 524              		.align	2
+ 525              		.global	lcd_write_int
+ 526              		.code	16
+ 527              		.thumb_func
+ 528              		.type	lcd_write_int, %function
+ 529              	lcd_write_int:
+ 530              	.LFB12:
+  76:i2c_lcd.c     **** 	lcd_write_uchar_pos(character, 1);
+ 531              		.loc 1 76 0
+ 532              		.cfi_startproc
+ 533              		@ args = 0, pretend = 0, frame = 0
+ 534              		@ frame_needed = 0, uses_anonymous_args = 0
+ 535              	.LVL43:
+ 536 0000 10B5     		push	{r4, lr}
+ 537              		.cfi_def_cfa_offset 8
+ 538              		.cfi_offset 4, -8
+ 539              		.cfi_offset 14, -4
+  77:i2c_lcd.c     **** }
+ 540              		.loc 1 77 0
+ 541 0002 0121     		movs	r1, #1
+ 542 0004 FFF7FEFF 		bl	lcd_write_uchar_pos
+ 543              	.LVL44:
+  78:i2c_lcd.c     **** 
+ 544              		.loc 1 78 0
+ 545              		@ sp needed
+ 546 0008 10BD     		pop	{r4, pc}
+ 547              		.cfi_endproc
+ 548              	.LFE12:
+ 549              		.size	lcd_write_int, .-lcd_write_int
+ 550 000a C046     		.section	.text.lcd_write_uchar,"ax",%progbits
+ 551              		.align	2
+ 552              		.global	lcd_write_uchar
+ 553              		.code	16
+ 554              		.thumb_func
+ 555              		.type	lcd_write_uchar, %function
+ 556              	lcd_write_uchar:
+ 557              	.LFB19:
+ 163:i2c_lcd.c     **** 
+ 164:i2c_lcd.c     **** void lcd_write_uchar(unsigned char dato, unsigned char tipo) {
+ 558              		.loc 1 164 0
+ 559              		.cfi_startproc
+ 560              		@ args = 0, pretend = 0, frame = 0
+ 561              		@ frame_needed = 0, uses_anonymous_args = 0
+ 562              	.LVL45:
+ 563 0000 70B5     		push	{r4, r5, r6, lr}
+ 564              		.cfi_def_cfa_offset 16
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 14
+
+
+ 565              		.cfi_offset 4, -16
+ 566              		.cfi_offset 5, -12
+ 567              		.cfi_offset 6, -8
+ 568              		.cfi_offset 14, -4
+ 569 0002 0500     		movs	r5, r0
+ 570 0004 0E00     		movs	r6, r1
+ 165:i2c_lcd.c     **** 	state = 0x08;
+ 571              		.loc 1 165 0
+ 572 0006 0822     		movs	r2, #8
+ 573 0008 2D4B     		ldr	r3, .L41
+ 574 000a 1A70     		strb	r2, [r3]
+ 166:i2c_lcd.c     **** 	i2c_send(dir);
+ 575              		.loc 1 166 0
+ 576 000c 2D4B     		ldr	r3, .L41+4
+ 577 000e 1878     		ldrb	r0, [r3]
+ 578              	.LVL46:
+ 579 0010 FFF7FEFF 		bl	i2c_send
+ 580              	.LVL47:
+ 167:i2c_lcd.c     **** 	if (tipo == 0) {
+ 581              		.loc 1 167 0
+ 582 0014 002E     		cmp	r6, #0
+ 583 0016 04D1     		bne	.L35
+ 168:i2c_lcd.c     **** 		i2c_send(state);
+ 584              		.loc 1 168 0
+ 585 0018 294B     		ldr	r3, .L41
+ 586 001a 1878     		ldrb	r0, [r3]
+ 587 001c FFF7FEFF 		bl	i2c_send
+ 588              	.LVL48:
+ 589 0020 07E0     		b	.L36
+ 590              	.L35:
+ 169:i2c_lcd.c     **** 	} else {
+ 170:i2c_lcd.c     **** 		state = 0b00000001 | state;
+ 591              		.loc 1 170 0
+ 592 0022 274A     		ldr	r2, .L41
+ 593 0024 1078     		ldrb	r0, [r2]
+ 594 0026 0123     		movs	r3, #1
+ 595 0028 1843     		orrs	r0, r3
+ 596 002a C0B2     		uxtb	r0, r0
+ 597 002c 1070     		strb	r0, [r2]
+ 171:i2c_lcd.c     **** 		i2c_send(state);
+ 598              		.loc 1 171 0
+ 599 002e FFF7FEFF 		bl	i2c_send
+ 600              	.LVL49:
+ 601              	.L36:
+ 172:i2c_lcd.c     **** 	}
+ 173:i2c_lcd.c     **** 	state = 0b00000100 | state;
+ 602              		.loc 1 173 0
+ 603 0032 234C     		ldr	r4, .L41
+ 604 0034 2078     		ldrb	r0, [r4]
+ 605 0036 0423     		movs	r3, #4
+ 606 0038 0343     		orrs	r3, r0
+ 607 003a DBB2     		uxtb	r3, r3
+ 174:i2c_lcd.c     **** 	state = state | (dato & 0b11110000);
+ 608              		.loc 1 174 0
+ 609 003c 0F22     		movs	r2, #15
+ 610 003e 2800     		movs	r0, r5
+ 611 0040 9043     		bics	r0, r2
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 15
+
+
+ 612 0042 1843     		orrs	r0, r3
+ 613 0044 2070     		strb	r0, [r4]
+ 175:i2c_lcd.c     **** 	i2c_send(state);
+ 614              		.loc 1 175 0
+ 615 0046 FFF7FEFF 		bl	i2c_send
+ 616              	.LVL50:
+ 176:i2c_lcd.c     **** 	state = 0b11111001 & state;
+ 617              		.loc 1 176 0
+ 618 004a 2078     		ldrb	r0, [r4]
+ 619 004c 0623     		movs	r3, #6
+ 620 004e 9843     		bics	r0, r3
+ 621 0050 2070     		strb	r0, [r4]
+ 177:i2c_lcd.c     **** 	i2c_send(state);
+ 622              		.loc 1 177 0
+ 623 0052 FFF7FEFF 		bl	i2c_send
+ 624              	.LVL51:
+ 178:i2c_lcd.c     **** 	i2c_idle();
+ 625              		.loc 1 178 0
+ 626 0056 FFF7FEFF 		bl	i2c_idle
+ 627              	.LVL52:
+ 179:i2c_lcd.c     **** 	if (tipo == 0)
+ 628              		.loc 1 179 0
+ 629 005a 002E     		cmp	r6, #0
+ 630 005c 03D1     		bne	.L37
+ 180:i2c_lcd.c     **** 		delay_ms(2);
+ 631              		.loc 1 180 0
+ 632 005e 0220     		movs	r0, #2
+ 633 0060 FFF7FEFF 		bl	delay_ms
+ 634              	.LVL53:
+ 635 0064 02E0     		b	.L38
+ 636              	.L37:
+ 181:i2c_lcd.c     **** 	else
+ 182:i2c_lcd.c     **** 		delay_us(50);
+ 637              		.loc 1 182 0
+ 638 0066 3220     		movs	r0, #50
+ 639 0068 FFF7FEFF 		bl	delay_us
+ 640              	.LVL54:
+ 641              	.L38:
+ 183:i2c_lcd.c     **** 	if (bit4_mode == 1) {
+ 642              		.loc 1 183 0
+ 643 006c 164B     		ldr	r3, .L41+8
+ 644 006e 1B7B     		ldrb	r3, [r3, #12]
+ 645 0070 012B     		cmp	r3, #1
+ 646 0072 23D1     		bne	.L34
+ 184:i2c_lcd.c     **** 		state = state & 0b00001111;
+ 647              		.loc 1 184 0
+ 648 0074 124C     		ldr	r4, .L41
+ 649 0076 2378     		ldrb	r3, [r4]
+ 650 0078 0F20     		movs	r0, #15
+ 651 007a 1840     		ands	r0, r3
+ 185:i2c_lcd.c     **** 		state = 0b00000100 | (state & 0b00001001);
+ 652              		.loc 1 185 0
+ 653 007c 0923     		movs	r3, #9
+ 654 007e 1840     		ands	r0, r3
+ 655 0080 0423     		movs	r3, #4
+ 656 0082 1843     		orrs	r0, r3
+ 657 0084 C0B2     		uxtb	r0, r0
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 16
+
+
+ 658 0086 2070     		strb	r0, [r4]
+ 186:i2c_lcd.c     **** 		i2c_send(state);
+ 659              		.loc 1 186 0
+ 660 0088 FFF7FEFF 		bl	i2c_send
+ 661              	.LVL55:
+ 187:i2c_lcd.c     **** 		state = state | (dato << 4);
+ 662              		.loc 1 187 0
+ 663 008c 2D01     		lsls	r5, r5, #4
+ 664 008e 2078     		ldrb	r0, [r4]
+ 665 0090 0543     		orrs	r5, r0
+ 666 0092 E8B2     		uxtb	r0, r5
+ 667 0094 2070     		strb	r0, [r4]
+ 188:i2c_lcd.c     **** 		i2c_send(state);
+ 668              		.loc 1 188 0
+ 669 0096 FFF7FEFF 		bl	i2c_send
+ 670              	.LVL56:
+ 189:i2c_lcd.c     **** 		state = 0b11111001 & state;
+ 671              		.loc 1 189 0
+ 672 009a 2078     		ldrb	r0, [r4]
+ 673 009c 0623     		movs	r3, #6
+ 674 009e 9843     		bics	r0, r3
+ 675 00a0 2070     		strb	r0, [r4]
+ 190:i2c_lcd.c     **** 		i2c_send(state);
+ 676              		.loc 1 190 0
+ 677 00a2 FFF7FEFF 		bl	i2c_send
+ 678              	.LVL57:
+ 191:i2c_lcd.c     **** 		i2c_idle();
+ 679              		.loc 1 191 0
+ 680 00a6 FFF7FEFF 		bl	i2c_idle
+ 681              	.LVL58:
+ 192:i2c_lcd.c     **** 		if (tipo == 0)
+ 682              		.loc 1 192 0
+ 683 00aa 002E     		cmp	r6, #0
+ 684 00ac 03D1     		bne	.L40
+ 193:i2c_lcd.c     **** 			delay_ms(2);
+ 685              		.loc 1 193 0
+ 686 00ae 0220     		movs	r0, #2
+ 687 00b0 FFF7FEFF 		bl	delay_ms
+ 688              	.LVL59:
+ 689 00b4 02E0     		b	.L34
+ 690              	.L40:
+ 194:i2c_lcd.c     **** 		else
+ 195:i2c_lcd.c     **** 			delay_us(50);
+ 691              		.loc 1 195 0
+ 692 00b6 3220     		movs	r0, #50
+ 693 00b8 FFF7FEFF 		bl	delay_us
+ 694              	.LVL60:
+ 695              	.L34:
+ 196:i2c_lcd.c     **** 	}
+ 197:i2c_lcd.c     **** }
+ 696              		.loc 1 197 0
+ 697              		@ sp needed
+ 698 00bc 70BD     		pop	{r4, r5, r6, pc}
+ 699              	.L42:
+ 700 00be C046     		.align	2
+ 701              	.L41:
+ 702 00c0 00000000 		.word	state
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 17
+
+
+ 703 00c4 00000000 		.word	dir
+ 704 00c8 00000000 		.word	.LANCHOR0
+ 705              		.cfi_endproc
+ 706              	.LFE19:
+ 707              		.size	lcd_write_uchar, .-lcd_write_uchar
+ 708              		.section	.text.lcd_clear,"ax",%progbits
+ 709              		.align	2
+ 710              		.global	lcd_clear
+ 711              		.code	16
+ 712              		.thumb_func
+ 713              		.type	lcd_clear, %function
+ 714              	lcd_clear:
+ 715              	.LFB3:
+  39:i2c_lcd.c     **** 	lcd_write_uchar(0b00000001, 0);
+ 716              		.loc 1 39 0
+ 717              		.cfi_startproc
+ 718              		@ args = 0, pretend = 0, frame = 0
+ 719              		@ frame_needed = 0, uses_anonymous_args = 0
+ 720 0000 10B5     		push	{r4, lr}
+ 721              		.cfi_def_cfa_offset 8
+ 722              		.cfi_offset 4, -8
+ 723              		.cfi_offset 14, -4
+  40:i2c_lcd.c     **** }
+ 724              		.loc 1 40 0
+ 725 0002 0021     		movs	r1, #0
+ 726 0004 0120     		movs	r0, #1
+ 727 0006 FFF7FEFF 		bl	lcd_write_uchar
+ 728              	.LVL61:
+  41:i2c_lcd.c     **** 
+ 729              		.loc 1 41 0
+ 730              		@ sp needed
+ 731 000a 10BD     		pop	{r4, pc}
+ 732              		.cfi_endproc
+ 733              	.LFE3:
+ 734              		.size	lcd_clear, .-lcd_clear
+ 735              		.section	.text.lcd_4_bit,"ax",%progbits
+ 736              		.align	2
+ 737              		.global	lcd_4_bit
+ 738              		.code	16
+ 739              		.thumb_func
+ 740              		.type	lcd_4_bit, %function
+ 741              	lcd_4_bit:
+ 742              	.LFB4:
+  43:i2c_lcd.c     **** 	lcd_write_uchar(0b00101000, 0);
+ 743              		.loc 1 43 0
+ 744              		.cfi_startproc
+ 745              		@ args = 0, pretend = 0, frame = 0
+ 746              		@ frame_needed = 0, uses_anonymous_args = 0
+ 747 0000 10B5     		push	{r4, lr}
+ 748              		.cfi_def_cfa_offset 8
+ 749              		.cfi_offset 4, -8
+ 750              		.cfi_offset 14, -4
+  44:i2c_lcd.c     **** 	bit4_mode = 1;
+ 751              		.loc 1 44 0
+ 752 0002 0021     		movs	r1, #0
+ 753 0004 2820     		movs	r0, #40
+ 754 0006 FFF7FEFF 		bl	lcd_write_uchar
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 18
+
+
+ 755              	.LVL62:
+  45:i2c_lcd.c     **** }
+ 756              		.loc 1 45 0
+ 757 000a 0122     		movs	r2, #1
+ 758 000c 014B     		ldr	r3, .L45
+ 759 000e 1A73     		strb	r2, [r3, #12]
+  46:i2c_lcd.c     **** 
+ 760              		.loc 1 46 0
+ 761              		@ sp needed
+ 762 0010 10BD     		pop	{r4, pc}
+ 763              	.L46:
+ 764 0012 C046     		.align	2
+ 765              	.L45:
+ 766 0014 00000000 		.word	.LANCHOR0
+ 767              		.cfi_endproc
+ 768              	.LFE4:
+ 769              		.size	lcd_4_bit, .-lcd_4_bit
+ 770              		.section	.text.lcd_cursor_inc,"ax",%progbits
+ 771              		.align	2
+ 772              		.global	lcd_cursor_inc
+ 773              		.code	16
+ 774              		.thumb_func
+ 775              		.type	lcd_cursor_inc, %function
+ 776              	lcd_cursor_inc:
+ 777              	.LFB5:
+  48:i2c_lcd.c     **** 	lcd_write_uchar(0b00000110, 0);
+ 778              		.loc 1 48 0
+ 779              		.cfi_startproc
+ 780              		@ args = 0, pretend = 0, frame = 0
+ 781              		@ frame_needed = 0, uses_anonymous_args = 0
+ 782 0000 10B5     		push	{r4, lr}
+ 783              		.cfi_def_cfa_offset 8
+ 784              		.cfi_offset 4, -8
+ 785              		.cfi_offset 14, -4
+  49:i2c_lcd.c     **** }
+ 786              		.loc 1 49 0
+ 787 0002 0021     		movs	r1, #0
+ 788 0004 0620     		movs	r0, #6
+ 789 0006 FFF7FEFF 		bl	lcd_write_uchar
+ 790              	.LVL63:
+  50:i2c_lcd.c     **** 
+ 791              		.loc 1 50 0
+ 792              		@ sp needed
+ 793 000a 10BD     		pop	{r4, pc}
+ 794              		.cfi_endproc
+ 795              	.LFE5:
+ 796              		.size	lcd_cursor_inc, .-lcd_cursor_inc
+ 797              		.section	.text.lcd_line0,"ax",%progbits
+ 798              		.align	2
+ 799              		.global	lcd_line0
+ 800              		.code	16
+ 801              		.thumb_func
+ 802              		.type	lcd_line0, %function
+ 803              	lcd_line0:
+ 804              	.LFB6:
+  52:i2c_lcd.c     **** 	lcd_write_uchar(0b10000000 + posicion, 0);
+ 805              		.loc 1 52 0
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 19
+
+
+ 806              		.cfi_startproc
+ 807              		@ args = 0, pretend = 0, frame = 0
+ 808              		@ frame_needed = 0, uses_anonymous_args = 0
+ 809              	.LVL64:
+ 810 0000 10B5     		push	{r4, lr}
+ 811              		.cfi_def_cfa_offset 8
+ 812              		.cfi_offset 4, -8
+ 813              		.cfi_offset 14, -4
+  53:i2c_lcd.c     **** }
+ 814              		.loc 1 53 0
+ 815 0002 8038     		subs	r0, r0, #128
+ 816              	.LVL65:
+ 817 0004 C0B2     		uxtb	r0, r0
+ 818 0006 0021     		movs	r1, #0
+ 819 0008 FFF7FEFF 		bl	lcd_write_uchar
+ 820              	.LVL66:
+  54:i2c_lcd.c     **** 
+ 821              		.loc 1 54 0
+ 822              		@ sp needed
+ 823 000c 10BD     		pop	{r4, pc}
+ 824              		.cfi_endproc
+ 825              	.LFE6:
+ 826              		.size	lcd_line0, .-lcd_line0
+ 827 000e C046     		.section	.text.lcd_line1,"ax",%progbits
+ 828              		.align	2
+ 829              		.global	lcd_line1
+ 830              		.code	16
+ 831              		.thumb_func
+ 832              		.type	lcd_line1, %function
+ 833              	lcd_line1:
+ 834              	.LFB8:
+  60:i2c_lcd.c     **** 	lcd_write_uchar(0b11000000 + posicion, 0);
+ 835              		.loc 1 60 0
+ 836              		.cfi_startproc
+ 837              		@ args = 0, pretend = 0, frame = 0
+ 838              		@ frame_needed = 0, uses_anonymous_args = 0
+ 839              	.LVL67:
+ 840 0000 10B5     		push	{r4, lr}
+ 841              		.cfi_def_cfa_offset 8
+ 842              		.cfi_offset 4, -8
+ 843              		.cfi_offset 14, -4
+  61:i2c_lcd.c     **** }
+ 844              		.loc 1 61 0
+ 845 0002 4038     		subs	r0, r0, #64
+ 846              	.LVL68:
+ 847 0004 C0B2     		uxtb	r0, r0
+ 848 0006 0021     		movs	r1, #0
+ 849 0008 FFF7FEFF 		bl	lcd_write_uchar
+ 850              	.LVL69:
+  62:i2c_lcd.c     **** 
+ 851              		.loc 1 62 0
+ 852              		@ sp needed
+ 853 000c 10BD     		pop	{r4, pc}
+ 854              		.cfi_endproc
+ 855              	.LFE8:
+ 856              		.size	lcd_line1, .-lcd_line1
+ 857 000e C046     		.section	.text.lcd_cursor_on,"ax",%progbits
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 20
+
+
+ 858              		.align	2
+ 859              		.global	lcd_cursor_on
+ 860              		.code	16
+ 861              		.thumb_func
+ 862              		.type	lcd_cursor_on, %function
+ 863              	lcd_cursor_on:
+ 864              	.LFB10:
+  68:i2c_lcd.c     **** 	lcd_write_uchar(0b00001110, 0);
+ 865              		.loc 1 68 0
+ 866              		.cfi_startproc
+ 867              		@ args = 0, pretend = 0, frame = 0
+ 868              		@ frame_needed = 0, uses_anonymous_args = 0
+ 869 0000 10B5     		push	{r4, lr}
+ 870              		.cfi_def_cfa_offset 8
+ 871              		.cfi_offset 4, -8
+ 872              		.cfi_offset 14, -4
+  69:i2c_lcd.c     **** }
+ 873              		.loc 1 69 0
+ 874 0002 0021     		movs	r1, #0
+ 875 0004 0E20     		movs	r0, #14
+ 876 0006 FFF7FEFF 		bl	lcd_write_uchar
+ 877              	.LVL70:
+  70:i2c_lcd.c     **** 
+ 878              		.loc 1 70 0
+ 879              		@ sp needed
+ 880 000a 10BD     		pop	{r4, pc}
+ 881              		.cfi_endproc
+ 882              	.LFE10:
+ 883              		.size	lcd_cursor_on, .-lcd_cursor_on
+ 884              		.section	.text.I2C_LCD_Init,"ax",%progbits
+ 885              		.align	2
+ 886              		.global	I2C_LCD_Init
+ 887              		.code	16
+ 888              		.thumb_func
+ 889              		.type	I2C_LCD_Init, %function
+ 890              	I2C_LCD_Init:
+ 891              	.LFB2:
+  22:i2c_lcd.c     **** 	dir = address << 1;
+ 892              		.loc 1 22 0
+ 893              		.cfi_startproc
+ 894              		@ args = 0, pretend = 0, frame = 0
+ 895              		@ frame_needed = 0, uses_anonymous_args = 0
+ 896              	.LVL71:
+ 897 0000 10B5     		push	{r4, lr}
+ 898              		.cfi_def_cfa_offset 8
+ 899              		.cfi_offset 4, -8
+ 900              		.cfi_offset 14, -4
+  23:i2c_lcd.c     **** 	i2c_send(0x08);
+ 901              		.loc 1 23 0
+ 902 0002 4000     		lsls	r0, r0, #1
+ 903              	.LVL72:
+ 904 0004 134B     		ldr	r3, .L52
+ 905 0006 1870     		strb	r0, [r3]
+  24:i2c_lcd.c     **** 	state = 0x08;
+ 906              		.loc 1 24 0
+ 907 0008 0820     		movs	r0, #8
+ 908 000a FFF7FEFF 		bl	i2c_send
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 21
+
+
+ 909              	.LVL73:
+  25:i2c_lcd.c     **** 	i2c_idle();
+ 910              		.loc 1 25 0
+ 911 000e 0822     		movs	r2, #8
+ 912 0010 114B     		ldr	r3, .L52+4
+ 913 0012 1A70     		strb	r2, [r3]
+  26:i2c_lcd.c     **** 	CyDelay(20);
+ 914              		.loc 1 26 0
+ 915 0014 FFF7FEFF 		bl	i2c_idle
+ 916              	.LVL74:
+  27:i2c_lcd.c     **** 	lcd_write_uchar(0b00110000, 0);
+ 917              		.loc 1 27 0
+ 918 0018 1420     		movs	r0, #20
+ 919 001a FFF7FEFF 		bl	CyDelay
+ 920              	.LVL75:
+  28:i2c_lcd.c     **** 	CyDelay(5);
+ 921              		.loc 1 28 0
+ 922 001e 0021     		movs	r1, #0
+ 923 0020 3020     		movs	r0, #48
+ 924 0022 FFF7FEFF 		bl	lcd_write_uchar
+ 925              	.LVL76:
+  29:i2c_lcd.c     **** 	lcd_write_uchar(0b00110000, 0);
+ 926              		.loc 1 29 0
+ 927 0026 0520     		movs	r0, #5
+ 928 0028 FFF7FEFF 		bl	CyDelay
+ 929              	.LVL77:
+  30:i2c_lcd.c     **** 	CyDelay(1);
+ 930              		.loc 1 30 0
+ 931 002c 0021     		movs	r1, #0
+ 932 002e 3020     		movs	r0, #48
+ 933 0030 FFF7FEFF 		bl	lcd_write_uchar
+ 934              	.LVL78:
+  31:i2c_lcd.c     **** 	lcd_write_uchar(0b00110000, 0);
+ 935              		.loc 1 31 0
+ 936 0034 0120     		movs	r0, #1
+ 937 0036 FFF7FEFF 		bl	CyDelay
+ 938              	.LVL79:
+  32:i2c_lcd.c     **** 	lcd_4_bit();
+ 939              		.loc 1 32 0
+ 940 003a 0021     		movs	r1, #0
+ 941 003c 3020     		movs	r0, #48
+ 942 003e FFF7FEFF 		bl	lcd_write_uchar
+ 943              	.LVL80:
+  33:i2c_lcd.c     **** 	lcd_cursor_inc();
+ 944              		.loc 1 33 0
+ 945 0042 FFF7FEFF 		bl	lcd_4_bit
+ 946              	.LVL81:
+  34:i2c_lcd.c     **** 	lcd_cursor_on();
+ 947              		.loc 1 34 0
+ 948 0046 FFF7FEFF 		bl	lcd_cursor_inc
+ 949              	.LVL82:
+  35:i2c_lcd.c     **** 	lcd_clear();
+ 950              		.loc 1 35 0
+ 951 004a FFF7FEFF 		bl	lcd_cursor_on
+ 952              	.LVL83:
+  36:i2c_lcd.c     **** }
+ 953              		.loc 1 36 0
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 22
+
+
+ 954 004e FFF7FEFF 		bl	lcd_clear
+ 955              	.LVL84:
+  37:i2c_lcd.c     **** 
+ 956              		.loc 1 37 0
+ 957              		@ sp needed
+ 958 0052 10BD     		pop	{r4, pc}
+ 959              	.L53:
+ 960              		.align	2
+ 961              	.L52:
+ 962 0054 00000000 		.word	dir
+ 963 0058 00000000 		.word	state
+ 964              		.cfi_endproc
+ 965              	.LFE2:
+ 966              		.size	I2C_LCD_Init, .-I2C_LCD_Init
+ 967              		.section	.text.lcd_write_char,"ax",%progbits
+ 968              		.align	2
+ 969              		.global	lcd_write_char
+ 970              		.code	16
+ 971              		.thumb_func
+ 972              		.type	lcd_write_char, %function
+ 973              	lcd_write_char:
+ 974              	.LFB11:
+  72:i2c_lcd.c     **** 	lcd_write_uchar(character, 1);
+ 975              		.loc 1 72 0
+ 976              		.cfi_startproc
+ 977              		@ args = 0, pretend = 0, frame = 0
+ 978              		@ frame_needed = 0, uses_anonymous_args = 0
+ 979              	.LVL85:
+ 980 0000 10B5     		push	{r4, lr}
+ 981              		.cfi_def_cfa_offset 8
+ 982              		.cfi_offset 4, -8
+ 983              		.cfi_offset 14, -4
+  73:i2c_lcd.c     **** }
+ 984              		.loc 1 73 0
+ 985 0002 0121     		movs	r1, #1
+ 986 0004 FFF7FEFF 		bl	lcd_write_uchar
+ 987              	.LVL86:
+  74:i2c_lcd.c     **** 
+ 988              		.loc 1 74 0
+ 989              		@ sp needed
+ 990 0008 10BD     		pop	{r4, pc}
+ 991              		.cfi_endproc
+ 992              	.LFE11:
+ 993              		.size	lcd_write_char, .-lcd_write_char
+ 994              		.comm	tmp_bf,1,1
+ 995              		.comm	dir,1,1
+ 996              		.global	bit4_mode
+ 997              		.comm	state,1,1
+ 998              		.global	wr_dir
+ 999              		.global	rti_flag
+ 1000 000a C046     		.data
+ 1001              		.type	wr_dir, %object
+ 1002              		.size	wr_dir, 1
+ 1003              	wr_dir:
+ 1004 0000 4E       		.byte	78
+ 1005              		.bss
+ 1006              		.align	2
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 23
+
+
+ 1007              		.set	.LANCHOR0,. + 0
+ 1008              		.type	rti_flag, %object
+ 1009              		.size	rti_flag, 1
+ 1010              	rti_flag:
+ 1011 0000 00       		.space	1
+ 1012 0001 000000   		.space	3
+ 1013              		.type	pt, %object
+ 1014              		.size	pt, 4
+ 1015              	pt:
+ 1016 0004 00000000 		.space	4
+ 1017              		.type	ohm, %object
+ 1018              		.size	ohm, 4
+ 1019              	ohm:
+ 1020 0008 00000000 		.space	4
+ 1021              		.type	bit4_mode, %object
+ 1022              		.size	bit4_mode, 1
+ 1023              	bit4_mode:
+ 1024 000c 00       		.space	1
+ 1025              		.text
+ 1026              	.Letext0:
+ 1027              		.section	.debug_info,"",%progbits
+ 1028              	.Ldebug_info0:
+ 1029 0000 14070000 		.4byte	0x714
+ 1030 0004 0400     		.2byte	0x4
+ 1031 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1032 000a 04       		.byte	0x4
+ 1033 000b 01       		.uleb128 0x1
+ 1034 000c 6C010000 		.4byte	.LASF38
+ 1035 0010 0C       		.byte	0xc
+ 1036 0011 4E020000 		.4byte	.LASF39
+ 1037 0015 27010000 		.4byte	.LASF40
+ 1038 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 1039 001d 00000000 		.4byte	0
+ 1040 0021 00000000 		.4byte	.Ldebug_line0
+ 1041 0025 02       		.uleb128 0x2
+ 1042 0026 01       		.byte	0x1
+ 1043 0027 08       		.byte	0x8
+ 1044 0028 85000000 		.4byte	.LASF2
+ 1045 002c 03       		.uleb128 0x3
+ 1046 002d 6D020000 		.4byte	.LASF3
+ 1047 0031 01       		.byte	0x1
+ 1048 0032 0C       		.byte	0xc
+ 1049 0033 00000000 		.4byte	.LFB0
+ 1050 0037 20000000 		.4byte	.LFE0-.LFB0
+ 1051 003b 01       		.uleb128 0x1
+ 1052 003c 9C       		.byte	0x9c
+ 1053 003d 9C000000 		.4byte	0x9c
+ 1054 0041 04       		.uleb128 0x4
+ 1055 0042 70000000 		.4byte	.LASF7
+ 1056 0046 01       		.byte	0x1
+ 1057 0047 0C       		.byte	0xc
+ 1058 0048 25000000 		.4byte	0x25
+ 1059 004c 00000000 		.4byte	.LLST0
+ 1060 0050 05       		.uleb128 0x5
+ 1061 0051 FA000000 		.4byte	.LASF0
+ 1062 0055 01       		.byte	0x1
+ 1063 0056 0D       		.byte	0xd
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 24
+
+
+ 1064 0057 9C000000 		.4byte	0x9c
+ 1065 005b 61000000 		.4byte	0x61
+ 1066 005f 06       		.uleb128 0x6
+ 1067 0060 00       		.byte	0
+ 1068 0061 05       		.uleb128 0x5
+ 1069 0062 36000000 		.4byte	.LASF1
+ 1070 0066 01       		.byte	0x1
+ 1071 0067 0E       		.byte	0xe
+ 1072 0068 9C000000 		.4byte	0x9c
+ 1073 006c 72000000 		.4byte	0x72
+ 1074 0070 06       		.uleb128 0x6
+ 1075 0071 00       		.byte	0
+ 1076 0072 07       		.uleb128 0x7
+ 1077 0073 0C000000 		.4byte	.LVL2
+ 1078 0077 EB060000 		.4byte	0x6eb
+ 1079 007b 8B000000 		.4byte	0x8b
+ 1080 007f 08       		.uleb128 0x8
+ 1081 0080 01       		.uleb128 0x1
+ 1082 0081 50       		.byte	0x50
+ 1083 0082 02       		.uleb128 0x2
+ 1084 0083 08       		.byte	0x8
+ 1085 0084 27       		.byte	0x27
+ 1086 0085 08       		.uleb128 0x8
+ 1087 0086 01       		.uleb128 0x1
+ 1088 0087 51       		.byte	0x51
+ 1089 0088 01       		.uleb128 0x1
+ 1090 0089 30       		.byte	0x30
+ 1091 008a 00       		.byte	0
+ 1092 008b 09       		.uleb128 0x9
+ 1093 008c 12000000 		.4byte	.LVL3
+ 1094 0090 F6060000 		.4byte	0x6f6
+ 1095 0094 08       		.uleb128 0x8
+ 1096 0095 01       		.uleb128 0x1
+ 1097 0096 50       		.byte	0x50
+ 1098 0097 02       		.uleb128 0x2
+ 1099 0098 74       		.byte	0x74
+ 1100 0099 00       		.sleb128 0
+ 1101 009a 00       		.byte	0
+ 1102 009b 00       		.byte	0
+ 1103 009c 0A       		.uleb128 0xa
+ 1104 009d 04       		.byte	0x4
+ 1105 009e 05       		.byte	0x5
+ 1106 009f 696E7400 		.ascii	"int\000"
+ 1107 00a3 03       		.uleb128 0x3
+ 1108 00a4 C2000000 		.4byte	.LASF4
+ 1109 00a8 01       		.byte	0x1
+ 1110 00a9 12       		.byte	0x12
+ 1111 00aa 00000000 		.4byte	.LFB1
+ 1112 00ae 08000000 		.4byte	.LFE1-.LFB1
+ 1113 00b2 01       		.uleb128 0x1
+ 1114 00b3 9C       		.byte	0x9c
+ 1115 00b4 D3000000 		.4byte	0xd3
+ 1116 00b8 05       		.uleb128 0x5
+ 1117 00b9 CB000000 		.4byte	.LASF5
+ 1118 00bd 01       		.byte	0x1
+ 1119 00be 13       		.byte	0x13
+ 1120 00bf 9C000000 		.4byte	0x9c
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 25
+
+
+ 1121 00c3 C9000000 		.4byte	0xc9
+ 1122 00c7 06       		.uleb128 0x6
+ 1123 00c8 00       		.byte	0
+ 1124 00c9 0B       		.uleb128 0xb
+ 1125 00ca 06000000 		.4byte	.LVL4
+ 1126 00ce 01070000 		.4byte	0x701
+ 1127 00d2 00       		.byte	0
+ 1128 00d3 03       		.uleb128 0x3
+ 1129 00d4 93000000 		.4byte	.LASF6
+ 1130 00d8 01       		.byte	0x1
+ 1131 00d9 51       		.byte	0x51
+ 1132 00da 00000000 		.4byte	.LFB13
+ 1133 00de 14000000 		.4byte	.LFE13-.LFB13
+ 1134 00e2 01       		.uleb128 0x1
+ 1135 00e3 9C       		.byte	0x9c
+ 1136 00e4 07010000 		.4byte	0x107
+ 1137 00e8 04       		.uleb128 0x4
+ 1138 00e9 75000000 		.4byte	.LASF8
+ 1139 00ed 01       		.byte	0x1
+ 1140 00ee 51       		.byte	0x51
+ 1141 00ef 07010000 		.4byte	0x107
+ 1142 00f3 21000000 		.4byte	.LLST1
+ 1143 00f7 0C       		.uleb128 0xc
+ 1144 00f8 A1000000 		.4byte	.LASF11
+ 1145 00fc 01       		.byte	0x1
+ 1146 00fd 52       		.byte	0x52
+ 1147 00fe 07010000 		.4byte	0x107
+ 1148 0102 3F000000 		.4byte	.LLST2
+ 1149 0106 00       		.byte	0
+ 1150 0107 02       		.uleb128 0x2
+ 1151 0108 04       		.byte	0x4
+ 1152 0109 07       		.byte	0x7
+ 1153 010a 12010000 		.4byte	.LASF9
+ 1154 010e 03       		.uleb128 0x3
+ 1155 010f F1000000 		.4byte	.LASF10
+ 1156 0113 01       		.byte	0x1
+ 1157 0114 58       		.byte	0x58
+ 1158 0115 00000000 		.4byte	.LFB14
+ 1159 0119 10000000 		.4byte	.LFE14-.LFB14
+ 1160 011d 01       		.uleb128 0x1
+ 1161 011e 9C       		.byte	0x9c
+ 1162 011f 42010000 		.4byte	0x142
+ 1163 0123 04       		.uleb128 0x4
+ 1164 0124 75000000 		.4byte	.LASF8
+ 1165 0128 01       		.byte	0x1
+ 1166 0129 58       		.byte	0x58
+ 1167 012a 07010000 		.4byte	0x107
+ 1168 012e 5E000000 		.4byte	.LLST3
+ 1169 0132 0C       		.uleb128 0xc
+ 1170 0133 A1000000 		.4byte	.LASF11
+ 1171 0137 01       		.byte	0x1
+ 1172 0138 59       		.byte	0x59
+ 1173 0139 07010000 		.4byte	0x107
+ 1174 013d 7C000000 		.4byte	.LLST4
+ 1175 0141 00       		.byte	0
+ 1176 0142 03       		.uleb128 0x3
+ 1177 0143 58020000 		.4byte	.LASF12
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 26
+
+
+ 1178 0147 01       		.byte	0x1
+ 1179 0148 5F       		.byte	0x5f
+ 1180 0149 00000000 		.4byte	.LFB15
+ 1181 014d 20000000 		.4byte	.LFE15-.LFB15
+ 1182 0151 01       		.uleb128 0x1
+ 1183 0152 9C       		.byte	0x9c
+ 1184 0153 67010000 		.4byte	0x167
+ 1185 0157 04       		.uleb128 0x4
+ 1186 0158 75000000 		.4byte	.LASF8
+ 1187 015c 01       		.byte	0x1
+ 1188 015d 5F       		.byte	0x5f
+ 1189 015e 07010000 		.4byte	0x107
+ 1190 0162 9B000000 		.4byte	.LLST5
+ 1191 0166 00       		.byte	0
+ 1192 0167 03       		.uleb128 0x3
+ 1193 0168 61010000 		.4byte	.LASF13
+ 1194 016c 01       		.byte	0x1
+ 1195 016d 67       		.byte	0x67
+ 1196 016e 00000000 		.4byte	.LFB16
+ 1197 0172 20000000 		.4byte	.LFE16-.LFB16
+ 1198 0176 01       		.uleb128 0x1
+ 1199 0177 9C       		.byte	0x9c
+ 1200 0178 8C010000 		.4byte	0x18c
+ 1201 017c 04       		.uleb128 0x4
+ 1202 017d 75000000 		.4byte	.LASF8
+ 1203 0181 01       		.byte	0x1
+ 1204 0182 67       		.byte	0x67
+ 1205 0183 07010000 		.4byte	0x107
+ 1206 0187 B9000000 		.4byte	.LLST6
+ 1207 018b 00       		.byte	0
+ 1208 018c 0D       		.uleb128 0xd
+ 1209 018d AA000000 		.4byte	.LASF41
+ 1210 0191 01       		.byte	0x1
+ 1211 0192 6F       		.byte	0x6f
+ 1212 0193 00000000 		.4byte	.LFB17
+ 1213 0197 0C000000 		.4byte	.LFE17-.LFB17
+ 1214 019b 01       		.uleb128 0x1
+ 1215 019c 9C       		.byte	0x9c
+ 1216 019d 03       		.uleb128 0x3
+ 1217 019e 1C020000 		.4byte	.LASF14
+ 1218 01a2 01       		.byte	0x1
+ 1219 01a3 77       		.byte	0x77
+ 1220 01a4 00000000 		.4byte	.LFB18
+ 1221 01a8 C8000000 		.4byte	.LFE18-.LFB18
+ 1222 01ac 01       		.uleb128 0x1
+ 1223 01ad 9C       		.byte	0x9c
+ 1224 01ae A6020000 		.4byte	0x2a6
+ 1225 01b2 04       		.uleb128 0x4
+ 1226 01b3 BD000000 		.4byte	.LASF15
+ 1227 01b7 01       		.byte	0x1
+ 1228 01b8 77       		.byte	0x77
+ 1229 01b9 25000000 		.4byte	0x25
+ 1230 01bd D7000000 		.4byte	.LLST7
+ 1231 01c1 04       		.uleb128 0x4
+ 1232 01c2 9C000000 		.4byte	.LASF16
+ 1233 01c6 01       		.byte	0x1
+ 1234 01c7 77       		.byte	0x77
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 27
+
+
+ 1235 01c8 25000000 		.4byte	0x25
+ 1236 01cc 11010000 		.4byte	.LLST8
+ 1237 01d0 07       		.uleb128 0x7
+ 1238 01d1 16000000 		.4byte	.LVL19
+ 1239 01d5 2C000000 		.4byte	0x2c
+ 1240 01d9 E3010000 		.4byte	0x1e3
+ 1241 01dd 08       		.uleb128 0x8
+ 1242 01de 01       		.uleb128 0x1
+ 1243 01df 50       		.byte	0x50
+ 1244 01e0 01       		.uleb128 0x1
+ 1245 01e1 38       		.byte	0x38
+ 1246 01e2 00       		.byte	0
+ 1247 01e3 07       		.uleb128 0x7
+ 1248 01e4 24000000 		.4byte	.LVL22
+ 1249 01e8 2C000000 		.4byte	0x2c
+ 1250 01ec F6010000 		.4byte	0x1f6
+ 1251 01f0 08       		.uleb128 0x8
+ 1252 01f1 01       		.uleb128 0x1
+ 1253 01f2 50       		.byte	0x50
+ 1254 01f3 01       		.uleb128 0x1
+ 1255 01f4 39       		.byte	0x39
+ 1256 01f5 00       		.byte	0
+ 1257 01f6 0B       		.uleb128 0xb
+ 1258 01f7 34000000 		.4byte	.LVL23
+ 1259 01fb 2C000000 		.4byte	0x2c
+ 1260 01ff 0B       		.uleb128 0xb
+ 1261 0200 44000000 		.4byte	.LVL24
+ 1262 0204 2C000000 		.4byte	0x2c
+ 1263 0208 0B       		.uleb128 0xb
+ 1264 0209 50000000 		.4byte	.LVL25
+ 1265 020d 2C000000 		.4byte	0x2c
+ 1266 0211 0B       		.uleb128 0xb
+ 1267 0212 54000000 		.4byte	.LVL26
+ 1268 0216 A3000000 		.4byte	0xa3
+ 1269 021a 0B       		.uleb128 0xb
+ 1270 021b 58000000 		.4byte	.LVL27
+ 1271 021f 8C010000 		.4byte	0x18c
+ 1272 0223 07       		.uleb128 0x7
+ 1273 0224 62000000 		.4byte	.LVL28
+ 1274 0228 67010000 		.4byte	0x167
+ 1275 022c 36020000 		.4byte	0x236
+ 1276 0230 08       		.uleb128 0x8
+ 1277 0231 01       		.uleb128 0x1
+ 1278 0232 50       		.byte	0x50
+ 1279 0233 01       		.uleb128 0x1
+ 1280 0234 32       		.byte	0x32
+ 1281 0235 00       		.byte	0
+ 1282 0236 07       		.uleb128 0x7
+ 1283 0237 6A000000 		.4byte	.LVL29
+ 1284 023b 42010000 		.4byte	0x142
+ 1285 023f 4A020000 		.4byte	0x24a
+ 1286 0243 08       		.uleb128 0x8
+ 1287 0244 01       		.uleb128 0x1
+ 1288 0245 50       		.byte	0x50
+ 1289 0246 02       		.uleb128 0x2
+ 1290 0247 08       		.byte	0x8
+ 1291 0248 32       		.byte	0x32
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 28
+
+
+ 1292 0249 00       		.byte	0
+ 1293 024a 0B       		.uleb128 0xb
+ 1294 024b 8A000000 		.4byte	.LVL30
+ 1295 024f 2C000000 		.4byte	0x2c
+ 1296 0253 07       		.uleb128 0x7
+ 1297 0254 98000000 		.4byte	.LVL31
+ 1298 0258 2C000000 		.4byte	0x2c
+ 1299 025c 67020000 		.4byte	0x267
+ 1300 0260 08       		.uleb128 0x8
+ 1301 0261 01       		.uleb128 0x1
+ 1302 0262 50       		.byte	0x50
+ 1303 0263 02       		.uleb128 0x2
+ 1304 0264 75       		.byte	0x75
+ 1305 0265 00       		.sleb128 0
+ 1306 0266 00       		.byte	0
+ 1307 0267 0B       		.uleb128 0xb
+ 1308 0268 A4000000 		.4byte	.LVL32
+ 1309 026c 2C000000 		.4byte	0x2c
+ 1310 0270 0B       		.uleb128 0xb
+ 1311 0271 A8000000 		.4byte	.LVL33
+ 1312 0275 A3000000 		.4byte	0xa3
+ 1313 0279 0B       		.uleb128 0xb
+ 1314 027a AC000000 		.4byte	.LVL34
+ 1315 027e 8C010000 		.4byte	0x18c
+ 1316 0282 07       		.uleb128 0x7
+ 1317 0283 B6000000 		.4byte	.LVL35
+ 1318 0287 67010000 		.4byte	0x167
+ 1319 028b 95020000 		.4byte	0x295
+ 1320 028f 08       		.uleb128 0x8
+ 1321 0290 01       		.uleb128 0x1
+ 1322 0291 50       		.byte	0x50
+ 1323 0292 01       		.uleb128 0x1
+ 1324 0293 32       		.byte	0x32
+ 1325 0294 00       		.byte	0
+ 1326 0295 09       		.uleb128 0x9
+ 1327 0296 BE000000 		.4byte	.LVL36
+ 1328 029a 42010000 		.4byte	0x142
+ 1329 029e 08       		.uleb128 0x8
+ 1330 029f 01       		.uleb128 0x1
+ 1331 02a0 50       		.byte	0x50
+ 1332 02a1 02       		.uleb128 0x2
+ 1333 02a2 08       		.byte	0x8
+ 1334 02a3 32       		.byte	0x32
+ 1335 02a4 00       		.byte	0
+ 1336 02a5 00       		.byte	0
+ 1337 02a6 03       		.uleb128 0x3
+ 1338 02a7 FA010000 		.4byte	.LASF17
+ 1339 02ab 01       		.byte	0x1
+ 1340 02ac 38       		.byte	0x38
+ 1341 02ad 00000000 		.4byte	.LFB7
+ 1342 02b1 0E000000 		.4byte	.LFE7-.LFB7
+ 1343 02b5 01       		.uleb128 0x1
+ 1344 02b6 9C       		.byte	0x9c
+ 1345 02b7 DA020000 		.4byte	0x2da
+ 1346 02bb 04       		.uleb128 0x4
+ 1347 02bc 64020000 		.4byte	.LASF18
+ 1348 02c0 01       		.byte	0x1
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 29
+
+
+ 1349 02c1 38       		.byte	0x38
+ 1350 02c2 25000000 		.4byte	0x25
+ 1351 02c6 4B010000 		.4byte	.LLST9
+ 1352 02ca 09       		.uleb128 0x9
+ 1353 02cb 0C000000 		.4byte	.LVL39
+ 1354 02cf 9D010000 		.4byte	0x19d
+ 1355 02d3 08       		.uleb128 0x8
+ 1356 02d4 01       		.uleb128 0x1
+ 1357 02d5 51       		.byte	0x51
+ 1358 02d6 01       		.uleb128 0x1
+ 1359 02d7 30       		.byte	0x30
+ 1360 02d8 00       		.byte	0
+ 1361 02d9 00       		.byte	0
+ 1362 02da 03       		.uleb128 0x3
+ 1363 02db 28000000 		.4byte	.LASF19
+ 1364 02df 01       		.byte	0x1
+ 1365 02e0 40       		.byte	0x40
+ 1366 02e1 00000000 		.4byte	.LFB9
+ 1367 02e5 0E000000 		.4byte	.LFE9-.LFB9
+ 1368 02e9 01       		.uleb128 0x1
+ 1369 02ea 9C       		.byte	0x9c
+ 1370 02eb 0E030000 		.4byte	0x30e
+ 1371 02ef 04       		.uleb128 0x4
+ 1372 02f0 64020000 		.4byte	.LASF18
+ 1373 02f4 01       		.byte	0x1
+ 1374 02f5 40       		.byte	0x40
+ 1375 02f6 25000000 		.4byte	0x25
+ 1376 02fa 6C010000 		.4byte	.LLST10
+ 1377 02fe 09       		.uleb128 0x9
+ 1378 02ff 0C000000 		.4byte	.LVL42
+ 1379 0303 9D010000 		.4byte	0x19d
+ 1380 0307 08       		.uleb128 0x8
+ 1381 0308 01       		.uleb128 0x1
+ 1382 0309 51       		.byte	0x51
+ 1383 030a 01       		.uleb128 0x1
+ 1384 030b 30       		.byte	0x30
+ 1385 030c 00       		.byte	0
+ 1386 030d 00       		.byte	0
+ 1387 030e 03       		.uleb128 0x3
+ 1388 030f 4E000000 		.4byte	.LASF20
+ 1389 0313 01       		.byte	0x1
+ 1390 0314 4C       		.byte	0x4c
+ 1391 0315 00000000 		.4byte	.LFB12
+ 1392 0319 0A000000 		.4byte	.LFE12-.LFB12
+ 1393 031d 01       		.uleb128 0x1
+ 1394 031e 9C       		.byte	0x9c
+ 1395 031f 42030000 		.4byte	0x342
+ 1396 0323 04       		.uleb128 0x4
+ 1397 0324 1E000000 		.4byte	.LASF21
+ 1398 0328 01       		.byte	0x1
+ 1399 0329 4C       		.byte	0x4c
+ 1400 032a 25000000 		.4byte	0x25
+ 1401 032e 8D010000 		.4byte	.LLST11
+ 1402 0332 09       		.uleb128 0x9
+ 1403 0333 08000000 		.4byte	.LVL44
+ 1404 0337 9D010000 		.4byte	0x19d
+ 1405 033b 08       		.uleb128 0x8
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 30
+
+
+ 1406 033c 01       		.uleb128 0x1
+ 1407 033d 51       		.byte	0x51
+ 1408 033e 01       		.uleb128 0x1
+ 1409 033f 31       		.byte	0x31
+ 1410 0340 00       		.byte	0
+ 1411 0341 00       		.byte	0
+ 1412 0342 03       		.uleb128 0x3
+ 1413 0343 30020000 		.4byte	.LASF22
+ 1414 0347 01       		.byte	0x1
+ 1415 0348 A4       		.byte	0xa4
+ 1416 0349 00000000 		.4byte	.LFB19
+ 1417 034d CC000000 		.4byte	.LFE19-.LFB19
+ 1418 0351 01       		.uleb128 0x1
+ 1419 0352 9C       		.byte	0x9c
+ 1420 0353 25040000 		.4byte	0x425
+ 1421 0357 04       		.uleb128 0x4
+ 1422 0358 BD000000 		.4byte	.LASF15
+ 1423 035c 01       		.byte	0x1
+ 1424 035d A4       		.byte	0xa4
+ 1425 035e 25000000 		.4byte	0x25
+ 1426 0362 AE010000 		.4byte	.LLST12
+ 1427 0366 04       		.uleb128 0x4
+ 1428 0367 9C000000 		.4byte	.LASF16
+ 1429 036b 01       		.byte	0x1
+ 1430 036c A4       		.byte	0xa4
+ 1431 036d 25000000 		.4byte	0x25
+ 1432 0371 CF010000 		.4byte	.LLST13
+ 1433 0375 0B       		.uleb128 0xb
+ 1434 0376 14000000 		.4byte	.LVL47
+ 1435 037a 2C000000 		.4byte	0x2c
+ 1436 037e 0B       		.uleb128 0xb
+ 1437 037f 20000000 		.4byte	.LVL48
+ 1438 0383 2C000000 		.4byte	0x2c
+ 1439 0387 0B       		.uleb128 0xb
+ 1440 0388 32000000 		.4byte	.LVL49
+ 1441 038c 2C000000 		.4byte	0x2c
+ 1442 0390 0B       		.uleb128 0xb
+ 1443 0391 4A000000 		.4byte	.LVL50
+ 1444 0395 2C000000 		.4byte	0x2c
+ 1445 0399 0B       		.uleb128 0xb
+ 1446 039a 56000000 		.4byte	.LVL51
+ 1447 039e 2C000000 		.4byte	0x2c
+ 1448 03a2 0B       		.uleb128 0xb
+ 1449 03a3 5A000000 		.4byte	.LVL52
+ 1450 03a7 A3000000 		.4byte	0xa3
+ 1451 03ab 07       		.uleb128 0x7
+ 1452 03ac 64000000 		.4byte	.LVL53
+ 1453 03b0 D3000000 		.4byte	0xd3
+ 1454 03b4 BE030000 		.4byte	0x3be
+ 1455 03b8 08       		.uleb128 0x8
+ 1456 03b9 01       		.uleb128 0x1
+ 1457 03ba 50       		.byte	0x50
+ 1458 03bb 01       		.uleb128 0x1
+ 1459 03bc 32       		.byte	0x32
+ 1460 03bd 00       		.byte	0
+ 1461 03be 07       		.uleb128 0x7
+ 1462 03bf 6C000000 		.4byte	.LVL54
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 31
+
+
+ 1463 03c3 0E010000 		.4byte	0x10e
+ 1464 03c7 D2030000 		.4byte	0x3d2
+ 1465 03cb 08       		.uleb128 0x8
+ 1466 03cc 01       		.uleb128 0x1
+ 1467 03cd 50       		.byte	0x50
+ 1468 03ce 02       		.uleb128 0x2
+ 1469 03cf 08       		.byte	0x8
+ 1470 03d0 32       		.byte	0x32
+ 1471 03d1 00       		.byte	0
+ 1472 03d2 0B       		.uleb128 0xb
+ 1473 03d3 8C000000 		.4byte	.LVL55
+ 1474 03d7 2C000000 		.4byte	0x2c
+ 1475 03db 07       		.uleb128 0x7
+ 1476 03dc 9A000000 		.4byte	.LVL56
+ 1477 03e0 2C000000 		.4byte	0x2c
+ 1478 03e4 EF030000 		.4byte	0x3ef
+ 1479 03e8 08       		.uleb128 0x8
+ 1480 03e9 01       		.uleb128 0x1
+ 1481 03ea 50       		.byte	0x50
+ 1482 03eb 02       		.uleb128 0x2
+ 1483 03ec 75       		.byte	0x75
+ 1484 03ed 00       		.sleb128 0
+ 1485 03ee 00       		.byte	0
+ 1486 03ef 0B       		.uleb128 0xb
+ 1487 03f0 A6000000 		.4byte	.LVL57
+ 1488 03f4 2C000000 		.4byte	0x2c
+ 1489 03f8 0B       		.uleb128 0xb
+ 1490 03f9 AA000000 		.4byte	.LVL58
+ 1491 03fd A3000000 		.4byte	0xa3
+ 1492 0401 07       		.uleb128 0x7
+ 1493 0402 B4000000 		.4byte	.LVL59
+ 1494 0406 D3000000 		.4byte	0xd3
+ 1495 040a 14040000 		.4byte	0x414
+ 1496 040e 08       		.uleb128 0x8
+ 1497 040f 01       		.uleb128 0x1
+ 1498 0410 50       		.byte	0x50
+ 1499 0411 01       		.uleb128 0x1
+ 1500 0412 32       		.byte	0x32
+ 1501 0413 00       		.byte	0
+ 1502 0414 09       		.uleb128 0x9
+ 1503 0415 BC000000 		.4byte	.LVL60
+ 1504 0419 0E010000 		.4byte	0x10e
+ 1505 041d 08       		.uleb128 0x8
+ 1506 041e 01       		.uleb128 0x1
+ 1507 041f 50       		.byte	0x50
+ 1508 0420 02       		.uleb128 0x2
+ 1509 0421 08       		.byte	0x8
+ 1510 0422 32       		.byte	0x32
+ 1511 0423 00       		.byte	0
+ 1512 0424 00       		.byte	0
+ 1513 0425 03       		.uleb128 0x3
+ 1514 0426 76020000 		.4byte	.LASF23
+ 1515 042a 01       		.byte	0x1
+ 1516 042b 27       		.byte	0x27
+ 1517 042c 00000000 		.4byte	.LFB3
+ 1518 0430 0C000000 		.4byte	.LFE3-.LFB3
+ 1519 0434 01       		.uleb128 0x1
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 32
+
+
+ 1520 0435 9C       		.byte	0x9c
+ 1521 0436 4F040000 		.4byte	0x44f
+ 1522 043a 09       		.uleb128 0x9
+ 1523 043b 0A000000 		.4byte	.LVL61
+ 1524 043f 42030000 		.4byte	0x342
+ 1525 0443 08       		.uleb128 0x8
+ 1526 0444 01       		.uleb128 0x1
+ 1527 0445 50       		.byte	0x50
+ 1528 0446 01       		.uleb128 0x1
+ 1529 0447 31       		.byte	0x31
+ 1530 0448 08       		.uleb128 0x8
+ 1531 0449 01       		.uleb128 0x1
+ 1532 044a 51       		.byte	0x51
+ 1533 044b 01       		.uleb128 0x1
+ 1534 044c 30       		.byte	0x30
+ 1535 044d 00       		.byte	0
+ 1536 044e 00       		.byte	0
+ 1537 044f 03       		.uleb128 0x3
+ 1538 0450 7B000000 		.4byte	.LASF24
+ 1539 0454 01       		.byte	0x1
+ 1540 0455 2B       		.byte	0x2b
+ 1541 0456 00000000 		.4byte	.LFB4
+ 1542 045a 18000000 		.4byte	.LFE4-.LFB4
+ 1543 045e 01       		.uleb128 0x1
+ 1544 045f 9C       		.byte	0x9c
+ 1545 0460 7A040000 		.4byte	0x47a
+ 1546 0464 09       		.uleb128 0x9
+ 1547 0465 0A000000 		.4byte	.LVL62
+ 1548 0469 42030000 		.4byte	0x342
+ 1549 046d 08       		.uleb128 0x8
+ 1550 046e 01       		.uleb128 0x1
+ 1551 046f 50       		.byte	0x50
+ 1552 0470 02       		.uleb128 0x2
+ 1553 0471 08       		.byte	0x8
+ 1554 0472 28       		.byte	0x28
+ 1555 0473 08       		.uleb128 0x8
+ 1556 0474 01       		.uleb128 0x1
+ 1557 0475 51       		.byte	0x51
+ 1558 0476 01       		.uleb128 0x1
+ 1559 0477 30       		.byte	0x30
+ 1560 0478 00       		.byte	0
+ 1561 0479 00       		.byte	0
+ 1562 047a 03       		.uleb128 0x3
+ 1563 047b E2000000 		.4byte	.LASF25
+ 1564 047f 01       		.byte	0x1
+ 1565 0480 30       		.byte	0x30
+ 1566 0481 00000000 		.4byte	.LFB5
+ 1567 0485 0C000000 		.4byte	.LFE5-.LFB5
+ 1568 0489 01       		.uleb128 0x1
+ 1569 048a 9C       		.byte	0x9c
+ 1570 048b A4040000 		.4byte	0x4a4
+ 1571 048f 09       		.uleb128 0x9
+ 1572 0490 0A000000 		.4byte	.LVL63
+ 1573 0494 42030000 		.4byte	0x342
+ 1574 0498 08       		.uleb128 0x8
+ 1575 0499 01       		.uleb128 0x1
+ 1576 049a 50       		.byte	0x50
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 33
+
+
+ 1577 049b 01       		.uleb128 0x1
+ 1578 049c 36       		.byte	0x36
+ 1579 049d 08       		.uleb128 0x8
+ 1580 049e 01       		.uleb128 0x1
+ 1581 049f 51       		.byte	0x51
+ 1582 04a0 01       		.uleb128 0x1
+ 1583 04a1 30       		.byte	0x30
+ 1584 04a2 00       		.byte	0
+ 1585 04a3 00       		.byte	0
+ 1586 04a4 03       		.uleb128 0x3
+ 1587 04a5 5C000000 		.4byte	.LASF26
+ 1588 04a9 01       		.byte	0x1
+ 1589 04aa 34       		.byte	0x34
+ 1590 04ab 00000000 		.4byte	.LFB6
+ 1591 04af 0E000000 		.4byte	.LFE6-.LFB6
+ 1592 04b3 01       		.uleb128 0x1
+ 1593 04b4 9C       		.byte	0x9c
+ 1594 04b5 D8040000 		.4byte	0x4d8
+ 1595 04b9 04       		.uleb128 0x4
+ 1596 04ba 64020000 		.4byte	.LASF18
+ 1597 04be 01       		.byte	0x1
+ 1598 04bf 34       		.byte	0x34
+ 1599 04c0 25000000 		.4byte	0x25
+ 1600 04c4 F0010000 		.4byte	.LLST14
+ 1601 04c8 09       		.uleb128 0x9
+ 1602 04c9 0C000000 		.4byte	.LVL66
+ 1603 04cd 42030000 		.4byte	0x342
+ 1604 04d1 08       		.uleb128 0x8
+ 1605 04d2 01       		.uleb128 0x1
+ 1606 04d3 51       		.byte	0x51
+ 1607 04d4 01       		.uleb128 0x1
+ 1608 04d5 30       		.byte	0x30
+ 1609 04d6 00       		.byte	0
+ 1610 04d7 00       		.byte	0
+ 1611 04d8 03       		.uleb128 0x3
+ 1612 04d9 66000000 		.4byte	.LASF27
+ 1613 04dd 01       		.byte	0x1
+ 1614 04de 3C       		.byte	0x3c
+ 1615 04df 00000000 		.4byte	.LFB8
+ 1616 04e3 0E000000 		.4byte	.LFE8-.LFB8
+ 1617 04e7 01       		.uleb128 0x1
+ 1618 04e8 9C       		.byte	0x9c
+ 1619 04e9 0C050000 		.4byte	0x50c
+ 1620 04ed 04       		.uleb128 0x4
+ 1621 04ee 64020000 		.4byte	.LASF18
+ 1622 04f2 01       		.byte	0x1
+ 1623 04f3 3C       		.byte	0x3c
+ 1624 04f4 25000000 		.4byte	0x25
+ 1625 04f8 11020000 		.4byte	.LLST15
+ 1626 04fc 09       		.uleb128 0x9
+ 1627 04fd 0C000000 		.4byte	.LVL69
+ 1628 0501 42030000 		.4byte	0x342
+ 1629 0505 08       		.uleb128 0x8
+ 1630 0506 01       		.uleb128 0x1
+ 1631 0507 51       		.byte	0x51
+ 1632 0508 01       		.uleb128 0x1
+ 1633 0509 30       		.byte	0x30
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 34
+
+
+ 1634 050a 00       		.byte	0
+ 1635 050b 00       		.byte	0
+ 1636 050c 03       		.uleb128 0x3
+ 1637 050d 40020000 		.4byte	.LASF28
+ 1638 0511 01       		.byte	0x1
+ 1639 0512 44       		.byte	0x44
+ 1640 0513 00000000 		.4byte	.LFB10
+ 1641 0517 0C000000 		.4byte	.LFE10-.LFB10
+ 1642 051b 01       		.uleb128 0x1
+ 1643 051c 9C       		.byte	0x9c
+ 1644 051d 36050000 		.4byte	0x536
+ 1645 0521 09       		.uleb128 0x9
+ 1646 0522 0A000000 		.4byte	.LVL70
+ 1647 0526 42030000 		.4byte	0x342
+ 1648 052a 08       		.uleb128 0x8
+ 1649 052b 01       		.uleb128 0x1
+ 1650 052c 50       		.byte	0x50
+ 1651 052d 01       		.uleb128 0x1
+ 1652 052e 3E       		.byte	0x3e
+ 1653 052f 08       		.uleb128 0x8
+ 1654 0530 01       		.uleb128 0x1
+ 1655 0531 51       		.byte	0x51
+ 1656 0532 01       		.uleb128 0x1
+ 1657 0533 30       		.byte	0x30
+ 1658 0534 00       		.byte	0
+ 1659 0535 00       		.byte	0
+ 1660 0536 03       		.uleb128 0x3
+ 1661 0537 0F020000 		.4byte	.LASF29
+ 1662 053b 01       		.byte	0x1
+ 1663 053c 16       		.byte	0x16
+ 1664 053d 00000000 		.4byte	.LFB2
+ 1665 0541 5C000000 		.4byte	.LFE2-.LFB2
+ 1666 0545 01       		.uleb128 0x1
+ 1667 0546 9C       		.byte	0x9c
+ 1668 0547 30060000 		.4byte	0x630
+ 1669 054b 04       		.uleb128 0x4
+ 1670 054c 1F010000 		.4byte	.LASF30
+ 1671 0550 01       		.byte	0x1
+ 1672 0551 16       		.byte	0x16
+ 1673 0552 25000000 		.4byte	0x25
+ 1674 0556 32020000 		.4byte	.LLST16
+ 1675 055a 05       		.uleb128 0x5
+ 1676 055b 80020000 		.4byte	.LASF31
+ 1677 055f 01       		.byte	0x1
+ 1678 0560 1B       		.byte	0x1b
+ 1679 0561 9C000000 		.4byte	0x9c
+ 1680 0565 6B050000 		.4byte	0x56b
+ 1681 0569 06       		.uleb128 0x6
+ 1682 056a 00       		.byte	0
+ 1683 056b 07       		.uleb128 0x7
+ 1684 056c 0E000000 		.4byte	.LVL73
+ 1685 0570 2C000000 		.4byte	0x2c
+ 1686 0574 7E050000 		.4byte	0x57e
+ 1687 0578 08       		.uleb128 0x8
+ 1688 0579 01       		.uleb128 0x1
+ 1689 057a 50       		.byte	0x50
+ 1690 057b 01       		.uleb128 0x1
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 35
+
+
+ 1691 057c 38       		.byte	0x38
+ 1692 057d 00       		.byte	0
+ 1693 057e 0B       		.uleb128 0xb
+ 1694 057f 18000000 		.4byte	.LVL74
+ 1695 0583 A3000000 		.4byte	0xa3
+ 1696 0587 07       		.uleb128 0x7
+ 1697 0588 1E000000 		.4byte	.LVL75
+ 1698 058c 0C070000 		.4byte	0x70c
+ 1699 0590 9A050000 		.4byte	0x59a
+ 1700 0594 08       		.uleb128 0x8
+ 1701 0595 01       		.uleb128 0x1
+ 1702 0596 50       		.byte	0x50
+ 1703 0597 01       		.uleb128 0x1
+ 1704 0598 44       		.byte	0x44
+ 1705 0599 00       		.byte	0
+ 1706 059a 07       		.uleb128 0x7
+ 1707 059b 26000000 		.4byte	.LVL76
+ 1708 059f 42030000 		.4byte	0x342
+ 1709 05a3 B3050000 		.4byte	0x5b3
+ 1710 05a7 08       		.uleb128 0x8
+ 1711 05a8 01       		.uleb128 0x1
+ 1712 05a9 50       		.byte	0x50
+ 1713 05aa 02       		.uleb128 0x2
+ 1714 05ab 08       		.byte	0x8
+ 1715 05ac 30       		.byte	0x30
+ 1716 05ad 08       		.uleb128 0x8
+ 1717 05ae 01       		.uleb128 0x1
+ 1718 05af 51       		.byte	0x51
+ 1719 05b0 01       		.uleb128 0x1
+ 1720 05b1 30       		.byte	0x30
+ 1721 05b2 00       		.byte	0
+ 1722 05b3 07       		.uleb128 0x7
+ 1723 05b4 2C000000 		.4byte	.LVL77
+ 1724 05b8 0C070000 		.4byte	0x70c
+ 1725 05bc C6050000 		.4byte	0x5c6
+ 1726 05c0 08       		.uleb128 0x8
+ 1727 05c1 01       		.uleb128 0x1
+ 1728 05c2 50       		.byte	0x50
+ 1729 05c3 01       		.uleb128 0x1
+ 1730 05c4 35       		.byte	0x35
+ 1731 05c5 00       		.byte	0
+ 1732 05c6 07       		.uleb128 0x7
+ 1733 05c7 34000000 		.4byte	.LVL78
+ 1734 05cb 42030000 		.4byte	0x342
+ 1735 05cf DF050000 		.4byte	0x5df
+ 1736 05d3 08       		.uleb128 0x8
+ 1737 05d4 01       		.uleb128 0x1
+ 1738 05d5 50       		.byte	0x50
+ 1739 05d6 02       		.uleb128 0x2
+ 1740 05d7 08       		.byte	0x8
+ 1741 05d8 30       		.byte	0x30
+ 1742 05d9 08       		.uleb128 0x8
+ 1743 05da 01       		.uleb128 0x1
+ 1744 05db 51       		.byte	0x51
+ 1745 05dc 01       		.uleb128 0x1
+ 1746 05dd 30       		.byte	0x30
+ 1747 05de 00       		.byte	0
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 36
+
+
+ 1748 05df 07       		.uleb128 0x7
+ 1749 05e0 3A000000 		.4byte	.LVL79
+ 1750 05e4 0C070000 		.4byte	0x70c
+ 1751 05e8 F2050000 		.4byte	0x5f2
+ 1752 05ec 08       		.uleb128 0x8
+ 1753 05ed 01       		.uleb128 0x1
+ 1754 05ee 50       		.byte	0x50
+ 1755 05ef 01       		.uleb128 0x1
+ 1756 05f0 31       		.byte	0x31
+ 1757 05f1 00       		.byte	0
+ 1758 05f2 07       		.uleb128 0x7
+ 1759 05f3 42000000 		.4byte	.LVL80
+ 1760 05f7 42030000 		.4byte	0x342
+ 1761 05fb 0B060000 		.4byte	0x60b
+ 1762 05ff 08       		.uleb128 0x8
+ 1763 0600 01       		.uleb128 0x1
+ 1764 0601 50       		.byte	0x50
+ 1765 0602 02       		.uleb128 0x2
+ 1766 0603 08       		.byte	0x8
+ 1767 0604 30       		.byte	0x30
+ 1768 0605 08       		.uleb128 0x8
+ 1769 0606 01       		.uleb128 0x1
+ 1770 0607 51       		.byte	0x51
+ 1771 0608 01       		.uleb128 0x1
+ 1772 0609 30       		.byte	0x30
+ 1773 060a 00       		.byte	0
+ 1774 060b 0B       		.uleb128 0xb
+ 1775 060c 46000000 		.4byte	.LVL81
+ 1776 0610 4F040000 		.4byte	0x44f
+ 1777 0614 0B       		.uleb128 0xb
+ 1778 0615 4A000000 		.4byte	.LVL82
+ 1779 0619 7A040000 		.4byte	0x47a
+ 1780 061d 0B       		.uleb128 0xb
+ 1781 061e 4E000000 		.4byte	.LVL83
+ 1782 0622 0C050000 		.4byte	0x50c
+ 1783 0626 0B       		.uleb128 0xb
+ 1784 0627 52000000 		.4byte	.LVL84
+ 1785 062b 25040000 		.4byte	0x425
+ 1786 062f 00       		.byte	0
+ 1787 0630 03       		.uleb128 0x3
+ 1788 0631 00000000 		.4byte	.LASF32
+ 1789 0635 01       		.byte	0x1
+ 1790 0636 48       		.byte	0x48
+ 1791 0637 00000000 		.4byte	.LFB11
+ 1792 063b 0A000000 		.4byte	.LFE11-.LFB11
+ 1793 063f 01       		.uleb128 0x1
+ 1794 0640 9C       		.byte	0x9c
+ 1795 0641 64060000 		.4byte	0x664
+ 1796 0645 04       		.uleb128 0x4
+ 1797 0646 1E000000 		.4byte	.LASF21
+ 1798 064a 01       		.byte	0x1
+ 1799 064b 48       		.byte	0x48
+ 1800 064c 25000000 		.4byte	0x25
+ 1801 0650 53020000 		.4byte	.LLST17
+ 1802 0654 09       		.uleb128 0x9
+ 1803 0655 08000000 		.4byte	.LVL86
+ 1804 0659 42030000 		.4byte	0x342
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 37
+
+
+ 1805 065d 08       		.uleb128 0x8
+ 1806 065e 01       		.uleb128 0x1
+ 1807 065f 51       		.byte	0x51
+ 1808 0660 01       		.uleb128 0x1
+ 1809 0661 31       		.byte	0x31
+ 1810 0662 00       		.byte	0
+ 1811 0663 00       		.byte	0
+ 1812 0664 0E       		.uleb128 0xe
+ 1813 0665 6F686D00 		.ascii	"ohm\000"
+ 1814 0669 01       		.byte	0x1
+ 1815 066a 03       		.byte	0x3
+ 1816 066b 07010000 		.4byte	0x107
+ 1817 066f 05       		.uleb128 0x5
+ 1818 0670 03       		.byte	0x3
+ 1819 0671 08000000 		.4byte	ohm
+ 1820 0675 0E       		.uleb128 0xe
+ 1821 0676 707400   		.ascii	"pt\000"
+ 1822 0679 01       		.byte	0x1
+ 1823 067a 04       		.byte	0x4
+ 1824 067b 07010000 		.4byte	0x107
+ 1825 067f 05       		.uleb128 0x5
+ 1826 0680 03       		.byte	0x3
+ 1827 0681 04000000 		.4byte	pt
+ 1828 0685 0F       		.uleb128 0xf
+ 1829 0686 0F000000 		.4byte	.LASF33
+ 1830 068a 01       		.byte	0x1
+ 1831 068b 05       		.byte	0x5
+ 1832 068c 25000000 		.4byte	0x25
+ 1833 0690 05       		.uleb128 0x5
+ 1834 0691 03       		.byte	0x3
+ 1835 0692 00000000 		.4byte	rti_flag
+ 1836 0696 0F       		.uleb128 0xf
+ 1837 0697 08020000 		.4byte	.LASF34
+ 1838 069b 01       		.byte	0x1
+ 1839 069c 06       		.byte	0x6
+ 1840 069d 25000000 		.4byte	0x25
+ 1841 06a1 05       		.uleb128 0x5
+ 1842 06a2 03       		.byte	0x3
+ 1843 06a3 00000000 		.4byte	wr_dir
+ 1844 06a7 0F       		.uleb128 0xf
+ 1845 06a8 18000000 		.4byte	.LASF35
+ 1846 06ac 01       		.byte	0x1
+ 1847 06ad 07       		.byte	0x7
+ 1848 06ae 25000000 		.4byte	0x25
+ 1849 06b2 05       		.uleb128 0x5
+ 1850 06b3 03       		.byte	0x3
+ 1851 06b4 00000000 		.4byte	state
+ 1852 06b8 0F       		.uleb128 0xf
+ 1853 06b9 B3000000 		.4byte	.LASF36
+ 1854 06bd 01       		.byte	0x1
+ 1855 06be 08       		.byte	0x8
+ 1856 06bf 25000000 		.4byte	0x25
+ 1857 06c3 05       		.uleb128 0x5
+ 1858 06c4 03       		.byte	0x3
+ 1859 06c5 00000000 		.4byte	bit4_mode
+ 1860 06c9 10       		.uleb128 0x10
+ 1861 06ca 64697200 		.ascii	"dir\000"
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 38
+
+
+ 1862 06ce 01       		.byte	0x1
+ 1863 06cf 09       		.byte	0x9
+ 1864 06d0 25000000 		.4byte	0x25
+ 1865 06d4 05       		.uleb128 0x5
+ 1866 06d5 03       		.byte	0x3
+ 1867 06d6 00000000 		.4byte	dir
+ 1868 06da 0F       		.uleb128 0xf
+ 1869 06db 5A010000 		.4byte	.LASF37
+ 1870 06df 01       		.byte	0x1
+ 1871 06e0 0A       		.byte	0xa
+ 1872 06e1 25000000 		.4byte	0x25
+ 1873 06e5 05       		.uleb128 0x5
+ 1874 06e6 03       		.byte	0x3
+ 1875 06e7 00000000 		.4byte	tmp_bf
+ 1876 06eb 11       		.uleb128 0x11
+ 1877 06ec FA000000 		.4byte	.LASF0
+ 1878 06f0 FA000000 		.4byte	.LASF0
+ 1879 06f4 01       		.byte	0x1
+ 1880 06f5 0D       		.byte	0xd
+ 1881 06f6 11       		.uleb128 0x11
+ 1882 06f7 36000000 		.4byte	.LASF1
+ 1883 06fb 36000000 		.4byte	.LASF1
+ 1884 06ff 01       		.byte	0x1
+ 1885 0700 0E       		.byte	0xe
+ 1886 0701 11       		.uleb128 0x11
+ 1887 0702 CB000000 		.4byte	.LASF5
+ 1888 0706 CB000000 		.4byte	.LASF5
+ 1889 070a 01       		.byte	0x1
+ 1890 070b 13       		.byte	0x13
+ 1891 070c 11       		.uleb128 0x11
+ 1892 070d 80020000 		.4byte	.LASF31
+ 1893 0711 80020000 		.4byte	.LASF31
+ 1894 0715 01       		.byte	0x1
+ 1895 0716 1B       		.byte	0x1b
+ 1896 0717 00       		.byte	0
+ 1897              		.section	.debug_abbrev,"",%progbits
+ 1898              	.Ldebug_abbrev0:
+ 1899 0000 01       		.uleb128 0x1
+ 1900 0001 11       		.uleb128 0x11
+ 1901 0002 01       		.byte	0x1
+ 1902 0003 25       		.uleb128 0x25
+ 1903 0004 0E       		.uleb128 0xe
+ 1904 0005 13       		.uleb128 0x13
+ 1905 0006 0B       		.uleb128 0xb
+ 1906 0007 03       		.uleb128 0x3
+ 1907 0008 0E       		.uleb128 0xe
+ 1908 0009 1B       		.uleb128 0x1b
+ 1909 000a 0E       		.uleb128 0xe
+ 1910 000b 55       		.uleb128 0x55
+ 1911 000c 17       		.uleb128 0x17
+ 1912 000d 11       		.uleb128 0x11
+ 1913 000e 01       		.uleb128 0x1
+ 1914 000f 10       		.uleb128 0x10
+ 1915 0010 17       		.uleb128 0x17
+ 1916 0011 00       		.byte	0
+ 1917 0012 00       		.byte	0
+ 1918 0013 02       		.uleb128 0x2
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 39
+
+
+ 1919 0014 24       		.uleb128 0x24
+ 1920 0015 00       		.byte	0
+ 1921 0016 0B       		.uleb128 0xb
+ 1922 0017 0B       		.uleb128 0xb
+ 1923 0018 3E       		.uleb128 0x3e
+ 1924 0019 0B       		.uleb128 0xb
+ 1925 001a 03       		.uleb128 0x3
+ 1926 001b 0E       		.uleb128 0xe
+ 1927 001c 00       		.byte	0
+ 1928 001d 00       		.byte	0
+ 1929 001e 03       		.uleb128 0x3
+ 1930 001f 2E       		.uleb128 0x2e
+ 1931 0020 01       		.byte	0x1
+ 1932 0021 3F       		.uleb128 0x3f
+ 1933 0022 19       		.uleb128 0x19
+ 1934 0023 03       		.uleb128 0x3
+ 1935 0024 0E       		.uleb128 0xe
+ 1936 0025 3A       		.uleb128 0x3a
+ 1937 0026 0B       		.uleb128 0xb
+ 1938 0027 3B       		.uleb128 0x3b
+ 1939 0028 0B       		.uleb128 0xb
+ 1940 0029 27       		.uleb128 0x27
+ 1941 002a 19       		.uleb128 0x19
+ 1942 002b 11       		.uleb128 0x11
+ 1943 002c 01       		.uleb128 0x1
+ 1944 002d 12       		.uleb128 0x12
+ 1945 002e 06       		.uleb128 0x6
+ 1946 002f 40       		.uleb128 0x40
+ 1947 0030 18       		.uleb128 0x18
+ 1948 0031 9742     		.uleb128 0x2117
+ 1949 0033 19       		.uleb128 0x19
+ 1950 0034 01       		.uleb128 0x1
+ 1951 0035 13       		.uleb128 0x13
+ 1952 0036 00       		.byte	0
+ 1953 0037 00       		.byte	0
+ 1954 0038 04       		.uleb128 0x4
+ 1955 0039 05       		.uleb128 0x5
+ 1956 003a 00       		.byte	0
+ 1957 003b 03       		.uleb128 0x3
+ 1958 003c 0E       		.uleb128 0xe
+ 1959 003d 3A       		.uleb128 0x3a
+ 1960 003e 0B       		.uleb128 0xb
+ 1961 003f 3B       		.uleb128 0x3b
+ 1962 0040 0B       		.uleb128 0xb
+ 1963 0041 49       		.uleb128 0x49
+ 1964 0042 13       		.uleb128 0x13
+ 1965 0043 02       		.uleb128 0x2
+ 1966 0044 17       		.uleb128 0x17
+ 1967 0045 00       		.byte	0
+ 1968 0046 00       		.byte	0
+ 1969 0047 05       		.uleb128 0x5
+ 1970 0048 2E       		.uleb128 0x2e
+ 1971 0049 01       		.byte	0x1
+ 1972 004a 3F       		.uleb128 0x3f
+ 1973 004b 19       		.uleb128 0x19
+ 1974 004c 03       		.uleb128 0x3
+ 1975 004d 0E       		.uleb128 0xe
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 40
+
+
+ 1976 004e 3A       		.uleb128 0x3a
+ 1977 004f 0B       		.uleb128 0xb
+ 1978 0050 3B       		.uleb128 0x3b
+ 1979 0051 0B       		.uleb128 0xb
+ 1980 0052 49       		.uleb128 0x49
+ 1981 0053 13       		.uleb128 0x13
+ 1982 0054 3C       		.uleb128 0x3c
+ 1983 0055 19       		.uleb128 0x19
+ 1984 0056 01       		.uleb128 0x1
+ 1985 0057 13       		.uleb128 0x13
+ 1986 0058 00       		.byte	0
+ 1987 0059 00       		.byte	0
+ 1988 005a 06       		.uleb128 0x6
+ 1989 005b 18       		.uleb128 0x18
+ 1990 005c 00       		.byte	0
+ 1991 005d 00       		.byte	0
+ 1992 005e 00       		.byte	0
+ 1993 005f 07       		.uleb128 0x7
+ 1994 0060 898201   		.uleb128 0x4109
+ 1995 0063 01       		.byte	0x1
+ 1996 0064 11       		.uleb128 0x11
+ 1997 0065 01       		.uleb128 0x1
+ 1998 0066 31       		.uleb128 0x31
+ 1999 0067 13       		.uleb128 0x13
+ 2000 0068 01       		.uleb128 0x1
+ 2001 0069 13       		.uleb128 0x13
+ 2002 006a 00       		.byte	0
+ 2003 006b 00       		.byte	0
+ 2004 006c 08       		.uleb128 0x8
+ 2005 006d 8A8201   		.uleb128 0x410a
+ 2006 0070 00       		.byte	0
+ 2007 0071 02       		.uleb128 0x2
+ 2008 0072 18       		.uleb128 0x18
+ 2009 0073 9142     		.uleb128 0x2111
+ 2010 0075 18       		.uleb128 0x18
+ 2011 0076 00       		.byte	0
+ 2012 0077 00       		.byte	0
+ 2013 0078 09       		.uleb128 0x9
+ 2014 0079 898201   		.uleb128 0x4109
+ 2015 007c 01       		.byte	0x1
+ 2016 007d 11       		.uleb128 0x11
+ 2017 007e 01       		.uleb128 0x1
+ 2018 007f 31       		.uleb128 0x31
+ 2019 0080 13       		.uleb128 0x13
+ 2020 0081 00       		.byte	0
+ 2021 0082 00       		.byte	0
+ 2022 0083 0A       		.uleb128 0xa
+ 2023 0084 24       		.uleb128 0x24
+ 2024 0085 00       		.byte	0
+ 2025 0086 0B       		.uleb128 0xb
+ 2026 0087 0B       		.uleb128 0xb
+ 2027 0088 3E       		.uleb128 0x3e
+ 2028 0089 0B       		.uleb128 0xb
+ 2029 008a 03       		.uleb128 0x3
+ 2030 008b 08       		.uleb128 0x8
+ 2031 008c 00       		.byte	0
+ 2032 008d 00       		.byte	0
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 41
+
+
+ 2033 008e 0B       		.uleb128 0xb
+ 2034 008f 898201   		.uleb128 0x4109
+ 2035 0092 00       		.byte	0
+ 2036 0093 11       		.uleb128 0x11
+ 2037 0094 01       		.uleb128 0x1
+ 2038 0095 31       		.uleb128 0x31
+ 2039 0096 13       		.uleb128 0x13
+ 2040 0097 00       		.byte	0
+ 2041 0098 00       		.byte	0
+ 2042 0099 0C       		.uleb128 0xc
+ 2043 009a 34       		.uleb128 0x34
+ 2044 009b 00       		.byte	0
+ 2045 009c 03       		.uleb128 0x3
+ 2046 009d 0E       		.uleb128 0xe
+ 2047 009e 3A       		.uleb128 0x3a
+ 2048 009f 0B       		.uleb128 0xb
+ 2049 00a0 3B       		.uleb128 0x3b
+ 2050 00a1 0B       		.uleb128 0xb
+ 2051 00a2 49       		.uleb128 0x49
+ 2052 00a3 13       		.uleb128 0x13
+ 2053 00a4 02       		.uleb128 0x2
+ 2054 00a5 17       		.uleb128 0x17
+ 2055 00a6 00       		.byte	0
+ 2056 00a7 00       		.byte	0
+ 2057 00a8 0D       		.uleb128 0xd
+ 2058 00a9 2E       		.uleb128 0x2e
+ 2059 00aa 00       		.byte	0
+ 2060 00ab 3F       		.uleb128 0x3f
+ 2061 00ac 19       		.uleb128 0x19
+ 2062 00ad 03       		.uleb128 0x3
+ 2063 00ae 0E       		.uleb128 0xe
+ 2064 00af 3A       		.uleb128 0x3a
+ 2065 00b0 0B       		.uleb128 0xb
+ 2066 00b1 3B       		.uleb128 0x3b
+ 2067 00b2 0B       		.uleb128 0xb
+ 2068 00b3 27       		.uleb128 0x27
+ 2069 00b4 19       		.uleb128 0x19
+ 2070 00b5 11       		.uleb128 0x11
+ 2071 00b6 01       		.uleb128 0x1
+ 2072 00b7 12       		.uleb128 0x12
+ 2073 00b8 06       		.uleb128 0x6
+ 2074 00b9 40       		.uleb128 0x40
+ 2075 00ba 18       		.uleb128 0x18
+ 2076 00bb 9742     		.uleb128 0x2117
+ 2077 00bd 19       		.uleb128 0x19
+ 2078 00be 00       		.byte	0
+ 2079 00bf 00       		.byte	0
+ 2080 00c0 0E       		.uleb128 0xe
+ 2081 00c1 34       		.uleb128 0x34
+ 2082 00c2 00       		.byte	0
+ 2083 00c3 03       		.uleb128 0x3
+ 2084 00c4 08       		.uleb128 0x8
+ 2085 00c5 3A       		.uleb128 0x3a
+ 2086 00c6 0B       		.uleb128 0xb
+ 2087 00c7 3B       		.uleb128 0x3b
+ 2088 00c8 0B       		.uleb128 0xb
+ 2089 00c9 49       		.uleb128 0x49
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 42
+
+
+ 2090 00ca 13       		.uleb128 0x13
+ 2091 00cb 02       		.uleb128 0x2
+ 2092 00cc 18       		.uleb128 0x18
+ 2093 00cd 00       		.byte	0
+ 2094 00ce 00       		.byte	0
+ 2095 00cf 0F       		.uleb128 0xf
+ 2096 00d0 34       		.uleb128 0x34
+ 2097 00d1 00       		.byte	0
+ 2098 00d2 03       		.uleb128 0x3
+ 2099 00d3 0E       		.uleb128 0xe
+ 2100 00d4 3A       		.uleb128 0x3a
+ 2101 00d5 0B       		.uleb128 0xb
+ 2102 00d6 3B       		.uleb128 0x3b
+ 2103 00d7 0B       		.uleb128 0xb
+ 2104 00d8 49       		.uleb128 0x49
+ 2105 00d9 13       		.uleb128 0x13
+ 2106 00da 3F       		.uleb128 0x3f
+ 2107 00db 19       		.uleb128 0x19
+ 2108 00dc 02       		.uleb128 0x2
+ 2109 00dd 18       		.uleb128 0x18
+ 2110 00de 00       		.byte	0
+ 2111 00df 00       		.byte	0
+ 2112 00e0 10       		.uleb128 0x10
+ 2113 00e1 34       		.uleb128 0x34
+ 2114 00e2 00       		.byte	0
+ 2115 00e3 03       		.uleb128 0x3
+ 2116 00e4 08       		.uleb128 0x8
+ 2117 00e5 3A       		.uleb128 0x3a
+ 2118 00e6 0B       		.uleb128 0xb
+ 2119 00e7 3B       		.uleb128 0x3b
+ 2120 00e8 0B       		.uleb128 0xb
+ 2121 00e9 49       		.uleb128 0x49
+ 2122 00ea 13       		.uleb128 0x13
+ 2123 00eb 3F       		.uleb128 0x3f
+ 2124 00ec 19       		.uleb128 0x19
+ 2125 00ed 02       		.uleb128 0x2
+ 2126 00ee 18       		.uleb128 0x18
+ 2127 00ef 00       		.byte	0
+ 2128 00f0 00       		.byte	0
+ 2129 00f1 11       		.uleb128 0x11
+ 2130 00f2 2E       		.uleb128 0x2e
+ 2131 00f3 00       		.byte	0
+ 2132 00f4 3F       		.uleb128 0x3f
+ 2133 00f5 19       		.uleb128 0x19
+ 2134 00f6 3C       		.uleb128 0x3c
+ 2135 00f7 19       		.uleb128 0x19
+ 2136 00f8 6E       		.uleb128 0x6e
+ 2137 00f9 0E       		.uleb128 0xe
+ 2138 00fa 03       		.uleb128 0x3
+ 2139 00fb 0E       		.uleb128 0xe
+ 2140 00fc 3A       		.uleb128 0x3a
+ 2141 00fd 0B       		.uleb128 0xb
+ 2142 00fe 3B       		.uleb128 0x3b
+ 2143 00ff 0B       		.uleb128 0xb
+ 2144 0100 00       		.byte	0
+ 2145 0101 00       		.byte	0
+ 2146 0102 00       		.byte	0
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 43
+
+
+ 2147              		.section	.debug_loc,"",%progbits
+ 2148              	.Ldebug_loc0:
+ 2149              	.LLST0:
+ 2150 0000 00000000 		.4byte	.LVL0
+ 2151 0004 08000000 		.4byte	.LVL1
+ 2152 0008 0100     		.2byte	0x1
+ 2153 000a 50       		.byte	0x50
+ 2154 000b 08000000 		.4byte	.LVL1
+ 2155 000f 20000000 		.4byte	.LFE0
+ 2156 0013 0400     		.2byte	0x4
+ 2157 0015 F3       		.byte	0xf3
+ 2158 0016 01       		.uleb128 0x1
+ 2159 0017 50       		.byte	0x50
+ 2160 0018 9F       		.byte	0x9f
+ 2161 0019 00000000 		.4byte	0
+ 2162 001d 00000000 		.4byte	0
+ 2163              	.LLST1:
+ 2164 0021 00000000 		.4byte	.LVL5
+ 2165 0025 06000000 		.4byte	.LVL6
+ 2166 0029 0100     		.2byte	0x1
+ 2167 002b 50       		.byte	0x50
+ 2168 002c 06000000 		.4byte	.LVL6
+ 2169 0030 14000000 		.4byte	.LFE13
+ 2170 0034 0100     		.2byte	0x1
+ 2171 0036 50       		.byte	0x50
+ 2172 0037 00000000 		.4byte	0
+ 2173 003b 00000000 		.4byte	0
+ 2174              	.LLST2:
+ 2175 003f 06000000 		.4byte	.LVL6
+ 2176 0043 0A000000 		.4byte	.LVL7
+ 2177 0047 0200     		.2byte	0x2
+ 2178 0049 30       		.byte	0x30
+ 2179 004a 9F       		.byte	0x9f
+ 2180 004b 0A000000 		.4byte	.LVL7
+ 2181 004f 14000000 		.4byte	.LFE13
+ 2182 0053 0100     		.2byte	0x1
+ 2183 0055 53       		.byte	0x53
+ 2184 0056 00000000 		.4byte	0
+ 2185 005a 00000000 		.4byte	0
+ 2186              	.LLST3:
+ 2187 005e 00000000 		.4byte	.LVL9
+ 2188 0062 02000000 		.4byte	.LVL10
+ 2189 0066 0100     		.2byte	0x1
+ 2190 0068 50       		.byte	0x50
+ 2191 0069 02000000 		.4byte	.LVL10
+ 2192 006d 10000000 		.4byte	.LFE14
+ 2193 0071 0100     		.2byte	0x1
+ 2194 0073 50       		.byte	0x50
+ 2195 0074 00000000 		.4byte	0
+ 2196 0078 00000000 		.4byte	0
+ 2197              	.LLST4:
+ 2198 007c 02000000 		.4byte	.LVL10
+ 2199 0080 06000000 		.4byte	.LVL11
+ 2200 0084 0200     		.2byte	0x2
+ 2201 0086 30       		.byte	0x30
+ 2202 0087 9F       		.byte	0x9f
+ 2203 0088 06000000 		.4byte	.LVL11
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 44
+
+
+ 2204 008c 10000000 		.4byte	.LFE14
+ 2205 0090 0100     		.2byte	0x1
+ 2206 0092 53       		.byte	0x53
+ 2207 0093 00000000 		.4byte	0
+ 2208 0097 00000000 		.4byte	0
+ 2209              	.LLST5:
+ 2210 009b 00000000 		.4byte	.LVL13
+ 2211 009f 02000000 		.4byte	.LVL14
+ 2212 00a3 0100     		.2byte	0x1
+ 2213 00a5 50       		.byte	0x50
+ 2214 00a6 02000000 		.4byte	.LVL14
+ 2215 00aa 20000000 		.4byte	.LFE15
+ 2216 00ae 0100     		.2byte	0x1
+ 2217 00b0 50       		.byte	0x50
+ 2218 00b1 00000000 		.4byte	0
+ 2219 00b5 00000000 		.4byte	0
+ 2220              	.LLST6:
+ 2221 00b9 00000000 		.4byte	.LVL15
+ 2222 00bd 02000000 		.4byte	.LVL16
+ 2223 00c1 0100     		.2byte	0x1
+ 2224 00c3 50       		.byte	0x50
+ 2225 00c4 02000000 		.4byte	.LVL16
+ 2226 00c8 20000000 		.4byte	.LFE16
+ 2227 00cc 0100     		.2byte	0x1
+ 2228 00ce 50       		.byte	0x50
+ 2229 00cf 00000000 		.4byte	0
+ 2230 00d3 00000000 		.4byte	0
+ 2231              	.LLST7:
+ 2232 00d7 00000000 		.4byte	.LVL17
+ 2233 00db 12000000 		.4byte	.LVL18
+ 2234 00df 0100     		.2byte	0x1
+ 2235 00e1 50       		.byte	0x50
+ 2236 00e2 12000000 		.4byte	.LVL18
+ 2237 00e6 18000000 		.4byte	.LVL20
+ 2238 00ea 0400     		.2byte	0x4
+ 2239 00ec F3       		.byte	0xf3
+ 2240 00ed 01       		.uleb128 0x1
+ 2241 00ee 50       		.byte	0x50
+ 2242 00ef 9F       		.byte	0x9f
+ 2243 00f0 18000000 		.4byte	.LVL20
+ 2244 00f4 20000000 		.4byte	.LVL21
+ 2245 00f8 0100     		.2byte	0x1
+ 2246 00fa 50       		.byte	0x50
+ 2247 00fb 20000000 		.4byte	.LVL21
+ 2248 00ff C8000000 		.4byte	.LFE18
+ 2249 0103 0400     		.2byte	0x4
+ 2250 0105 F3       		.byte	0xf3
+ 2251 0106 01       		.uleb128 0x1
+ 2252 0107 50       		.byte	0x50
+ 2253 0108 9F       		.byte	0x9f
+ 2254 0109 00000000 		.4byte	0
+ 2255 010d 00000000 		.4byte	0
+ 2256              	.LLST8:
+ 2257 0111 00000000 		.4byte	.LVL17
+ 2258 0115 15000000 		.4byte	.LVL19-1
+ 2259 0119 0100     		.2byte	0x1
+ 2260 011b 51       		.byte	0x51
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 45
+
+
+ 2261 011c 15000000 		.4byte	.LVL19-1
+ 2262 0120 18000000 		.4byte	.LVL20
+ 2263 0124 0400     		.2byte	0x4
+ 2264 0126 F3       		.byte	0xf3
+ 2265 0127 01       		.uleb128 0x1
+ 2266 0128 51       		.byte	0x51
+ 2267 0129 9F       		.byte	0x9f
+ 2268 012a 18000000 		.4byte	.LVL20
+ 2269 012e 23000000 		.4byte	.LVL22-1
+ 2270 0132 0100     		.2byte	0x1
+ 2271 0134 51       		.byte	0x51
+ 2272 0135 23000000 		.4byte	.LVL22-1
+ 2273 0139 C8000000 		.4byte	.LFE18
+ 2274 013d 0400     		.2byte	0x4
+ 2275 013f F3       		.byte	0xf3
+ 2276 0140 01       		.uleb128 0x1
+ 2277 0141 51       		.byte	0x51
+ 2278 0142 9F       		.byte	0x9f
+ 2279 0143 00000000 		.4byte	0
+ 2280 0147 00000000 		.4byte	0
+ 2281              	.LLST9:
+ 2282 014b 00000000 		.4byte	.LVL37
+ 2283 014f 04000000 		.4byte	.LVL38
+ 2284 0153 0100     		.2byte	0x1
+ 2285 0155 50       		.byte	0x50
+ 2286 0156 04000000 		.4byte	.LVL38
+ 2287 015a 0E000000 		.4byte	.LFE7
+ 2288 015e 0400     		.2byte	0x4
+ 2289 0160 F3       		.byte	0xf3
+ 2290 0161 01       		.uleb128 0x1
+ 2291 0162 50       		.byte	0x50
+ 2292 0163 9F       		.byte	0x9f
+ 2293 0164 00000000 		.4byte	0
+ 2294 0168 00000000 		.4byte	0
+ 2295              	.LLST10:
+ 2296 016c 00000000 		.4byte	.LVL40
+ 2297 0170 04000000 		.4byte	.LVL41
+ 2298 0174 0100     		.2byte	0x1
+ 2299 0176 50       		.byte	0x50
+ 2300 0177 04000000 		.4byte	.LVL41
+ 2301 017b 0E000000 		.4byte	.LFE9
+ 2302 017f 0400     		.2byte	0x4
+ 2303 0181 F3       		.byte	0xf3
+ 2304 0182 01       		.uleb128 0x1
+ 2305 0183 50       		.byte	0x50
+ 2306 0184 9F       		.byte	0x9f
+ 2307 0185 00000000 		.4byte	0
+ 2308 0189 00000000 		.4byte	0
+ 2309              	.LLST11:
+ 2310 018d 00000000 		.4byte	.LVL43
+ 2311 0191 07000000 		.4byte	.LVL44-1
+ 2312 0195 0100     		.2byte	0x1
+ 2313 0197 50       		.byte	0x50
+ 2314 0198 07000000 		.4byte	.LVL44-1
+ 2315 019c 0A000000 		.4byte	.LFE12
+ 2316 01a0 0400     		.2byte	0x4
+ 2317 01a2 F3       		.byte	0xf3
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 46
+
+
+ 2318 01a3 01       		.uleb128 0x1
+ 2319 01a4 50       		.byte	0x50
+ 2320 01a5 9F       		.byte	0x9f
+ 2321 01a6 00000000 		.4byte	0
+ 2322 01aa 00000000 		.4byte	0
+ 2323              	.LLST12:
+ 2324 01ae 00000000 		.4byte	.LVL45
+ 2325 01b2 10000000 		.4byte	.LVL46
+ 2326 01b6 0100     		.2byte	0x1
+ 2327 01b8 50       		.byte	0x50
+ 2328 01b9 10000000 		.4byte	.LVL46
+ 2329 01bd CC000000 		.4byte	.LFE19
+ 2330 01c1 0400     		.2byte	0x4
+ 2331 01c3 F3       		.byte	0xf3
+ 2332 01c4 01       		.uleb128 0x1
+ 2333 01c5 50       		.byte	0x50
+ 2334 01c6 9F       		.byte	0x9f
+ 2335 01c7 00000000 		.4byte	0
+ 2336 01cb 00000000 		.4byte	0
+ 2337              	.LLST13:
+ 2338 01cf 00000000 		.4byte	.LVL45
+ 2339 01d3 13000000 		.4byte	.LVL47-1
+ 2340 01d7 0100     		.2byte	0x1
+ 2341 01d9 51       		.byte	0x51
+ 2342 01da 13000000 		.4byte	.LVL47-1
+ 2343 01de CC000000 		.4byte	.LFE19
+ 2344 01e2 0400     		.2byte	0x4
+ 2345 01e4 F3       		.byte	0xf3
+ 2346 01e5 01       		.uleb128 0x1
+ 2347 01e6 51       		.byte	0x51
+ 2348 01e7 9F       		.byte	0x9f
+ 2349 01e8 00000000 		.4byte	0
+ 2350 01ec 00000000 		.4byte	0
+ 2351              	.LLST14:
+ 2352 01f0 00000000 		.4byte	.LVL64
+ 2353 01f4 04000000 		.4byte	.LVL65
+ 2354 01f8 0100     		.2byte	0x1
+ 2355 01fa 50       		.byte	0x50
+ 2356 01fb 04000000 		.4byte	.LVL65
+ 2357 01ff 0E000000 		.4byte	.LFE6
+ 2358 0203 0400     		.2byte	0x4
+ 2359 0205 F3       		.byte	0xf3
+ 2360 0206 01       		.uleb128 0x1
+ 2361 0207 50       		.byte	0x50
+ 2362 0208 9F       		.byte	0x9f
+ 2363 0209 00000000 		.4byte	0
+ 2364 020d 00000000 		.4byte	0
+ 2365              	.LLST15:
+ 2366 0211 00000000 		.4byte	.LVL67
+ 2367 0215 04000000 		.4byte	.LVL68
+ 2368 0219 0100     		.2byte	0x1
+ 2369 021b 50       		.byte	0x50
+ 2370 021c 04000000 		.4byte	.LVL68
+ 2371 0220 0E000000 		.4byte	.LFE8
+ 2372 0224 0400     		.2byte	0x4
+ 2373 0226 F3       		.byte	0xf3
+ 2374 0227 01       		.uleb128 0x1
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 47
+
+
+ 2375 0228 50       		.byte	0x50
+ 2376 0229 9F       		.byte	0x9f
+ 2377 022a 00000000 		.4byte	0
+ 2378 022e 00000000 		.4byte	0
+ 2379              	.LLST16:
+ 2380 0232 00000000 		.4byte	.LVL71
+ 2381 0236 04000000 		.4byte	.LVL72
+ 2382 023a 0100     		.2byte	0x1
+ 2383 023c 50       		.byte	0x50
+ 2384 023d 04000000 		.4byte	.LVL72
+ 2385 0241 5C000000 		.4byte	.LFE2
+ 2386 0245 0400     		.2byte	0x4
+ 2387 0247 F3       		.byte	0xf3
+ 2388 0248 01       		.uleb128 0x1
+ 2389 0249 50       		.byte	0x50
+ 2390 024a 9F       		.byte	0x9f
+ 2391 024b 00000000 		.4byte	0
+ 2392 024f 00000000 		.4byte	0
+ 2393              	.LLST17:
+ 2394 0253 00000000 		.4byte	.LVL85
+ 2395 0257 07000000 		.4byte	.LVL86-1
+ 2396 025b 0100     		.2byte	0x1
+ 2397 025d 50       		.byte	0x50
+ 2398 025e 07000000 		.4byte	.LVL86-1
+ 2399 0262 0A000000 		.4byte	.LFE11
+ 2400 0266 0400     		.2byte	0x4
+ 2401 0268 F3       		.byte	0xf3
+ 2402 0269 01       		.uleb128 0x1
+ 2403 026a 50       		.byte	0x50
+ 2404 026b 9F       		.byte	0x9f
+ 2405 026c 00000000 		.4byte	0
+ 2406 0270 00000000 		.4byte	0
+ 2407              		.section	.debug_aranges,"",%progbits
+ 2408 0000 B4000000 		.4byte	0xb4
+ 2409 0004 0200     		.2byte	0x2
+ 2410 0006 00000000 		.4byte	.Ldebug_info0
+ 2411 000a 04       		.byte	0x4
+ 2412 000b 00       		.byte	0
+ 2413 000c 0000     		.2byte	0
+ 2414 000e 0000     		.2byte	0
+ 2415 0010 00000000 		.4byte	.LFB0
+ 2416 0014 20000000 		.4byte	.LFE0-.LFB0
+ 2417 0018 00000000 		.4byte	.LFB1
+ 2418 001c 08000000 		.4byte	.LFE1-.LFB1
+ 2419 0020 00000000 		.4byte	.LFB13
+ 2420 0024 14000000 		.4byte	.LFE13-.LFB13
+ 2421 0028 00000000 		.4byte	.LFB14
+ 2422 002c 10000000 		.4byte	.LFE14-.LFB14
+ 2423 0030 00000000 		.4byte	.LFB15
+ 2424 0034 20000000 		.4byte	.LFE15-.LFB15
+ 2425 0038 00000000 		.4byte	.LFB16
+ 2426 003c 20000000 		.4byte	.LFE16-.LFB16
+ 2427 0040 00000000 		.4byte	.LFB17
+ 2428 0044 0C000000 		.4byte	.LFE17-.LFB17
+ 2429 0048 00000000 		.4byte	.LFB18
+ 2430 004c C8000000 		.4byte	.LFE18-.LFB18
+ 2431 0050 00000000 		.4byte	.LFB7
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 48
+
+
+ 2432 0054 0E000000 		.4byte	.LFE7-.LFB7
+ 2433 0058 00000000 		.4byte	.LFB9
+ 2434 005c 0E000000 		.4byte	.LFE9-.LFB9
+ 2435 0060 00000000 		.4byte	.LFB12
+ 2436 0064 0A000000 		.4byte	.LFE12-.LFB12
+ 2437 0068 00000000 		.4byte	.LFB19
+ 2438 006c CC000000 		.4byte	.LFE19-.LFB19
+ 2439 0070 00000000 		.4byte	.LFB3
+ 2440 0074 0C000000 		.4byte	.LFE3-.LFB3
+ 2441 0078 00000000 		.4byte	.LFB4
+ 2442 007c 18000000 		.4byte	.LFE4-.LFB4
+ 2443 0080 00000000 		.4byte	.LFB5
+ 2444 0084 0C000000 		.4byte	.LFE5-.LFB5
+ 2445 0088 00000000 		.4byte	.LFB6
+ 2446 008c 0E000000 		.4byte	.LFE6-.LFB6
+ 2447 0090 00000000 		.4byte	.LFB8
+ 2448 0094 0E000000 		.4byte	.LFE8-.LFB8
+ 2449 0098 00000000 		.4byte	.LFB10
+ 2450 009c 0C000000 		.4byte	.LFE10-.LFB10
+ 2451 00a0 00000000 		.4byte	.LFB2
+ 2452 00a4 5C000000 		.4byte	.LFE2-.LFB2
+ 2453 00a8 00000000 		.4byte	.LFB11
+ 2454 00ac 0A000000 		.4byte	.LFE11-.LFB11
+ 2455 00b0 00000000 		.4byte	0
+ 2456 00b4 00000000 		.4byte	0
+ 2457              		.section	.debug_ranges,"",%progbits
+ 2458              	.Ldebug_ranges0:
+ 2459 0000 00000000 		.4byte	.LFB0
+ 2460 0004 20000000 		.4byte	.LFE0
+ 2461 0008 00000000 		.4byte	.LFB1
+ 2462 000c 08000000 		.4byte	.LFE1
+ 2463 0010 00000000 		.4byte	.LFB13
+ 2464 0014 14000000 		.4byte	.LFE13
+ 2465 0018 00000000 		.4byte	.LFB14
+ 2466 001c 10000000 		.4byte	.LFE14
+ 2467 0020 00000000 		.4byte	.LFB15
+ 2468 0024 20000000 		.4byte	.LFE15
+ 2469 0028 00000000 		.4byte	.LFB16
+ 2470 002c 20000000 		.4byte	.LFE16
+ 2471 0030 00000000 		.4byte	.LFB17
+ 2472 0034 0C000000 		.4byte	.LFE17
+ 2473 0038 00000000 		.4byte	.LFB18
+ 2474 003c C8000000 		.4byte	.LFE18
+ 2475 0040 00000000 		.4byte	.LFB7
+ 2476 0044 0E000000 		.4byte	.LFE7
+ 2477 0048 00000000 		.4byte	.LFB9
+ 2478 004c 0E000000 		.4byte	.LFE9
+ 2479 0050 00000000 		.4byte	.LFB12
+ 2480 0054 0A000000 		.4byte	.LFE12
+ 2481 0058 00000000 		.4byte	.LFB19
+ 2482 005c CC000000 		.4byte	.LFE19
+ 2483 0060 00000000 		.4byte	.LFB3
+ 2484 0064 0C000000 		.4byte	.LFE3
+ 2485 0068 00000000 		.4byte	.LFB4
+ 2486 006c 18000000 		.4byte	.LFE4
+ 2487 0070 00000000 		.4byte	.LFB5
+ 2488 0074 0C000000 		.4byte	.LFE5
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 49
+
+
+ 2489 0078 00000000 		.4byte	.LFB6
+ 2490 007c 0E000000 		.4byte	.LFE6
+ 2491 0080 00000000 		.4byte	.LFB8
+ 2492 0084 0E000000 		.4byte	.LFE8
+ 2493 0088 00000000 		.4byte	.LFB10
+ 2494 008c 0C000000 		.4byte	.LFE10
+ 2495 0090 00000000 		.4byte	.LFB2
+ 2496 0094 5C000000 		.4byte	.LFE2
+ 2497 0098 00000000 		.4byte	.LFB11
+ 2498 009c 0A000000 		.4byte	.LFE11
+ 2499 00a0 00000000 		.4byte	0
+ 2500 00a4 00000000 		.4byte	0
+ 2501              		.section	.debug_line,"",%progbits
+ 2502              	.Ldebug_line0:
+ 2503 0000 F8010000 		.section	.debug_str,"MS",%progbits,1
+ 2503      02002000 
+ 2503      00000201 
+ 2503      FB0E0D00 
+ 2503      01010101 
+ 2504              	.LASF32:
+ 2505 0000 6C63645F 		.ascii	"lcd_write_char\000"
+ 2505      77726974 
+ 2505      655F6368 
+ 2505      617200
+ 2506              	.LASF33:
+ 2507 000f 7274695F 		.ascii	"rti_flag\000"
+ 2507      666C6167 
+ 2507      00
+ 2508              	.LASF35:
+ 2509 0018 73746174 		.ascii	"state\000"
+ 2509      6500
+ 2510              	.LASF21:
+ 2511 001e 63686172 		.ascii	"character\000"
+ 2511      61637465 
+ 2511      7200
+ 2512              	.LASF19:
+ 2513 0028 6C63645F 		.ascii	"lcd_line2_pos\000"
+ 2513      6C696E65 
+ 2513      325F706F 
+ 2513      7300
+ 2514              	.LASF1:
+ 2515 0036 49324350 		.ascii	"I2CP_I2CMasterWriteByte\000"
+ 2515      5F493243 
+ 2515      4D617374 
+ 2515      65725772 
+ 2515      69746542 
+ 2516              	.LASF20:
+ 2517 004e 6C63645F 		.ascii	"lcd_write_int\000"
+ 2517      77726974 
+ 2517      655F696E 
+ 2517      7400
+ 2518              	.LASF26:
+ 2519 005c 6C63645F 		.ascii	"lcd_line0\000"
+ 2519      6C696E65 
+ 2519      3000
+ 2520              	.LASF27:
+ 2521 0066 6C63645F 		.ascii	"lcd_line1\000"
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 50
+
+
+ 2521      6C696E65 
+ 2521      3100
+ 2522              	.LASF7:
+ 2523 0070 64617461 		.ascii	"data\000"
+ 2523      00
+ 2524              	.LASF8:
+ 2525 0075 64656C61 		.ascii	"delay\000"
+ 2525      7900
+ 2526              	.LASF24:
+ 2527 007b 6C63645F 		.ascii	"lcd_4_bit\000"
+ 2527      345F6269 
+ 2527      7400
+ 2528              	.LASF2:
+ 2529 0085 756E7369 		.ascii	"unsigned char\000"
+ 2529      676E6564 
+ 2529      20636861 
+ 2529      7200
+ 2530              	.LASF6:
+ 2531 0093 64656C61 		.ascii	"delay_ms\000"
+ 2531      795F6D73 
+ 2531      00
+ 2532              	.LASF16:
+ 2533 009c 7469706F 		.ascii	"tipo\000"
+ 2533      00
+ 2534              	.LASF11:
+ 2535 00a1 636F6E74 		.ascii	"contador\000"
+ 2535      61646F72 
+ 2535      00
+ 2536              	.LASF41:
+ 2537 00aa 64656C61 		.ascii	"delay_op\000"
+ 2537      795F6F70 
+ 2537      00
+ 2538              	.LASF36:
+ 2539 00b3 62697434 		.ascii	"bit4_mode\000"
+ 2539      5F6D6F64 
+ 2539      6500
+ 2540              	.LASF15:
+ 2541 00bd 6461746F 		.ascii	"dato\000"
+ 2541      00
+ 2542              	.LASF4:
+ 2543 00c2 6932635F 		.ascii	"i2c_idle\000"
+ 2543      69646C65 
+ 2543      00
+ 2544              	.LASF5:
+ 2545 00cb 49324350 		.ascii	"I2CP_I2CMasterSendStop\000"
+ 2545      5F493243 
+ 2545      4D617374 
+ 2545      65725365 
+ 2545      6E645374 
+ 2546              	.LASF25:
+ 2547 00e2 6C63645F 		.ascii	"lcd_cursor_inc\000"
+ 2547      63757273 
+ 2547      6F725F69 
+ 2547      6E6300
+ 2548              	.LASF10:
+ 2549 00f1 64656C61 		.ascii	"delay_us\000"
+ 2549      795F7573 
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 51
+
+
+ 2549      00
+ 2550              	.LASF0:
+ 2551 00fa 49324350 		.ascii	"I2CP_I2CMasterSendStart\000"
+ 2551      5F493243 
+ 2551      4D617374 
+ 2551      65725365 
+ 2551      6E645374 
+ 2552              	.LASF9:
+ 2553 0112 756E7369 		.ascii	"unsigned int\000"
+ 2553      676E6564 
+ 2553      20696E74 
+ 2553      00
+ 2554              	.LASF30:
+ 2555 011f 61646472 		.ascii	"address\000"
+ 2555      65737300 
+ 2556              	.LASF40:
+ 2557 0127 433A5C55 		.ascii	"C:\\Users\\Elias g\\FDRM-kl25z\\Cypress\\Design01.c"
+ 2557      73657273 
+ 2557      5C456C69 
+ 2557      61732067 
+ 2557      5C464452 
+ 2558 0155 7964736E 		.ascii	"ydsn\000"
+ 2558      00
+ 2559              	.LASF37:
+ 2560 015a 746D705F 		.ascii	"tmp_bf\000"
+ 2560      626600
+ 2561              	.LASF13:
+ 2562 0161 64656C61 		.ascii	"delay_mili\000"
+ 2562      795F6D69 
+ 2562      6C6900
+ 2563              	.LASF38:
+ 2564 016c 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2564      43313120 
+ 2564      352E342E 
+ 2564      31203230 
+ 2564      31363036 
+ 2565 019f 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 2565      20726576 
+ 2565      6973696F 
+ 2565      6E203233 
+ 2565      37373135 
+ 2566 01d2 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 2566      66756E63 
+ 2566      74696F6E 
+ 2566      2D736563 
+ 2566      74696F6E 
+ 2567              	.LASF17:
+ 2568 01fa 6C63645F 		.ascii	"lcd_line1_pos\000"
+ 2568      6C696E65 
+ 2568      315F706F 
+ 2568      7300
+ 2569              	.LASF34:
+ 2570 0208 77725F64 		.ascii	"wr_dir\000"
+ 2570      697200
+ 2571              	.LASF29:
+ 2572 020f 4932435F 		.ascii	"I2C_LCD_Init\000"
+ 2572      4C43445F 
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccTTQmdB.s 			page 52
+
+
+ 2572      496E6974 
+ 2572      00
+ 2573              	.LASF14:
+ 2574 021c 6C63645F 		.ascii	"lcd_write_uchar_pos\000"
+ 2574      77726974 
+ 2574      655F7563 
+ 2574      6861725F 
+ 2574      706F7300 
+ 2575              	.LASF22:
+ 2576 0230 6C63645F 		.ascii	"lcd_write_uchar\000"
+ 2576      77726974 
+ 2576      655F7563 
+ 2576      68617200 
+ 2577              	.LASF28:
+ 2578 0240 6C63645F 		.ascii	"lcd_cursor_on\000"
+ 2578      63757273 
+ 2578      6F725F6F 
+ 2578      6E00
+ 2579              	.LASF39:
+ 2580 024e 6932635F 		.ascii	"i2c_lcd.c\000"
+ 2580      6C63642E 
+ 2580      6300
+ 2581              	.LASF12:
+ 2582 0258 64656C61 		.ascii	"delay_micro\000"
+ 2582      795F6D69 
+ 2582      63726F00 
+ 2583              	.LASF18:
+ 2584 0264 706F7369 		.ascii	"posicion\000"
+ 2584      63696F6E 
+ 2584      00
+ 2585              	.LASF3:
+ 2586 026d 6932635F 		.ascii	"i2c_send\000"
+ 2586      73656E64 
+ 2586      00
+ 2587              	.LASF23:
+ 2588 0276 6C63645F 		.ascii	"lcd_clear\000"
+ 2588      636C6561 
+ 2588      7200
+ 2589              	.LASF31:
+ 2590 0280 43794465 		.ascii	"CyDelay\000"
+ 2590      6C617900 
+ 2591              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -103,6 +103,7 @@ signed int parse_motor_angle(CommandString *commandString) {
 			+ 10 * (commandString->data[8] - 0x30)
 			+ (commandString->data[9] - 0x30));
 	val = (val*96)/999;
+	if(val==0)return 0;
 	return val;
 }
 

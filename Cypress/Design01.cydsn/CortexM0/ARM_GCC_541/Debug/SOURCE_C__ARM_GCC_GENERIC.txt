@@ -1,0 +1,1 @@
+'C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\i2c_lcd.c' -o .o -T SOURCE_C__ARM_GCC_GENERIC -I 'C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn' -I 'C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\Generated_Source\PSoC4' -f 'C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\CortexM0\ARM_GCC_541\Debug\.deps\SOURCE_C__ARM_GCC_GENERIC.d'

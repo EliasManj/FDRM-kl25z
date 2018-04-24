@@ -1,0 +1,6 @@
+C:/Users/Elias\ g/FDRM-kl25z/Cypress/Design01.cydsn/CortexM0/ARM_GCC_541/Debug/i2c_lcd.o : C:/Users/Elias\ g/FDRM-kl25z/Cypress/Design01.cydsn/i2c_lcd.c C:/Users/Elias\ g/FDRM-kl25z/Cypress/Design01.cydsn/i2c_lcd.h 
+
+C:/Users/Elias\ g/FDRM-kl25z/Cypress/Design01.cydsn/i2c_lcd.c : 
+
+C:/Users/Elias\ g/FDRM-kl25z/Cypress/Design01.cydsn/i2c_lcd.h : 
+

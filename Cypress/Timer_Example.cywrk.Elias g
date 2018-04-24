@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CyXmlSerializer>
+<!--This file is machine generated and read. It is not intended to be edited by hand.-->
+<!--Due to this, there is no schema for this file.-->
+<CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtWrkspcCustomData" version="4">
+<CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997 type_name="CyDesigner.Common.Base.CyCustomData" version="2">
+<userData>
+<dataGuid v="1b906a0f-a7b6-4e4d-a428-82f98b53cb35">
+<CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35 type_name="CyDesigner.Common.ProjMgmt.GUI.CyExplorerWindow+CyExplorerWindowState" version="3" SelectedTab="Source">
+<TreeKeys>
+<v>Source</v>
+<v>Components</v>
+<v>Output</v>
+</TreeKeys>
+<TreeStates>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="Timer_Example\Design01\Source Files\I2C_LCD">
+<ExpandedNodeIds>
+<v>Timer_Example</v>
+<v>Timer_Example\Design01</v>
+<v>Timer_Example\Design01\TopDesign</v>
+<v>Timer_Example\Design01\Design01.cydwr</v>
+<v>Timer_Example\Design01\Design01.cydwr\Pins</v>
+<v>Timer_Example\Design01\Design01.cydwr\Analog</v>
+<v>Timer_Example\Design01\Design01.cydwr\DMA</v>
+<v>Timer_Example\Design01\Design01.cydwr\Clocks</v>
+<v>Timer_Example\Design01\Design01.cydwr\Interrupts</v>
+<v>Timer_Example\Design01\Design01.cydwr\System</v>
+<v>Timer_Example\Design01\Design01.cydwr\Directives</v>
+<v>Timer_Example\Design01\Design01.cydwr\Flash Security</v>
+<v>Timer_Example\Design01\Header Files</v>
+<v>Timer_Example\Design01\Header Files\cyapicallbacks.h</v>
+<v>Timer_Example\Design01\Header Files\i2c_lcd.h</v>
+<v>Timer_Example\Design01\Source Files</v>
+<v>Timer_Example\Design01\Source Files\I2C_LCD\i2c_lcd.c</v>
+<v>Timer_Example\Design01\Source Files\main.c</v>
+<v>Timer_Example\Design01\Generated_Source</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>Timer_Example</v>
+<v>Timer_Example\Design01</v>
+<v>Timer_Example\Design01\TopDesign</v>
+<v>Timer_Example\Design01\Design01.cydwr</v>
+<v>Timer_Example\Design01\Design01.cydwr\Pins</v>
+<v>Timer_Example\Design01\Design01.cydwr\Analog</v>
+<v>Timer_Example\Design01\Design01.cydwr\DMA</v>
+<v>Timer_Example\Design01\Design01.cydwr\Clocks</v>
+<v>Timer_Example\Design01\Design01.cydwr\Interrupts</v>
+<v>Timer_Example\Design01\Design01.cydwr\System</v>
+<v>Timer_Example\Design01\Design01.cydwr\Directives</v>
+<v>Timer_Example\Design01\Design01.cydwr\Flash Security</v>
+<v>Timer_Example\Design01\Header Files</v>
+<v>Timer_Example\Design01\Header Files\cyapicallbacks.h</v>
+<v>Timer_Example\Design01\Header Files\i2c_lcd.h</v>
+<v>Timer_Example\Design01\Source Files</v>
+<v>Timer_Example\Design01\Source Files\I2C_LCD</v>
+<v>Timer_Example\Design01\Source Files\main.c</v>
+<v>Timer_Example\Design01\Generated_Source</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\ADC</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\ADC_intClock</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\ADC_IRQ</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\BLE</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\BLE_bless_isr</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\Clock_1</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\cy_boot</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\cy_dmac</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\cy_lfclk</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\Em_EEPROM_Dynamic</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\I2CP</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\I2CP_SCB_IRQ</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\I2CP_SCBCLK</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\I2CP_scl</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\I2CP_sda</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\isr_1</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\isr_2</v>
+<v>Timer_Example\Design01\Generated_Source\PSoC4\isr_3</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>Timer_Example</v>
+<v>Timer_Example\Design01</v>
+<v>Timer_Example\Design01\TopDesign</v>
+<v>Timer_Example\Design01\TopDesign\TopDesign.cysch</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>Timer_Example</v>
+<v>Timer_Example\Design01</v>
+<v>Timer_Example\Design01\TopDesign</v>
+<v>Timer_Example\Design01\TopDesign\TopDesign.cysch</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>Timer_Example</v>
+<v>Timer_Example\Design01</v>
+<v>Timer_Example\Design01\CortexM0</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\ADC.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\ADC_INT.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\ADC_intClock.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\ADC_IRQ.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\ADC_PM.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_bless_isr.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_eventHandler.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_gatt.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_HAL_INT.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_HAL_PVT.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_ias.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\Clock_1.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\Cm0Start.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\CyDMA.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\CyLFClk.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\i2c_lcd.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_BOOT.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_I2C.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_I2C_BOOT.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_I2C_INT.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_I2C_MASTER.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_PM.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_SCB_IRQ.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_SCBCLK.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_scl.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_scl_PM.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_sda.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_sda_PM.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\isr_1.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\isr_2.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\isr_3.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\LED.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\LED_PM.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\main.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\Motor.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\Motor_PM.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\POT.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\POT_PM.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\SW.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\SW_PM.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\Timer_1.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\Timer_1_PM.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\Timer_2.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\Timer_2_PM.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\timer_clock.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Design01.elf</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Design01.hex</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Design01.map</v>
+<v>Timer_Example\Design01\Design01.gpdsc</v>
+<v>Timer_Example\Design01\Design01.rpt</v>
+<v>Timer_Example\Design01\Design01_timing.html</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>Timer_Example</v>
+<v>Timer_Example\Design01</v>
+<v>Timer_Example\Design01\CortexM0</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\ADC.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\ADC_INT.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\ADC_intClock.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\ADC_IRQ.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\ADC_PM.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_bless_isr.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_eventHandler.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_gatt.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_HAL_INT.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_HAL_PVT.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\BLE_ias.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\Clock_1.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\Cm0Start.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\CyDMA.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\CyLFClk.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\i2c_lcd.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_BOOT.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_I2C.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_I2C_BOOT.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_I2C_INT.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_I2C_MASTER.lst</v>
+<v>Timer_Example\Design01\CortexM0\ARM_GCC_541\Debug\Listing Files\I2CP_PM.lst</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStates>
+<TreeKeysV2>
+<v>Datasheet</v>
+</TreeKeysV2>
+<TreeStatesV2>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>Timer_Example</v>
+<v>Timer_Example\Design01</v>
+<v>Timer_Example\Design01\PSoC 4 Architecture TRM</v>
+<v>Timer_Example\Design01\PSoC 4200 BLE Family Datasheet</v>
+<v>Timer_Example\Design01\System Reference Guides</v>
+<v>Timer_Example\Design01\System Reference Guides\cy_boot_v5_70</v>
+<v>Timer_Example\Design01\System Reference Guides\cy_dmac_v1_10</v>
+<v>Timer_Example\Design01\System Reference Guides\cy_lfclk_v1_20</v>
+<v>Timer_Example\Design01\ADC_SAR_SEQ_P4_v2_50.pdf</v>
+<v>Timer_Example\Design01\BLE_v3_50.pdf</v>
+<v>Timer_Example\Design01\cy_clock_v2_20</v>
+<v>Timer_Example\Design01\cy_clock_v2_20\cy_clock_v2_20.pdf</v>
+<v>Timer_Example\Design01\cy_isr_v1_70</v>
+<v>Timer_Example\Design01\cy_isr_v1_70\cy_isr_v1_70.pdf</v>
+<v>Timer_Example\Design01\cy_pins_v2_20</v>
+<v>Timer_Example\Design01\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>Timer_Example\Design01\SCB_P4_v4_0.pdf</v>
+<v>Timer_Example\Design01\Timer_v2_80</v>
+<v>Timer_Example\Design01\Timer_v2_80\Timer_v2_80.pdf</v>
+<v>Timer_Example\Design01\ZeroTerminal</v>
+<v>Timer_Example\Design01\ZeroTerminal\ZeroTerminal.pdf</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>Timer_Example</v>
+<v>Timer_Example\Design01</v>
+<v>Timer_Example\Design01\PSoC 4 Architecture TRM</v>
+<v>Timer_Example\Design01\PSoC 4200 BLE Family Datasheet</v>
+<v>Timer_Example\Design01\System Reference Guides</v>
+<v>Timer_Example\Design01\System Reference Guides\cy_boot_v5_70</v>
+<v>Timer_Example\Design01\System Reference Guides\cy_dmac_v1_10</v>
+<v>Timer_Example\Design01\System Reference Guides\cy_lfclk_v1_20</v>
+<v>Timer_Example\Design01\ADC_SAR_SEQ_P4_v2_50.pdf</v>
+<v>Timer_Example\Design01\BLE_v3_50.pdf</v>
+<v>Timer_Example\Design01\cy_clock_v2_20</v>
+<v>Timer_Example\Design01\cy_clock_v2_20\cy_clock_v2_20.pdf</v>
+<v>Timer_Example\Design01\cy_isr_v1_70</v>
+<v>Timer_Example\Design01\cy_isr_v1_70\cy_isr_v1_70.pdf</v>
+<v>Timer_Example\Design01\cy_pins_v2_20</v>
+<v>Timer_Example\Design01\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>Timer_Example\Design01\SCB_P4_v4_0.pdf</v>
+<v>Timer_Example\Design01\Timer_v2_80</v>
+<v>Timer_Example\Design01\Timer_v2_80\Timer_v2_80.pdf</v>
+<v>Timer_Example\Design01\ZeroTerminal</v>
+<v>Timer_Example\Design01\ZeroTerminal\ZeroTerminal.pdf</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStatesV2>
+</CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35>
+</dataGuid>
+</userData>
+</CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997>
+<Unloaded />
+<OpenDocs>
+<name v=".\Design01.cydsn\main.c" />
+<name v=".\Design01.cydsn\i2c_lcd.c" />
+<name v=".\Design01.cydsn\i2c_lcd.h" />
+<name v=".\Design01.cydsn\TopDesign\TopDesign.cysch" />
+<name v=".\Design01.cydsn\Generated_Source\PSoC4\project.h" />
+<name v=".\Design01.cydsn\Design01.cydwr" />
+</OpenDocs>
+<OpenDocsLayout><![CDATA[<?xml version="1.0"?><!--
+
+  Actipro Docking/MDI for WinForms
+  Copyright (c) 2001-2016 Actipro Software LLC.  All rights reserved.
+  http://www.actiprosoftware.com
+
+--><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1016, 531" SelectedTabbedMdiWindow="0e4b89f5-6d60-4f7a-b9a0-df1192e3041f"><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\main.c" Guid="0e4b89f5-6d60-4f7a-b9a0-df1192e3041f" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\i2c_lcd.c" Guid="ef192610-4f51-4a6b-bd11-b690e0e4fdca" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\i2c_lcd.h" Guid="f8e475ff-673b-4f63-827e-b67ab1b0cee7" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\TopDesign\TopDesign.cysch" Guid="42c78bb0-5f14-4e79-ba1b-1e4a9d2791d4" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\Generated_Source\PSoC4\project.h" Guid="434eb2d5-cbdc-4c63-9e15-8f38ffa2f8eb" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\Design01.cydwr" Guid="c4f0f897-8ed5-4742-a9af-d84bff84f62b" /><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="12fd2d0e-6b04-44b0-90d6-88d64732a1d7" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
+<config v="" />
+<AutoUpdate v="true" />
+</CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>
+</CyXmlSerializer>

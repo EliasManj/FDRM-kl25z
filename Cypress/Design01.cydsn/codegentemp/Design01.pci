@@ -1,0 +1,22 @@
+# Design01
+# 2018-04-21 20:17:33Z
+
+# IO_6@[IOP=(0)][IoId=(6)] is reserved: SWDDebugEnabled
+dont_use_io iocell 0 6
+# IO_7@[IOP=(0)][IoId=(7)] is reserved: SWDDebugEnabled
+dont_use_io iocell 0 7
+# IO_0@[IOP=(6)][IoId=(0)] is reserved: KhzXtalEnabled
+dont_use_io iocell 6 0
+# IO_1@[IOP=(6)][IoId=(1)] is reserved: KhzXtalEnabled
+dont_use_io iocell 6 1
+set_location "ClockGenBlock" m0s8clockgenblockcell -1 -1 0
+set_io "POT(0)" iocell 3 5
+set_io "SW(0)" iocell 2 7
+set_io "Motor(0)" iocell 3 0
+set_io "Motor(1)" iocell 3 1
+set_io "Motor(2)" iocell 3 2
+set_io "Motor(3)" iocell 3 3
+set_io "\I2CP:sda(0)\" iocell 0 0
+set_io "\I2CP:scl(0)\" iocell 0 1
+set_io "LED(0)" iocell 3 7
+set_location "\ADC:cy_psoc4_sar\" p4sarcell -1 -1 0

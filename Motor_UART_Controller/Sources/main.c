@@ -41,8 +41,6 @@ void lcd_send_velocity(bufferType *bf);
 void gpio_lcd_ports_init(void);
 void lcd_10ms_check_buffer(void);
 
-
-
 unsigned char DB7_4;
 
 struct lcdState {
@@ -52,7 +50,6 @@ struct lcdState {
 };
 
 typedef const struct lcdState LcdEncoding;
-
 
 LcdEncoding lcdEncoding[5] = { { { 0, 1 }, 0, { SET_RS, IDLE } },		//IDLE
 		{ { 0, 1 }, 0, { DATA_ENABLE_SET, DATA_ENABLE_SET } },	//SET_RS
@@ -112,6 +109,9 @@ int main(void) {
 					motor_free_running_flag = 0;
 					motor_manual_angle_flag = 1;
 					motor_angle = current_angle;
+					motor_vel_string[0] = '0';
+					motor_vel_string[1] = '0';
+					motor_vel_string[2] = '0';
 					break;
 				case STEP_CW:
 					motor_angle = parse_motor_angle(commandString_p);
@@ -193,7 +193,6 @@ void LPTimer_IRQHandler() {
 		shift_step_motor();
 	else if (motor_manual_angle_flag == 1)
 		shift_step_motor_manual(motor_angle);
-	shift_rgb_leds();
 }
 
 void timer0_init(void) {
@@ -225,7 +224,7 @@ void LPTM_init(void) {
 }
 
 void shift_step_motor(void) {
-	if (motor_dir_flag == 1) {
+	if (motor_dir_flag == 0) {
 		GPIOB_PDOR = ((motor_sequence[motorSequenceIndex++]) & 0x0000000F);
 		if (motorSequenceIndex >= 8)
 			motorSequenceIndex = 0;
@@ -238,8 +237,8 @@ void shift_step_motor(void) {
 		if (motorSequenceIndex <= 0)
 			motorSequenceIndex = 7;
 		if (current_angle == 0 || current_angle > 96) {
-					current_angle = 96;
-				}
+			current_angle = 96;
+		}
 		current_angle--;
 	}
 }
@@ -247,22 +246,22 @@ void shift_step_motor(void) {
 void shift_step_motor_manual(signed int motor_angle) {
 	if (current_angle == motor_angle)
 		return;
-	if (current_angle > motor_angle) {
+	else if (motor_dir_flag == 1) {
 		GPIOB_PDOR = ((motor_sequence[motorSequenceIndex--]) & 0x0000000F);
 		if (motorSequenceIndex < 0)
 			motorSequenceIndex = 7;
-		if (current_angle == 0 || current_angle > 96) {
+		current_angle--;
+		if (current_angle > 96) {
 			current_angle = 96;
 		}
-		current_angle--;
-	} else if (current_angle < motor_angle) {
+	} else if (motor_dir_flag == 0) {
 		GPIOB_PDOR = ((motor_sequence[motorSequenceIndex++]) & 0x0000000F);
 		if (motorSequenceIndex >= 8)
 			motorSequenceIndex = 0;
+		current_angle++;
 		if (current_angle > 96) {
 			current_angle = 0;
 		}
-		current_angle++;
 	}
 }
 
@@ -277,7 +276,8 @@ void tmp_counter_10ms_tick() {
 
 void tmp_counter_1sec_tick() {
 	tmp_counter_1sec++;
-	toggle_signal();
+	//toggle_signal();
+	shift_rgb_leds();
 	if (tmp_counter_1sec >= 5) {
 		tmp_counter_1sec = 0;
 		tmp_counter_5sec_tick();

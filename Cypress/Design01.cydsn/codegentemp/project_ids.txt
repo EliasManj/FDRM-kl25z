@@ -1,0 +1,6 @@
+C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\Design01.cyprj|1567afe7-2415-4804-a142-70e9e4d4c45c
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|b828a722-34d1-4661-bb8c-996142ed8e26
+C:\Users\Elias g\Documents\PSoC Creator\4.2\Downloads ( 4.2).cylib\Downloads ( 4.2).cyprj|46c8d8d2-0f6e-4a9d-89ba-b14e9420e919
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|4d895f0e-412b-4be4-903c-846b44a65d82
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|43cfbce5-b9c0-4696-b880-5f0c7a28bd79
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|6a86689d-3f77-47af-b765-8e5127d232c6

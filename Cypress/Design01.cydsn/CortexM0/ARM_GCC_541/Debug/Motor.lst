@@ -1,0 +1,1182 @@
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"Motor.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.Motor_SetDriveMode,"ax",%progbits
+  20              		.align	2
+  21              		.global	Motor_SetDriveMode
+  22              		.code	16
+  23              		.thumb_func
+  24              		.type	Motor_SetDriveMode, %function
+  25              	Motor_SetDriveMode:
+  26              	.LFB0:
+  27              		.file 1 "Generated_Source\\PSoC4\\Motor.c"
+   1:Generated_Source\PSoC4/Motor.c **** /*******************************************************************************
+   2:Generated_Source\PSoC4/Motor.c **** * File Name: Motor.c  
+   3:Generated_Source\PSoC4/Motor.c **** * Version 2.20
+   4:Generated_Source\PSoC4/Motor.c **** *
+   5:Generated_Source\PSoC4/Motor.c **** * Description:
+   6:Generated_Source\PSoC4/Motor.c **** *  This file contains API to enable firmware control of a Pins component.
+   7:Generated_Source\PSoC4/Motor.c **** *
+   8:Generated_Source\PSoC4/Motor.c **** ********************************************************************************
+   9:Generated_Source\PSoC4/Motor.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  10:Generated_Source\PSoC4/Motor.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  11:Generated_Source\PSoC4/Motor.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  12:Generated_Source\PSoC4/Motor.c **** * the software package with which this file was provided.
+  13:Generated_Source\PSoC4/Motor.c **** *******************************************************************************/
+  14:Generated_Source\PSoC4/Motor.c **** 
+  15:Generated_Source\PSoC4/Motor.c **** #include "cytypes.h"
+  16:Generated_Source\PSoC4/Motor.c **** #include "Motor.h"
+  17:Generated_Source\PSoC4/Motor.c **** 
+  18:Generated_Source\PSoC4/Motor.c **** 
+  19:Generated_Source\PSoC4/Motor.c **** #if defined(Motor__PC)
+  20:Generated_Source\PSoC4/Motor.c ****     #define Motor_SetP4PinDriveMode(shift, mode)  \
+  21:Generated_Source\PSoC4/Motor.c ****     do { \
+  22:Generated_Source\PSoC4/Motor.c ****         Motor_PC =   (Motor_PC & \
+  23:Generated_Source\PSoC4/Motor.c ****                                 (uint32)(~(uint32)(Motor_DRIVE_MODE_IND_MASK << \
+  24:Generated_Source\PSoC4/Motor.c ****                                 (Motor_DRIVE_MODE_BITS * (shift))))) | \
+  25:Generated_Source\PSoC4/Motor.c ****                                 (uint32)((uint32)(mode) << \
+  26:Generated_Source\PSoC4/Motor.c ****                                 (Motor_DRIVE_MODE_BITS * (shift))); \
+  27:Generated_Source\PSoC4/Motor.c ****     } while (0)
+  28:Generated_Source\PSoC4/Motor.c **** #else
+  29:Generated_Source\PSoC4/Motor.c ****     #if (CY_PSOC4_4200L)
+  30:Generated_Source\PSoC4/Motor.c ****         #define Motor_SetP4PinDriveMode(shift, mode)  \
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 2
+
+
+  31:Generated_Source\PSoC4/Motor.c ****         do { \
+  32:Generated_Source\PSoC4/Motor.c ****             Motor_USBIO_CTRL_REG = (Motor_USBIO_CTRL_REG & \
+  33:Generated_Source\PSoC4/Motor.c ****                                     (uint32)(~(uint32)(Motor_DRIVE_MODE_IND_MASK << \
+  34:Generated_Source\PSoC4/Motor.c ****                                     (Motor_DRIVE_MODE_BITS * (shift))))) | \
+  35:Generated_Source\PSoC4/Motor.c ****                                     (uint32)((uint32)(mode) << \
+  36:Generated_Source\PSoC4/Motor.c ****                                     (Motor_DRIVE_MODE_BITS * (shift))); \
+  37:Generated_Source\PSoC4/Motor.c ****         } while (0)
+  38:Generated_Source\PSoC4/Motor.c ****     #endif
+  39:Generated_Source\PSoC4/Motor.c **** #endif
+  40:Generated_Source\PSoC4/Motor.c ****   
+  41:Generated_Source\PSoC4/Motor.c **** 
+  42:Generated_Source\PSoC4/Motor.c **** #if defined(Motor__PC) || (CY_PSOC4_4200L) 
+  43:Generated_Source\PSoC4/Motor.c ****     /*******************************************************************************
+  44:Generated_Source\PSoC4/Motor.c ****     * Function Name: Motor_SetDriveMode
+  45:Generated_Source\PSoC4/Motor.c ****     ****************************************************************************//**
+  46:Generated_Source\PSoC4/Motor.c ****     *
+  47:Generated_Source\PSoC4/Motor.c ****     * \brief Sets the drive mode for each of the Pins component's pins.
+  48:Generated_Source\PSoC4/Motor.c ****     * 
+  49:Generated_Source\PSoC4/Motor.c ****     * <b>Note</b> This affects all pins in the Pins component instance. Use the
+  50:Generated_Source\PSoC4/Motor.c ****     * Per-Pin APIs if you wish to control individual pin's drive modes.
+  51:Generated_Source\PSoC4/Motor.c ****     *
+  52:Generated_Source\PSoC4/Motor.c ****     * <b>Note</b> USBIOs have limited drive functionality. Refer to the Drive Mode
+  53:Generated_Source\PSoC4/Motor.c ****     * parameter for more information.
+  54:Generated_Source\PSoC4/Motor.c ****     *
+  55:Generated_Source\PSoC4/Motor.c ****     * \param mode
+  56:Generated_Source\PSoC4/Motor.c ****     *  Mode for the selected signals. Valid options are documented in 
+  57:Generated_Source\PSoC4/Motor.c ****     *  \ref driveMode.
+  58:Generated_Source\PSoC4/Motor.c ****     *
+  59:Generated_Source\PSoC4/Motor.c ****     * \return
+  60:Generated_Source\PSoC4/Motor.c ****     *  None
+  61:Generated_Source\PSoC4/Motor.c ****     *
+  62:Generated_Source\PSoC4/Motor.c ****     * \sideeffect
+  63:Generated_Source\PSoC4/Motor.c ****     *  If you use read-modify-write operations that are not atomic, the ISR can
+  64:Generated_Source\PSoC4/Motor.c ****     *  cause corruption of this function. An ISR that interrupts this function 
+  65:Generated_Source\PSoC4/Motor.c ****     *  and performs writes to the Pins component Drive Mode registers can cause 
+  66:Generated_Source\PSoC4/Motor.c ****     *  corrupted port data. To avoid this issue, you should either use the Per-Pin
+  67:Generated_Source\PSoC4/Motor.c ****     *  APIs (primary method) or disable interrupts around this function.
+  68:Generated_Source\PSoC4/Motor.c ****     *
+  69:Generated_Source\PSoC4/Motor.c ****     * \funcusage
+  70:Generated_Source\PSoC4/Motor.c ****     *  \snippet Motor_SUT.c usage_Motor_SetDriveMode
+  71:Generated_Source\PSoC4/Motor.c ****     *******************************************************************************/
+  72:Generated_Source\PSoC4/Motor.c ****     void Motor_SetDriveMode(uint8 mode)
+  73:Generated_Source\PSoC4/Motor.c ****     {
+  28              		.loc 1 73 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33              	.LVL0:
+  74:Generated_Source\PSoC4/Motor.c **** 		Motor_SetP4PinDriveMode(Motor__0__SHIFT, mode);
+  34              		.loc 1 74 0
+  35 0000 0C4B     		ldr	r3, .L2
+  36 0002 1A68     		ldr	r2, [r3]
+  37 0004 0721     		movs	r1, #7
+  38 0006 8A43     		bics	r2, r1
+  39 0008 0243     		orrs	r2, r0
+  40 000a 1A60     		str	r2, [r3]
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 3
+
+
+  75:Generated_Source\PSoC4/Motor.c **** 		Motor_SetP4PinDriveMode(Motor__1__SHIFT, mode);
+  41              		.loc 1 75 0
+  42 000c 1A68     		ldr	r2, [r3]
+  43 000e 3131     		adds	r1, r1, #49
+  44 0010 8A43     		bics	r2, r1
+  45 0012 C100     		lsls	r1, r0, #3
+  46 0014 0A43     		orrs	r2, r1
+  47 0016 1A60     		str	r2, [r3]
+  76:Generated_Source\PSoC4/Motor.c **** 		Motor_SetP4PinDriveMode(Motor__2__SHIFT, mode);
+  48              		.loc 1 76 0
+  49 0018 1968     		ldr	r1, [r3]
+  50 001a 074A     		ldr	r2, .L2+4
+  51 001c 0A40     		ands	r2, r1
+  52 001e 8101     		lsls	r1, r0, #6
+  53 0020 0A43     		orrs	r2, r1
+  54 0022 1A60     		str	r2, [r3]
+  77:Generated_Source\PSoC4/Motor.c **** 		Motor_SetP4PinDriveMode(Motor__3__SHIFT, mode);
+  55              		.loc 1 77 0
+  56 0024 1968     		ldr	r1, [r3]
+  57 0026 054A     		ldr	r2, .L2+8
+  58 0028 0A40     		ands	r2, r1
+  59 002a 4002     		lsls	r0, r0, #9
+  60              	.LVL1:
+  61 002c 1043     		orrs	r0, r2
+  62 002e 1860     		str	r0, [r3]
+  78:Generated_Source\PSoC4/Motor.c ****     }
+  63              		.loc 1 78 0
+  64              		@ sp needed
+  65 0030 7047     		bx	lr
+  66              	.L3:
+  67 0032 C046     		.align	2
+  68              	.L2:
+  69 0034 08030440 		.word	1074004744
+  70 0038 3FFEFFFF 		.word	-449
+  71 003c FFF1FFFF 		.word	-3585
+  72              		.cfi_endproc
+  73              	.LFE0:
+  74              		.size	Motor_SetDriveMode, .-Motor_SetDriveMode
+  75              		.section	.text.Motor_Write,"ax",%progbits
+  76              		.align	2
+  77              		.global	Motor_Write
+  78              		.code	16
+  79              		.thumb_func
+  80              		.type	Motor_Write, %function
+  81              	Motor_Write:
+  82              	.LFB1:
+  79:Generated_Source\PSoC4/Motor.c **** #endif
+  80:Generated_Source\PSoC4/Motor.c **** 
+  81:Generated_Source\PSoC4/Motor.c **** 
+  82:Generated_Source\PSoC4/Motor.c **** /*******************************************************************************
+  83:Generated_Source\PSoC4/Motor.c **** * Function Name: Motor_Write
+  84:Generated_Source\PSoC4/Motor.c **** ****************************************************************************//**
+  85:Generated_Source\PSoC4/Motor.c **** *
+  86:Generated_Source\PSoC4/Motor.c **** * \brief Writes the value to the physical port (data output register), masking
+  87:Generated_Source\PSoC4/Motor.c **** *  and shifting the bits appropriately. 
+  88:Generated_Source\PSoC4/Motor.c **** *
+  89:Generated_Source\PSoC4/Motor.c **** * The data output register controls the signal applied to the physical pin in 
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 4
+
+
+  90:Generated_Source\PSoC4/Motor.c **** * conjunction with the drive mode parameter. This function avoids changing 
+  91:Generated_Source\PSoC4/Motor.c **** * other bits in the port by using the appropriate method (read-modify-write or
+  92:Generated_Source\PSoC4/Motor.c **** * bit banding).
+  93:Generated_Source\PSoC4/Motor.c **** *
+  94:Generated_Source\PSoC4/Motor.c **** * <b>Note</b> This function should not be used on a hardware digital output pin 
+  95:Generated_Source\PSoC4/Motor.c **** * as it is driven by the hardware signal attached to it.
+  96:Generated_Source\PSoC4/Motor.c **** *
+  97:Generated_Source\PSoC4/Motor.c **** * \param value
+  98:Generated_Source\PSoC4/Motor.c **** *  Value to write to the component instance.
+  99:Generated_Source\PSoC4/Motor.c **** *
+ 100:Generated_Source\PSoC4/Motor.c **** * \return 
+ 101:Generated_Source\PSoC4/Motor.c **** *  None 
+ 102:Generated_Source\PSoC4/Motor.c **** *
+ 103:Generated_Source\PSoC4/Motor.c **** * \sideeffect
+ 104:Generated_Source\PSoC4/Motor.c **** *  If you use read-modify-write operations that are not atomic; the Interrupt 
+ 105:Generated_Source\PSoC4/Motor.c **** *  Service Routines (ISR) can cause corruption of this function. An ISR that 
+ 106:Generated_Source\PSoC4/Motor.c **** *  interrupts this function and performs writes to the Pins component data 
+ 107:Generated_Source\PSoC4/Motor.c **** *  register can cause corrupted port data. To avoid this issue, you should 
+ 108:Generated_Source\PSoC4/Motor.c **** *  either use the Per-Pin APIs (primary method) or disable interrupts around 
+ 109:Generated_Source\PSoC4/Motor.c **** *  this function.
+ 110:Generated_Source\PSoC4/Motor.c **** *
+ 111:Generated_Source\PSoC4/Motor.c **** * \funcusage
+ 112:Generated_Source\PSoC4/Motor.c **** *  \snippet Motor_SUT.c usage_Motor_Write
+ 113:Generated_Source\PSoC4/Motor.c **** *******************************************************************************/
+ 114:Generated_Source\PSoC4/Motor.c **** void Motor_Write(uint8 value)
+ 115:Generated_Source\PSoC4/Motor.c **** {
+  83              		.loc 1 115 0
+  84              		.cfi_startproc
+  85              		@ args = 0, pretend = 0, frame = 0
+  86              		@ frame_needed = 0, uses_anonymous_args = 0
+  87              		@ link register save eliminated.
+  88              	.LVL2:
+ 116:Generated_Source\PSoC4/Motor.c ****     uint8 drVal = (uint8)(Motor_DR & (uint8)(~Motor_MASK));
+  89              		.loc 1 116 0
+  90 0000 044A     		ldr	r2, .L5
+  91 0002 1368     		ldr	r3, [r2]
+  92 0004 DBB2     		uxtb	r3, r3
+  93 0006 0F21     		movs	r1, #15
+  94 0008 8B43     		bics	r3, r1
+  95              	.LVL3:
+ 117:Generated_Source\PSoC4/Motor.c ****     drVal = (drVal | ((uint8)(value << Motor_SHIFT) & Motor_MASK));
+  96              		.loc 1 117 0
+  97 000a 0840     		ands	r0, r1
+  98              	.LVL4:
+  99 000c 1843     		orrs	r0, r3
+ 100              	.LVL5:
+ 118:Generated_Source\PSoC4/Motor.c ****     Motor_DR = (uint32)drVal;
+ 101              		.loc 1 118 0
+ 102 000e 1060     		str	r0, [r2]
+ 119:Generated_Source\PSoC4/Motor.c **** }
+ 103              		.loc 1 119 0
+ 104              		@ sp needed
+ 105 0010 7047     		bx	lr
+ 106              	.L6:
+ 107 0012 C046     		.align	2
+ 108              	.L5:
+ 109 0014 00030440 		.word	1074004736
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 5
+
+
+ 110              		.cfi_endproc
+ 111              	.LFE1:
+ 112              		.size	Motor_Write, .-Motor_Write
+ 113              		.section	.text.Motor_Read,"ax",%progbits
+ 114              		.align	2
+ 115              		.global	Motor_Read
+ 116              		.code	16
+ 117              		.thumb_func
+ 118              		.type	Motor_Read, %function
+ 119              	Motor_Read:
+ 120              	.LFB2:
+ 120:Generated_Source\PSoC4/Motor.c **** 
+ 121:Generated_Source\PSoC4/Motor.c **** 
+ 122:Generated_Source\PSoC4/Motor.c **** /*******************************************************************************
+ 123:Generated_Source\PSoC4/Motor.c **** * Function Name: Motor_Read
+ 124:Generated_Source\PSoC4/Motor.c **** ****************************************************************************//**
+ 125:Generated_Source\PSoC4/Motor.c **** *
+ 126:Generated_Source\PSoC4/Motor.c **** * \brief Reads the associated physical port (pin status register) and masks 
+ 127:Generated_Source\PSoC4/Motor.c **** *  the required bits according to the width and bit position of the component
+ 128:Generated_Source\PSoC4/Motor.c **** *  instance. 
+ 129:Generated_Source\PSoC4/Motor.c **** *
+ 130:Generated_Source\PSoC4/Motor.c **** * The pin's status register returns the current logic level present on the 
+ 131:Generated_Source\PSoC4/Motor.c **** * physical pin.
+ 132:Generated_Source\PSoC4/Motor.c **** *
+ 133:Generated_Source\PSoC4/Motor.c **** * \return 
+ 134:Generated_Source\PSoC4/Motor.c **** *  The current value for the pins in the component as a right justified number.
+ 135:Generated_Source\PSoC4/Motor.c **** *
+ 136:Generated_Source\PSoC4/Motor.c **** * \funcusage
+ 137:Generated_Source\PSoC4/Motor.c **** *  \snippet Motor_SUT.c usage_Motor_Read  
+ 138:Generated_Source\PSoC4/Motor.c **** *******************************************************************************/
+ 139:Generated_Source\PSoC4/Motor.c **** uint8 Motor_Read(void)
+ 140:Generated_Source\PSoC4/Motor.c **** {
+ 121              		.loc 1 140 0
+ 122              		.cfi_startproc
+ 123              		@ args = 0, pretend = 0, frame = 0
+ 124              		@ frame_needed = 0, uses_anonymous_args = 0
+ 125              		@ link register save eliminated.
+ 141:Generated_Source\PSoC4/Motor.c ****     return (uint8)((Motor_PS & Motor_MASK) >> Motor_SHIFT);
+ 126              		.loc 1 141 0
+ 127 0000 024B     		ldr	r3, .L8
+ 128 0002 1B68     		ldr	r3, [r3]
+ 129 0004 0F20     		movs	r0, #15
+ 130 0006 1840     		ands	r0, r3
+ 142:Generated_Source\PSoC4/Motor.c **** }
+ 131              		.loc 1 142 0
+ 132              		@ sp needed
+ 133 0008 7047     		bx	lr
+ 134              	.L9:
+ 135 000a C046     		.align	2
+ 136              	.L8:
+ 137 000c 04030440 		.word	1074004740
+ 138              		.cfi_endproc
+ 139              	.LFE2:
+ 140              		.size	Motor_Read, .-Motor_Read
+ 141              		.section	.text.Motor_ReadDataReg,"ax",%progbits
+ 142              		.align	2
+ 143              		.global	Motor_ReadDataReg
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 6
+
+
+ 144              		.code	16
+ 145              		.thumb_func
+ 146              		.type	Motor_ReadDataReg, %function
+ 147              	Motor_ReadDataReg:
+ 148              	.LFB3:
+ 143:Generated_Source\PSoC4/Motor.c **** 
+ 144:Generated_Source\PSoC4/Motor.c **** 
+ 145:Generated_Source\PSoC4/Motor.c **** /*******************************************************************************
+ 146:Generated_Source\PSoC4/Motor.c **** * Function Name: Motor_ReadDataReg
+ 147:Generated_Source\PSoC4/Motor.c **** ****************************************************************************//**
+ 148:Generated_Source\PSoC4/Motor.c **** *
+ 149:Generated_Source\PSoC4/Motor.c **** * \brief Reads the associated physical port's data output register and masks 
+ 150:Generated_Source\PSoC4/Motor.c **** *  the correct bits according to the width and bit position of the component 
+ 151:Generated_Source\PSoC4/Motor.c **** *  instance. 
+ 152:Generated_Source\PSoC4/Motor.c **** *
+ 153:Generated_Source\PSoC4/Motor.c **** * The data output register controls the signal applied to the physical pin in 
+ 154:Generated_Source\PSoC4/Motor.c **** * conjunction with the drive mode parameter. This is not the same as the 
+ 155:Generated_Source\PSoC4/Motor.c **** * preferred Motor_Read() API because the 
+ 156:Generated_Source\PSoC4/Motor.c **** * Motor_ReadDataReg() reads the data register instead of the status 
+ 157:Generated_Source\PSoC4/Motor.c **** * register. For output pins this is a useful function to determine the value 
+ 158:Generated_Source\PSoC4/Motor.c **** * just written to the pin.
+ 159:Generated_Source\PSoC4/Motor.c **** *
+ 160:Generated_Source\PSoC4/Motor.c **** * \return 
+ 161:Generated_Source\PSoC4/Motor.c **** *  The current value of the data register masked and shifted into a right 
+ 162:Generated_Source\PSoC4/Motor.c **** *  justified number for the component instance.
+ 163:Generated_Source\PSoC4/Motor.c **** *
+ 164:Generated_Source\PSoC4/Motor.c **** * \funcusage
+ 165:Generated_Source\PSoC4/Motor.c **** *  \snippet Motor_SUT.c usage_Motor_ReadDataReg 
+ 166:Generated_Source\PSoC4/Motor.c **** *******************************************************************************/
+ 167:Generated_Source\PSoC4/Motor.c **** uint8 Motor_ReadDataReg(void)
+ 168:Generated_Source\PSoC4/Motor.c **** {
+ 149              		.loc 1 168 0
+ 150              		.cfi_startproc
+ 151              		@ args = 0, pretend = 0, frame = 0
+ 152              		@ frame_needed = 0, uses_anonymous_args = 0
+ 153              		@ link register save eliminated.
+ 169:Generated_Source\PSoC4/Motor.c ****     return (uint8)((Motor_DR & Motor_MASK) >> Motor_SHIFT);
+ 154              		.loc 1 169 0
+ 155 0000 024B     		ldr	r3, .L11
+ 156 0002 1B68     		ldr	r3, [r3]
+ 157 0004 0F20     		movs	r0, #15
+ 158 0006 1840     		ands	r0, r3
+ 170:Generated_Source\PSoC4/Motor.c **** }
+ 159              		.loc 1 170 0
+ 160              		@ sp needed
+ 161 0008 7047     		bx	lr
+ 162              	.L12:
+ 163 000a C046     		.align	2
+ 164              	.L11:
+ 165 000c 00030440 		.word	1074004736
+ 166              		.cfi_endproc
+ 167              	.LFE3:
+ 168              		.size	Motor_ReadDataReg, .-Motor_ReadDataReg
+ 169              		.section	.text.Motor_SetInterruptMode,"ax",%progbits
+ 170              		.align	2
+ 171              		.global	Motor_SetInterruptMode
+ 172              		.code	16
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 7
+
+
+ 173              		.thumb_func
+ 174              		.type	Motor_SetInterruptMode, %function
+ 175              	Motor_SetInterruptMode:
+ 176              	.LFB4:
+ 171:Generated_Source\PSoC4/Motor.c **** 
+ 172:Generated_Source\PSoC4/Motor.c **** 
+ 173:Generated_Source\PSoC4/Motor.c **** /*******************************************************************************
+ 174:Generated_Source\PSoC4/Motor.c **** * Function Name: Motor_SetInterruptMode
+ 175:Generated_Source\PSoC4/Motor.c **** ****************************************************************************//**
+ 176:Generated_Source\PSoC4/Motor.c **** *
+ 177:Generated_Source\PSoC4/Motor.c **** * \brief Configures the interrupt mode for each of the Pins component's
+ 178:Generated_Source\PSoC4/Motor.c **** *  pins. Alternatively you may set the interrupt mode for all the pins
+ 179:Generated_Source\PSoC4/Motor.c **** *  specified in the Pins component.
+ 180:Generated_Source\PSoC4/Motor.c **** *
+ 181:Generated_Source\PSoC4/Motor.c **** *  <b>Note</b> The interrupt is port-wide and therefore any enabled pin
+ 182:Generated_Source\PSoC4/Motor.c **** *  interrupt may trigger it.
+ 183:Generated_Source\PSoC4/Motor.c **** *
+ 184:Generated_Source\PSoC4/Motor.c **** * \param position
+ 185:Generated_Source\PSoC4/Motor.c **** *  The pin position as listed in the Pins component. You may OR these to be 
+ 186:Generated_Source\PSoC4/Motor.c **** *  able to configure the interrupt mode of multiple pins within a Pins 
+ 187:Generated_Source\PSoC4/Motor.c **** *  component. Or you may use Motor_INTR_ALL to configure the
+ 188:Generated_Source\PSoC4/Motor.c **** *  interrupt mode of all the pins in the Pins component.       
+ 189:Generated_Source\PSoC4/Motor.c **** *  - Motor_0_INTR       (First pin in the list)
+ 190:Generated_Source\PSoC4/Motor.c **** *  - Motor_1_INTR       (Second pin in the list)
+ 191:Generated_Source\PSoC4/Motor.c **** *  - ...
+ 192:Generated_Source\PSoC4/Motor.c **** *  - Motor_INTR_ALL     (All pins in Pins component)
+ 193:Generated_Source\PSoC4/Motor.c **** *
+ 194:Generated_Source\PSoC4/Motor.c **** * \param mode
+ 195:Generated_Source\PSoC4/Motor.c **** *  Interrupt mode for the selected pins. Valid options are documented in
+ 196:Generated_Source\PSoC4/Motor.c **** *  \ref intrMode.
+ 197:Generated_Source\PSoC4/Motor.c **** *
+ 198:Generated_Source\PSoC4/Motor.c **** * \return 
+ 199:Generated_Source\PSoC4/Motor.c **** *  None
+ 200:Generated_Source\PSoC4/Motor.c **** *  
+ 201:Generated_Source\PSoC4/Motor.c **** * \sideeffect
+ 202:Generated_Source\PSoC4/Motor.c **** *  It is recommended that the interrupt be disabled before calling this 
+ 203:Generated_Source\PSoC4/Motor.c **** *  function to avoid unintended interrupt requests. Note that the interrupt
+ 204:Generated_Source\PSoC4/Motor.c **** *  type is port wide, and therefore will trigger for any enabled pin on the 
+ 205:Generated_Source\PSoC4/Motor.c **** *  port.
+ 206:Generated_Source\PSoC4/Motor.c **** *
+ 207:Generated_Source\PSoC4/Motor.c **** * \funcusage
+ 208:Generated_Source\PSoC4/Motor.c **** *  \snippet Motor_SUT.c usage_Motor_SetInterruptMode
+ 209:Generated_Source\PSoC4/Motor.c **** *******************************************************************************/
+ 210:Generated_Source\PSoC4/Motor.c **** void Motor_SetInterruptMode(uint16 position, uint16 mode)
+ 211:Generated_Source\PSoC4/Motor.c **** {
+ 177              		.loc 1 211 0
+ 178              		.cfi_startproc
+ 179              		@ args = 0, pretend = 0, frame = 0
+ 180              		@ frame_needed = 0, uses_anonymous_args = 0
+ 181              		@ link register save eliminated.
+ 182              	.LVL6:
+ 212:Generated_Source\PSoC4/Motor.c ****     uint32 intrCfg;
+ 213:Generated_Source\PSoC4/Motor.c ****     
+ 214:Generated_Source\PSoC4/Motor.c ****     intrCfg =  Motor_INTCFG & (uint32)(~(uint32)position);
+ 183              		.loc 1 214 0
+ 184 0000 034A     		ldr	r2, .L14
+ 185 0002 1368     		ldr	r3, [r2]
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 8
+
+
+ 186 0004 8343     		bics	r3, r0
+ 187              	.LVL7:
+ 215:Generated_Source\PSoC4/Motor.c ****     Motor_INTCFG = intrCfg | ((uint32)position & (uint32)mode);
+ 188              		.loc 1 215 0
+ 189 0006 0840     		ands	r0, r1
+ 190              	.LVL8:
+ 191 0008 1843     		orrs	r0, r3
+ 192 000a 1060     		str	r0, [r2]
+ 216:Generated_Source\PSoC4/Motor.c **** }
+ 193              		.loc 1 216 0
+ 194              		@ sp needed
+ 195 000c 7047     		bx	lr
+ 196              	.L15:
+ 197 000e C046     		.align	2
+ 198              	.L14:
+ 199 0010 0C030440 		.word	1074004748
+ 200              		.cfi_endproc
+ 201              	.LFE4:
+ 202              		.size	Motor_SetInterruptMode, .-Motor_SetInterruptMode
+ 203              		.section	.text.Motor_ClearInterrupt,"ax",%progbits
+ 204              		.align	2
+ 205              		.global	Motor_ClearInterrupt
+ 206              		.code	16
+ 207              		.thumb_func
+ 208              		.type	Motor_ClearInterrupt, %function
+ 209              	Motor_ClearInterrupt:
+ 210              	.LFB5:
+ 217:Generated_Source\PSoC4/Motor.c **** 
+ 218:Generated_Source\PSoC4/Motor.c **** 
+ 219:Generated_Source\PSoC4/Motor.c **** /*******************************************************************************
+ 220:Generated_Source\PSoC4/Motor.c **** * Function Name: Motor_ClearInterrupt
+ 221:Generated_Source\PSoC4/Motor.c **** ****************************************************************************//**
+ 222:Generated_Source\PSoC4/Motor.c **** *
+ 223:Generated_Source\PSoC4/Motor.c **** * \brief Clears any active interrupts attached with the component and returns 
+ 224:Generated_Source\PSoC4/Motor.c **** *  the value of the interrupt status register allowing determination of which
+ 225:Generated_Source\PSoC4/Motor.c **** *  pins generated an interrupt event.
+ 226:Generated_Source\PSoC4/Motor.c **** *
+ 227:Generated_Source\PSoC4/Motor.c **** * \return 
+ 228:Generated_Source\PSoC4/Motor.c **** *  The right-shifted current value of the interrupt status register. Each pin 
+ 229:Generated_Source\PSoC4/Motor.c **** *  has one bit set if it generated an interrupt event. For example, bit 0 is 
+ 230:Generated_Source\PSoC4/Motor.c **** *  for pin 0 and bit 1 is for pin 1 of the Pins component.
+ 231:Generated_Source\PSoC4/Motor.c **** *  
+ 232:Generated_Source\PSoC4/Motor.c **** * \sideeffect
+ 233:Generated_Source\PSoC4/Motor.c **** *  Clears all bits of the physical port's interrupt status register, not just
+ 234:Generated_Source\PSoC4/Motor.c **** *  those associated with the Pins component.
+ 235:Generated_Source\PSoC4/Motor.c **** *
+ 236:Generated_Source\PSoC4/Motor.c **** * \funcusage
+ 237:Generated_Source\PSoC4/Motor.c **** *  \snippet Motor_SUT.c usage_Motor_ClearInterrupt
+ 238:Generated_Source\PSoC4/Motor.c **** *******************************************************************************/
+ 239:Generated_Source\PSoC4/Motor.c **** uint8 Motor_ClearInterrupt(void)
+ 240:Generated_Source\PSoC4/Motor.c **** {
+ 211              		.loc 1 240 0
+ 212              		.cfi_startproc
+ 213              		@ args = 0, pretend = 0, frame = 0
+ 214              		@ frame_needed = 0, uses_anonymous_args = 0
+ 215              		@ link register save eliminated.
+ 241:Generated_Source\PSoC4/Motor.c **** 	uint8 maskedStatus = (uint8)(Motor_INTSTAT & Motor_MASK);
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 9
+
+
+ 216              		.loc 1 241 0
+ 217 0000 024A     		ldr	r2, .L17
+ 218 0002 1068     		ldr	r0, [r2]
+ 219 0004 0F23     		movs	r3, #15
+ 220 0006 1840     		ands	r0, r3
+ 221              	.LVL9:
+ 242:Generated_Source\PSoC4/Motor.c **** 	Motor_INTSTAT = maskedStatus;
+ 222              		.loc 1 242 0
+ 223 0008 1060     		str	r0, [r2]
+ 243:Generated_Source\PSoC4/Motor.c ****     return maskedStatus >> Motor_SHIFT;
+ 244:Generated_Source\PSoC4/Motor.c **** }
+ 224              		.loc 1 244 0
+ 225              		@ sp needed
+ 226 000a 7047     		bx	lr
+ 227              	.L18:
+ 228              		.align	2
+ 229              	.L17:
+ 230 000c 10030440 		.word	1074004752
+ 231              		.cfi_endproc
+ 232              	.LFE5:
+ 233              		.size	Motor_ClearInterrupt, .-Motor_ClearInterrupt
+ 234              		.text
+ 235              	.Letext0:
+ 236              		.file 2 "Generated_Source\\PSoC4\\cytypes.h"
+ 237              		.section	.debug_info,"",%progbits
+ 238              	.Ldebug_info0:
+ 239 0000 97010000 		.4byte	0x197
+ 240 0004 0400     		.2byte	0x4
+ 241 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 242 000a 04       		.byte	0x4
+ 243 000b 01       		.uleb128 0x1
+ 244 000c E3000000 		.4byte	.LASF28
+ 245 0010 0C       		.byte	0xc
+ 246 0011 C0010000 		.4byte	.LASF29
+ 247 0015 E8010000 		.4byte	.LASF30
+ 248 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 249 001d 00000000 		.4byte	0
+ 250 0021 00000000 		.4byte	.Ldebug_line0
+ 251 0025 02       		.uleb128 0x2
+ 252 0026 01       		.byte	0x1
+ 253 0027 06       		.byte	0x6
+ 254 0028 21020000 		.4byte	.LASF0
+ 255 002c 02       		.uleb128 0x2
+ 256 002d 01       		.byte	0x1
+ 257 002e 08       		.byte	0x8
+ 258 002f 2F000000 		.4byte	.LASF1
+ 259 0033 02       		.uleb128 0x2
+ 260 0034 02       		.byte	0x2
+ 261 0035 05       		.byte	0x5
+ 262 0036 91010000 		.4byte	.LASF2
+ 263 003a 02       		.uleb128 0x2
+ 264 003b 02       		.byte	0x2
+ 265 003c 07       		.byte	0x7
+ 266 003d 55000000 		.4byte	.LASF3
+ 267 0041 02       		.uleb128 0x2
+ 268 0042 04       		.byte	0x4
+ 269 0043 05       		.byte	0x5
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 10
+
+
+ 270 0044 DF010000 		.4byte	.LASF4
+ 271 0048 02       		.uleb128 0x2
+ 272 0049 04       		.byte	0x4
+ 273 004a 07       		.byte	0x7
+ 274 004b 43000000 		.4byte	.LASF5
+ 275 004f 02       		.uleb128 0x2
+ 276 0050 08       		.byte	0x8
+ 277 0051 05       		.byte	0x5
+ 278 0052 71010000 		.4byte	.LASF6
+ 279 0056 02       		.uleb128 0x2
+ 280 0057 08       		.byte	0x8
+ 281 0058 07       		.byte	0x7
+ 282 0059 9B000000 		.4byte	.LASF7
+ 283 005d 03       		.uleb128 0x3
+ 284 005e 04       		.byte	0x4
+ 285 005f 05       		.byte	0x5
+ 286 0060 696E7400 		.ascii	"int\000"
+ 287 0064 02       		.uleb128 0x2
+ 288 0065 04       		.byte	0x4
+ 289 0066 07       		.byte	0x7
+ 290 0067 8E000000 		.4byte	.LASF8
+ 291 006b 04       		.uleb128 0x4
+ 292 006c 9B010000 		.4byte	.LASF9
+ 293 0070 02       		.byte	0x2
+ 294 0071 E401     		.2byte	0x1e4
+ 295 0073 2C000000 		.4byte	0x2c
+ 296 0077 04       		.uleb128 0x4
+ 297 0078 6F000000 		.4byte	.LASF10
+ 298 007c 02       		.byte	0x2
+ 299 007d E501     		.2byte	0x1e5
+ 300 007f 3A000000 		.4byte	0x3a
+ 301 0083 04       		.uleb128 0x4
+ 302 0084 7F000000 		.4byte	.LASF11
+ 303 0088 02       		.byte	0x2
+ 304 0089 E601     		.2byte	0x1e6
+ 305 008b 48000000 		.4byte	0x48
+ 306 008f 02       		.uleb128 0x2
+ 307 0090 04       		.byte	0x4
+ 308 0091 04       		.byte	0x4
+ 309 0092 29000000 		.4byte	.LASF12
+ 310 0096 02       		.uleb128 0x2
+ 311 0097 08       		.byte	0x8
+ 312 0098 04       		.byte	0x4
+ 313 0099 68000000 		.4byte	.LASF13
+ 314 009d 02       		.uleb128 0x2
+ 315 009e 01       		.byte	0x1
+ 316 009f 08       		.byte	0x8
+ 317 00a0 8C010000 		.4byte	.LASF14
+ 318 00a4 04       		.uleb128 0x4
+ 319 00a5 00000000 		.4byte	.LASF15
+ 320 00a9 02       		.byte	0x2
+ 321 00aa 9002     		.2byte	0x290
+ 322 00ac B0000000 		.4byte	0xb0
+ 323 00b0 05       		.uleb128 0x5
+ 324 00b1 83000000 		.4byte	0x83
+ 325 00b5 06       		.uleb128 0x6
+ 326 00b6 A1010000 		.4byte	.LASF16
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 11
+
+
+ 327 00ba 01       		.byte	0x1
+ 328 00bb 48       		.byte	0x48
+ 329 00bc 00000000 		.4byte	.LFB0
+ 330 00c0 40000000 		.4byte	.LFE0-.LFB0
+ 331 00c4 01       		.uleb128 0x1
+ 332 00c5 9C       		.byte	0x9c
+ 333 00c6 DA000000 		.4byte	0xda
+ 334 00ca 07       		.uleb128 0x7
+ 335 00cb B2000000 		.4byte	.LASF18
+ 336 00cf 01       		.byte	0x1
+ 337 00d0 48       		.byte	0x48
+ 338 00d1 6B000000 		.4byte	0x6b
+ 339 00d5 00000000 		.4byte	.LLST0
+ 340 00d9 00       		.byte	0
+ 341 00da 06       		.uleb128 0x6
+ 342 00db B4010000 		.4byte	.LASF17
+ 343 00df 01       		.byte	0x1
+ 344 00e0 72       		.byte	0x72
+ 345 00e1 00000000 		.4byte	.LFB1
+ 346 00e5 18000000 		.4byte	.LFE1-.LFB1
+ 347 00e9 01       		.uleb128 0x1
+ 348 00ea 9C       		.byte	0x9c
+ 349 00eb 0E010000 		.4byte	0x10e
+ 350 00ef 07       		.uleb128 0x7
+ 351 00f0 18000000 		.4byte	.LASF19
+ 352 00f4 01       		.byte	0x1
+ 353 00f5 72       		.byte	0x72
+ 354 00f6 6B000000 		.4byte	0x6b
+ 355 00fa 21000000 		.4byte	.LLST1
+ 356 00fe 08       		.uleb128 0x8
+ 357 00ff 3D000000 		.4byte	.LASF24
+ 358 0103 01       		.byte	0x1
+ 359 0104 74       		.byte	0x74
+ 360 0105 6B000000 		.4byte	0x6b
+ 361 0109 42000000 		.4byte	.LLST2
+ 362 010d 00       		.byte	0
+ 363 010e 09       		.uleb128 0x9
+ 364 010f 1E000000 		.4byte	.LASF20
+ 365 0113 01       		.byte	0x1
+ 366 0114 8B       		.byte	0x8b
+ 367 0115 6B000000 		.4byte	0x6b
+ 368 0119 00000000 		.4byte	.LFB2
+ 369 011d 10000000 		.4byte	.LFE2-.LFB2
+ 370 0121 01       		.uleb128 0x1
+ 371 0122 9C       		.byte	0x9c
+ 372 0123 09       		.uleb128 0x9
+ 373 0124 06000000 		.4byte	.LASF21
+ 374 0128 01       		.byte	0x1
+ 375 0129 A7       		.byte	0xa7
+ 376 012a 6B000000 		.4byte	0x6b
+ 377 012e 00000000 		.4byte	.LFB3
+ 378 0132 10000000 		.4byte	.LFE3-.LFB3
+ 379 0136 01       		.uleb128 0x1
+ 380 0137 9C       		.byte	0x9c
+ 381 0138 06       		.uleb128 0x6
+ 382 0139 CC000000 		.4byte	.LASF22
+ 383 013d 01       		.byte	0x1
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 12
+
+
+ 384 013e D2       		.byte	0xd2
+ 385 013f 00000000 		.4byte	.LFB4
+ 386 0143 14000000 		.4byte	.LFE4-.LFB4
+ 387 0147 01       		.uleb128 0x1
+ 388 0148 9C       		.byte	0x9c
+ 389 0149 77010000 		.4byte	0x177
+ 390 014d 07       		.uleb128 0x7
+ 391 014e 76000000 		.4byte	.LASF23
+ 392 0152 01       		.byte	0x1
+ 393 0153 D2       		.byte	0xd2
+ 394 0154 77000000 		.4byte	0x77
+ 395 0158 60000000 		.4byte	.LLST3
+ 396 015c 0A       		.uleb128 0xa
+ 397 015d B2000000 		.4byte	.LASF18
+ 398 0161 01       		.byte	0x1
+ 399 0162 D2       		.byte	0xd2
+ 400 0163 77000000 		.4byte	0x77
+ 401 0167 01       		.uleb128 0x1
+ 402 0168 51       		.byte	0x51
+ 403 0169 0B       		.uleb128 0xb
+ 404 016a 86000000 		.4byte	.LASF25
+ 405 016e 01       		.byte	0x1
+ 406 016f D4       		.byte	0xd4
+ 407 0170 83000000 		.4byte	0x83
+ 408 0174 01       		.uleb128 0x1
+ 409 0175 53       		.byte	0x53
+ 410 0176 00       		.byte	0
+ 411 0177 0C       		.uleb128 0xc
+ 412 0178 B7000000 		.4byte	.LASF26
+ 413 017c 01       		.byte	0x1
+ 414 017d EF       		.byte	0xef
+ 415 017e 6B000000 		.4byte	0x6b
+ 416 0182 00000000 		.4byte	.LFB5
+ 417 0186 10000000 		.4byte	.LFE5-.LFB5
+ 418 018a 01       		.uleb128 0x1
+ 419 018b 9C       		.byte	0x9c
+ 420 018c 0B       		.uleb128 0xb
+ 421 018d 7F010000 		.4byte	.LASF27
+ 422 0191 01       		.byte	0x1
+ 423 0192 F1       		.byte	0xf1
+ 424 0193 6B000000 		.4byte	0x6b
+ 425 0197 01       		.uleb128 0x1
+ 426 0198 50       		.byte	0x50
+ 427 0199 00       		.byte	0
+ 428 019a 00       		.byte	0
+ 429              		.section	.debug_abbrev,"",%progbits
+ 430              	.Ldebug_abbrev0:
+ 431 0000 01       		.uleb128 0x1
+ 432 0001 11       		.uleb128 0x11
+ 433 0002 01       		.byte	0x1
+ 434 0003 25       		.uleb128 0x25
+ 435 0004 0E       		.uleb128 0xe
+ 436 0005 13       		.uleb128 0x13
+ 437 0006 0B       		.uleb128 0xb
+ 438 0007 03       		.uleb128 0x3
+ 439 0008 0E       		.uleb128 0xe
+ 440 0009 1B       		.uleb128 0x1b
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 13
+
+
+ 441 000a 0E       		.uleb128 0xe
+ 442 000b 55       		.uleb128 0x55
+ 443 000c 17       		.uleb128 0x17
+ 444 000d 11       		.uleb128 0x11
+ 445 000e 01       		.uleb128 0x1
+ 446 000f 10       		.uleb128 0x10
+ 447 0010 17       		.uleb128 0x17
+ 448 0011 00       		.byte	0
+ 449 0012 00       		.byte	0
+ 450 0013 02       		.uleb128 0x2
+ 451 0014 24       		.uleb128 0x24
+ 452 0015 00       		.byte	0
+ 453 0016 0B       		.uleb128 0xb
+ 454 0017 0B       		.uleb128 0xb
+ 455 0018 3E       		.uleb128 0x3e
+ 456 0019 0B       		.uleb128 0xb
+ 457 001a 03       		.uleb128 0x3
+ 458 001b 0E       		.uleb128 0xe
+ 459 001c 00       		.byte	0
+ 460 001d 00       		.byte	0
+ 461 001e 03       		.uleb128 0x3
+ 462 001f 24       		.uleb128 0x24
+ 463 0020 00       		.byte	0
+ 464 0021 0B       		.uleb128 0xb
+ 465 0022 0B       		.uleb128 0xb
+ 466 0023 3E       		.uleb128 0x3e
+ 467 0024 0B       		.uleb128 0xb
+ 468 0025 03       		.uleb128 0x3
+ 469 0026 08       		.uleb128 0x8
+ 470 0027 00       		.byte	0
+ 471 0028 00       		.byte	0
+ 472 0029 04       		.uleb128 0x4
+ 473 002a 16       		.uleb128 0x16
+ 474 002b 00       		.byte	0
+ 475 002c 03       		.uleb128 0x3
+ 476 002d 0E       		.uleb128 0xe
+ 477 002e 3A       		.uleb128 0x3a
+ 478 002f 0B       		.uleb128 0xb
+ 479 0030 3B       		.uleb128 0x3b
+ 480 0031 05       		.uleb128 0x5
+ 481 0032 49       		.uleb128 0x49
+ 482 0033 13       		.uleb128 0x13
+ 483 0034 00       		.byte	0
+ 484 0035 00       		.byte	0
+ 485 0036 05       		.uleb128 0x5
+ 486 0037 35       		.uleb128 0x35
+ 487 0038 00       		.byte	0
+ 488 0039 49       		.uleb128 0x49
+ 489 003a 13       		.uleb128 0x13
+ 490 003b 00       		.byte	0
+ 491 003c 00       		.byte	0
+ 492 003d 06       		.uleb128 0x6
+ 493 003e 2E       		.uleb128 0x2e
+ 494 003f 01       		.byte	0x1
+ 495 0040 3F       		.uleb128 0x3f
+ 496 0041 19       		.uleb128 0x19
+ 497 0042 03       		.uleb128 0x3
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 14
+
+
+ 498 0043 0E       		.uleb128 0xe
+ 499 0044 3A       		.uleb128 0x3a
+ 500 0045 0B       		.uleb128 0xb
+ 501 0046 3B       		.uleb128 0x3b
+ 502 0047 0B       		.uleb128 0xb
+ 503 0048 27       		.uleb128 0x27
+ 504 0049 19       		.uleb128 0x19
+ 505 004a 11       		.uleb128 0x11
+ 506 004b 01       		.uleb128 0x1
+ 507 004c 12       		.uleb128 0x12
+ 508 004d 06       		.uleb128 0x6
+ 509 004e 40       		.uleb128 0x40
+ 510 004f 18       		.uleb128 0x18
+ 511 0050 9742     		.uleb128 0x2117
+ 512 0052 19       		.uleb128 0x19
+ 513 0053 01       		.uleb128 0x1
+ 514 0054 13       		.uleb128 0x13
+ 515 0055 00       		.byte	0
+ 516 0056 00       		.byte	0
+ 517 0057 07       		.uleb128 0x7
+ 518 0058 05       		.uleb128 0x5
+ 519 0059 00       		.byte	0
+ 520 005a 03       		.uleb128 0x3
+ 521 005b 0E       		.uleb128 0xe
+ 522 005c 3A       		.uleb128 0x3a
+ 523 005d 0B       		.uleb128 0xb
+ 524 005e 3B       		.uleb128 0x3b
+ 525 005f 0B       		.uleb128 0xb
+ 526 0060 49       		.uleb128 0x49
+ 527 0061 13       		.uleb128 0x13
+ 528 0062 02       		.uleb128 0x2
+ 529 0063 17       		.uleb128 0x17
+ 530 0064 00       		.byte	0
+ 531 0065 00       		.byte	0
+ 532 0066 08       		.uleb128 0x8
+ 533 0067 34       		.uleb128 0x34
+ 534 0068 00       		.byte	0
+ 535 0069 03       		.uleb128 0x3
+ 536 006a 0E       		.uleb128 0xe
+ 537 006b 3A       		.uleb128 0x3a
+ 538 006c 0B       		.uleb128 0xb
+ 539 006d 3B       		.uleb128 0x3b
+ 540 006e 0B       		.uleb128 0xb
+ 541 006f 49       		.uleb128 0x49
+ 542 0070 13       		.uleb128 0x13
+ 543 0071 02       		.uleb128 0x2
+ 544 0072 17       		.uleb128 0x17
+ 545 0073 00       		.byte	0
+ 546 0074 00       		.byte	0
+ 547 0075 09       		.uleb128 0x9
+ 548 0076 2E       		.uleb128 0x2e
+ 549 0077 00       		.byte	0
+ 550 0078 3F       		.uleb128 0x3f
+ 551 0079 19       		.uleb128 0x19
+ 552 007a 03       		.uleb128 0x3
+ 553 007b 0E       		.uleb128 0xe
+ 554 007c 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 15
+
+
+ 555 007d 0B       		.uleb128 0xb
+ 556 007e 3B       		.uleb128 0x3b
+ 557 007f 0B       		.uleb128 0xb
+ 558 0080 27       		.uleb128 0x27
+ 559 0081 19       		.uleb128 0x19
+ 560 0082 49       		.uleb128 0x49
+ 561 0083 13       		.uleb128 0x13
+ 562 0084 11       		.uleb128 0x11
+ 563 0085 01       		.uleb128 0x1
+ 564 0086 12       		.uleb128 0x12
+ 565 0087 06       		.uleb128 0x6
+ 566 0088 40       		.uleb128 0x40
+ 567 0089 18       		.uleb128 0x18
+ 568 008a 9742     		.uleb128 0x2117
+ 569 008c 19       		.uleb128 0x19
+ 570 008d 00       		.byte	0
+ 571 008e 00       		.byte	0
+ 572 008f 0A       		.uleb128 0xa
+ 573 0090 05       		.uleb128 0x5
+ 574 0091 00       		.byte	0
+ 575 0092 03       		.uleb128 0x3
+ 576 0093 0E       		.uleb128 0xe
+ 577 0094 3A       		.uleb128 0x3a
+ 578 0095 0B       		.uleb128 0xb
+ 579 0096 3B       		.uleb128 0x3b
+ 580 0097 0B       		.uleb128 0xb
+ 581 0098 49       		.uleb128 0x49
+ 582 0099 13       		.uleb128 0x13
+ 583 009a 02       		.uleb128 0x2
+ 584 009b 18       		.uleb128 0x18
+ 585 009c 00       		.byte	0
+ 586 009d 00       		.byte	0
+ 587 009e 0B       		.uleb128 0xb
+ 588 009f 34       		.uleb128 0x34
+ 589 00a0 00       		.byte	0
+ 590 00a1 03       		.uleb128 0x3
+ 591 00a2 0E       		.uleb128 0xe
+ 592 00a3 3A       		.uleb128 0x3a
+ 593 00a4 0B       		.uleb128 0xb
+ 594 00a5 3B       		.uleb128 0x3b
+ 595 00a6 0B       		.uleb128 0xb
+ 596 00a7 49       		.uleb128 0x49
+ 597 00a8 13       		.uleb128 0x13
+ 598 00a9 02       		.uleb128 0x2
+ 599 00aa 18       		.uleb128 0x18
+ 600 00ab 00       		.byte	0
+ 601 00ac 00       		.byte	0
+ 602 00ad 0C       		.uleb128 0xc
+ 603 00ae 2E       		.uleb128 0x2e
+ 604 00af 01       		.byte	0x1
+ 605 00b0 3F       		.uleb128 0x3f
+ 606 00b1 19       		.uleb128 0x19
+ 607 00b2 03       		.uleb128 0x3
+ 608 00b3 0E       		.uleb128 0xe
+ 609 00b4 3A       		.uleb128 0x3a
+ 610 00b5 0B       		.uleb128 0xb
+ 611 00b6 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 16
+
+
+ 612 00b7 0B       		.uleb128 0xb
+ 613 00b8 27       		.uleb128 0x27
+ 614 00b9 19       		.uleb128 0x19
+ 615 00ba 49       		.uleb128 0x49
+ 616 00bb 13       		.uleb128 0x13
+ 617 00bc 11       		.uleb128 0x11
+ 618 00bd 01       		.uleb128 0x1
+ 619 00be 12       		.uleb128 0x12
+ 620 00bf 06       		.uleb128 0x6
+ 621 00c0 40       		.uleb128 0x40
+ 622 00c1 18       		.uleb128 0x18
+ 623 00c2 9742     		.uleb128 0x2117
+ 624 00c4 19       		.uleb128 0x19
+ 625 00c5 00       		.byte	0
+ 626 00c6 00       		.byte	0
+ 627 00c7 00       		.byte	0
+ 628              		.section	.debug_loc,"",%progbits
+ 629              	.Ldebug_loc0:
+ 630              	.LLST0:
+ 631 0000 00000000 		.4byte	.LVL0
+ 632 0004 2C000000 		.4byte	.LVL1
+ 633 0008 0100     		.2byte	0x1
+ 634 000a 50       		.byte	0x50
+ 635 000b 2C000000 		.4byte	.LVL1
+ 636 000f 40000000 		.4byte	.LFE0
+ 637 0013 0400     		.2byte	0x4
+ 638 0015 F3       		.byte	0xf3
+ 639 0016 01       		.uleb128 0x1
+ 640 0017 50       		.byte	0x50
+ 641 0018 9F       		.byte	0x9f
+ 642 0019 00000000 		.4byte	0
+ 643 001d 00000000 		.4byte	0
+ 644              	.LLST1:
+ 645 0021 00000000 		.4byte	.LVL2
+ 646 0025 0C000000 		.4byte	.LVL4
+ 647 0029 0100     		.2byte	0x1
+ 648 002b 50       		.byte	0x50
+ 649 002c 0C000000 		.4byte	.LVL4
+ 650 0030 18000000 		.4byte	.LFE1
+ 651 0034 0400     		.2byte	0x4
+ 652 0036 F3       		.byte	0xf3
+ 653 0037 01       		.uleb128 0x1
+ 654 0038 50       		.byte	0x50
+ 655 0039 9F       		.byte	0x9f
+ 656 003a 00000000 		.4byte	0
+ 657 003e 00000000 		.4byte	0
+ 658              	.LLST2:
+ 659 0042 0A000000 		.4byte	.LVL3
+ 660 0046 0E000000 		.4byte	.LVL5
+ 661 004a 0100     		.2byte	0x1
+ 662 004c 53       		.byte	0x53
+ 663 004d 0E000000 		.4byte	.LVL5
+ 664 0051 18000000 		.4byte	.LFE1
+ 665 0055 0100     		.2byte	0x1
+ 666 0057 50       		.byte	0x50
+ 667 0058 00000000 		.4byte	0
+ 668 005c 00000000 		.4byte	0
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 17
+
+
+ 669              	.LLST3:
+ 670 0060 00000000 		.4byte	.LVL6
+ 671 0064 08000000 		.4byte	.LVL8
+ 672 0068 0100     		.2byte	0x1
+ 673 006a 50       		.byte	0x50
+ 674 006b 08000000 		.4byte	.LVL8
+ 675 006f 14000000 		.4byte	.LFE4
+ 676 0073 0400     		.2byte	0x4
+ 677 0075 F3       		.byte	0xf3
+ 678 0076 01       		.uleb128 0x1
+ 679 0077 50       		.byte	0x50
+ 680 0078 9F       		.byte	0x9f
+ 681 0079 00000000 		.4byte	0
+ 682 007d 00000000 		.4byte	0
+ 683              		.section	.debug_aranges,"",%progbits
+ 684 0000 44000000 		.4byte	0x44
+ 685 0004 0200     		.2byte	0x2
+ 686 0006 00000000 		.4byte	.Ldebug_info0
+ 687 000a 04       		.byte	0x4
+ 688 000b 00       		.byte	0
+ 689 000c 0000     		.2byte	0
+ 690 000e 0000     		.2byte	0
+ 691 0010 00000000 		.4byte	.LFB0
+ 692 0014 40000000 		.4byte	.LFE0-.LFB0
+ 693 0018 00000000 		.4byte	.LFB1
+ 694 001c 18000000 		.4byte	.LFE1-.LFB1
+ 695 0020 00000000 		.4byte	.LFB2
+ 696 0024 10000000 		.4byte	.LFE2-.LFB2
+ 697 0028 00000000 		.4byte	.LFB3
+ 698 002c 10000000 		.4byte	.LFE3-.LFB3
+ 699 0030 00000000 		.4byte	.LFB4
+ 700 0034 14000000 		.4byte	.LFE4-.LFB4
+ 701 0038 00000000 		.4byte	.LFB5
+ 702 003c 10000000 		.4byte	.LFE5-.LFB5
+ 703 0040 00000000 		.4byte	0
+ 704 0044 00000000 		.4byte	0
+ 705              		.section	.debug_ranges,"",%progbits
+ 706              	.Ldebug_ranges0:
+ 707 0000 00000000 		.4byte	.LFB0
+ 708 0004 40000000 		.4byte	.LFE0
+ 709 0008 00000000 		.4byte	.LFB1
+ 710 000c 18000000 		.4byte	.LFE1
+ 711 0010 00000000 		.4byte	.LFB2
+ 712 0014 10000000 		.4byte	.LFE2
+ 713 0018 00000000 		.4byte	.LFB3
+ 714 001c 10000000 		.4byte	.LFE3
+ 715 0020 00000000 		.4byte	.LFB4
+ 716 0024 14000000 		.4byte	.LFE4
+ 717 0028 00000000 		.4byte	.LFB5
+ 718 002c 10000000 		.4byte	.LFE5
+ 719 0030 00000000 		.4byte	0
+ 720 0034 00000000 		.4byte	0
+ 721              		.section	.debug_line,"",%progbits
+ 722              	.Ldebug_line0:
+ 723 0000 BB000000 		.section	.debug_str,"MS",%progbits,1
+ 723      02004200 
+ 723      00000201 
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 18
+
+
+ 723      FB0E0D00 
+ 723      01010101 
+ 724              	.LASF15:
+ 725 0000 72656733 		.ascii	"reg32\000"
+ 725      3200
+ 726              	.LASF21:
+ 727 0006 4D6F746F 		.ascii	"Motor_ReadDataReg\000"
+ 727      725F5265 
+ 727      61644461 
+ 727      74615265 
+ 727      6700
+ 728              	.LASF19:
+ 729 0018 76616C75 		.ascii	"value\000"
+ 729      6500
+ 730              	.LASF20:
+ 731 001e 4D6F746F 		.ascii	"Motor_Read\000"
+ 731      725F5265 
+ 731      616400
+ 732              	.LASF12:
+ 733 0029 666C6F61 		.ascii	"float\000"
+ 733      7400
+ 734              	.LASF1:
+ 735 002f 756E7369 		.ascii	"unsigned char\000"
+ 735      676E6564 
+ 735      20636861 
+ 735      7200
+ 736              	.LASF24:
+ 737 003d 64725661 		.ascii	"drVal\000"
+ 737      6C00
+ 738              	.LASF5:
+ 739 0043 6C6F6E67 		.ascii	"long unsigned int\000"
+ 739      20756E73 
+ 739      69676E65 
+ 739      6420696E 
+ 739      7400
+ 740              	.LASF3:
+ 741 0055 73686F72 		.ascii	"short unsigned int\000"
+ 741      7420756E 
+ 741      7369676E 
+ 741      65642069 
+ 741      6E7400
+ 742              	.LASF13:
+ 743 0068 646F7562 		.ascii	"double\000"
+ 743      6C6500
+ 744              	.LASF10:
+ 745 006f 75696E74 		.ascii	"uint16\000"
+ 745      313600
+ 746              	.LASF23:
+ 747 0076 706F7369 		.ascii	"position\000"
+ 747      74696F6E 
+ 747      00
+ 748              	.LASF11:
+ 749 007f 75696E74 		.ascii	"uint32\000"
+ 749      333200
+ 750              	.LASF25:
+ 751 0086 696E7472 		.ascii	"intrCfg\000"
+ 751      43666700 
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 19
+
+
+ 752              	.LASF8:
+ 753 008e 756E7369 		.ascii	"unsigned int\000"
+ 753      676E6564 
+ 753      20696E74 
+ 753      00
+ 754              	.LASF7:
+ 755 009b 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 755      206C6F6E 
+ 755      6720756E 
+ 755      7369676E 
+ 755      65642069 
+ 756              	.LASF18:
+ 757 00b2 6D6F6465 		.ascii	"mode\000"
+ 757      00
+ 758              	.LASF26:
+ 759 00b7 4D6F746F 		.ascii	"Motor_ClearInterrupt\000"
+ 759      725F436C 
+ 759      65617249 
+ 759      6E746572 
+ 759      72757074 
+ 760              	.LASF22:
+ 761 00cc 4D6F746F 		.ascii	"Motor_SetInterruptMode\000"
+ 761      725F5365 
+ 761      74496E74 
+ 761      65727275 
+ 761      70744D6F 
+ 762              	.LASF28:
+ 763 00e3 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 763      43313120 
+ 763      352E342E 
+ 763      31203230 
+ 763      31363036 
+ 764 0116 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 764      20726576 
+ 764      6973696F 
+ 764      6E203233 
+ 764      37373135 
+ 765 0149 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 765      66756E63 
+ 765      74696F6E 
+ 765      2D736563 
+ 765      74696F6E 
+ 766              	.LASF6:
+ 767 0171 6C6F6E67 		.ascii	"long long int\000"
+ 767      206C6F6E 
+ 767      6720696E 
+ 767      7400
+ 768              	.LASF27:
+ 769 017f 6D61736B 		.ascii	"maskedStatus\000"
+ 769      65645374 
+ 769      61747573 
+ 769      00
+ 770              	.LASF14:
+ 771 018c 63686172 		.ascii	"char\000"
+ 771      00
+ 772              	.LASF2:
+ 773 0191 73686F72 		.ascii	"short int\000"
+ARM GAS  C:\Users\ELIASG~1\AppData\Local\Temp\ccFN4Bgh.s 			page 20
+
+
+ 773      7420696E 
+ 773      7400
+ 774              	.LASF9:
+ 775 019b 75696E74 		.ascii	"uint8\000"
+ 775      3800
+ 776              	.LASF16:
+ 777 01a1 4D6F746F 		.ascii	"Motor_SetDriveMode\000"
+ 777      725F5365 
+ 777      74447269 
+ 777      76654D6F 
+ 777      646500
+ 778              	.LASF17:
+ 779 01b4 4D6F746F 		.ascii	"Motor_Write\000"
+ 779      725F5772 
+ 779      69746500 
+ 780              	.LASF29:
+ 781 01c0 47656E65 		.ascii	"Generated_Source\\PSoC4\\Motor.c\000"
+ 781      72617465 
+ 781      645F536F 
+ 781      75726365 
+ 781      5C50536F 
+ 782              	.LASF4:
+ 783 01df 6C6F6E67 		.ascii	"long int\000"
+ 783      20696E74 
+ 783      00
+ 784              	.LASF30:
+ 785 01e8 433A5C55 		.ascii	"C:\\Users\\Elias g\\FDRM-kl25z\\Timer_Example\\Desi"
+ 785      73657273 
+ 785      5C456C69 
+ 785      61732067 
+ 785      5C464452 
+ 786 0216 676E3031 		.ascii	"gn01.cydsn\000"
+ 786      2E637964 
+ 786      736E00
+ 787              	.LASF0:
+ 788 0221 7369676E 		.ascii	"signed char\000"
+ 788      65642063 
+ 788      68617200 
+ 789              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
