@@ -263,7 +263,6 @@
 <Unloaded />
 <OpenDocs>
 <name v=".\Design01.cydsn\main.c" />
-<name v=".\Design01.cydsn\i2c_lcd.c" />
 <name v=".\Design01.cydsn\i2c_lcd.h" />
 <name v=".\Design01.cydsn\TopDesign\TopDesign.cysch" />
 <name v=".\Design01.cydsn\Generated_Source\PSoC4\project.h" />
@@ -275,7 +274,7 @@
   Copyright (c) 2001-2016 Actipro Software LLC.  All rights reserved.
   http://www.actiprosoftware.com
 
---><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1016, 531" SelectedTabbedMdiWindow="0e4b89f5-6d60-4f7a-b9a0-df1192e3041f"><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\main.c" Guid="0e4b89f5-6d60-4f7a-b9a0-df1192e3041f" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\i2c_lcd.c" Guid="ef192610-4f51-4a6b-bd11-b690e0e4fdca" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\i2c_lcd.h" Guid="f8e475ff-673b-4f63-827e-b67ab1b0cee7" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\TopDesign\TopDesign.cysch" Guid="42c78bb0-5f14-4e79-ba1b-1e4a9d2791d4" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\Generated_Source\PSoC4\project.h" Guid="434eb2d5-cbdc-4c63-9e15-8f38ffa2f8eb" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\Design01.cydwr" Guid="c4f0f897-8ed5-4742-a9af-d84bff84f62b" /><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="12fd2d0e-6b04-44b0-90d6-88d64732a1d7" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
+--><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1016, 531" SelectedTabbedMdiWindow="434eb2d5-cbdc-4c63-9e15-8f38ffa2f8eb"><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\main.c" Guid="0e4b89f5-6d60-4f7a-b9a0-df1192e3041f" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\i2c_lcd.h" Guid="f8e475ff-673b-4f63-827e-b67ab1b0cee7" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\TopDesign\TopDesign.cysch" Guid="42c78bb0-5f14-4e79-ba1b-1e4a9d2791d4" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\Generated_Source\PSoC4\project.h" Guid="434eb2d5-cbdc-4c63-9e15-8f38ffa2f8eb" /><DocumentWindow Key="C:\Users\Elias g\FDRM-kl25z\Cypress\Design01.cydsn\Design01.cydwr" Guid="c4f0f897-8ed5-4742-a9af-d84bff84f62b" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
 <config v="" />
 <AutoUpdate v="true" />
 </CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>
