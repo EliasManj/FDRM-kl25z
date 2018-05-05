@@ -23,3 +23,5 @@ PTD1 is also connected to the I/O header on J2 pin 10 (also known as D13)
 [FDRM-KL25z User's manual](http://www.seeedstudio.com/document/pdf/FRMD-KL25Z.pdf)
 
 [KL25 Reference Manual](https://www.nxp.com/docs/en/reference-manual/KL25P80M48SF0RM.pdf)
+
+[MCU bootloader tools](https://www.nxp.com/pip/MCUBOOT?tab=Design_Tools_Tab)
