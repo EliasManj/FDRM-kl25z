@@ -18,7 +18,7 @@ PTD1 is also connected to the I/O header on J2 pin 10 (also known as D13)
 
 ## ARM Cortex-M Assembly Language
 
-### Load and Store Functions
+### Load and Store Operations
 | Syntax | Meaning
 | ------ |:------------------:|
 | LDR{type}{cond} Rd, [Rn]            | Load memory at [Rn] to Rd         |
@@ -28,19 +28,36 @@ PTD1 is also connected to the I/O header on J2 pin 10 (also known as D13)
 | LDR{type}{cond} Rd, [Rn,Rm,LSL #n]  | Load memory at [Rn+Rm<<n] to Rd   |
 | STR{type}{cond} Rt, [Rn,Rm,LSL #n]  | store Rt to memory at [Rn+Rm<<n]  |
 
-### Move instructions
+### Move Operations
 | Syntax | Meaning
 | ------ |:------------------:|
 | MOV{S}{cond} Rd, <op2>              | Set Rd equal to the value specified by op2  |
 | MOV{cond}    Rd, #im16              | Set Rd equal to im16, im16 is 0 to 65535    |
 | MVN{S}{cond} Rd, <op2>              | Set Rd equal to the -value specified by op2 |
 
-### Logical Instructions
+### Logical Operations
 | Syntax | Meaning
 | ------ |:------------------:|
-| AND{S}{cond} {Rd, } Rn, <op2>   | Rd=Rn and op2
+| AND{S}{cond} {Rd, } Rn, <op2>   | Rd=Rn & op2
 | ORR{S}{cond} {Rd, } Rn, <op2>   | Rd=Rn or op2
 | EOR{S}{cond} {Rd, } Rn, <op2>   | Rd=Rn ^ op2
+| BIC{S}{cond} {Rd, } Rn, <op2>   | Rd=Rn & (~op2)
+| ORN{s}{cond} {Rd, } Rn, <op2>   | Rd=Rn or (~op2)
+
+### Shift Operations
+
+| Syntax | Meaning
+| ------ |:------------------:|
+| LSR{S}{cond} Rd, Rm, Rs   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
+| LSR{S}{cond} Rd, Rm, #n   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
+| ASR{S}{cond} Rd, Rm, Rs   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
+| ASR{S}{cond} Rd, Rm, #n   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
+| LSL{S}{cond} Rd, Rm, Rs   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
+| LSL{S}{cond} Rd, Rm, #n   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
+| ROR{S}{cond} Rd, Rm, Rs   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
+| ROR{S}{cond} Rd, Rm, #n   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
+| RXX{S}{cond} Rd, Rm       |  Logical shift right Rd=Rm>>Rs (unsigned)  |
+
 
 ## Other links
 
@@ -50,4 +67,4 @@ PTD1 is also connected to the I/O header on J2 pin 10 (also known as D13)
 
 [KL25 Reference Manual](https://www.nxp.com/docs/en/reference-manual/KL25P80M48SF0RM.pdf)
 
-[MCU bootloader tools](https://www.nxp.com/pip/MCUBOOT?tab=Design_Tools_Tab)
+[MCU Bootloader Tools](https://www.nxp.com/pip/MCUBOOT?tab=Design_Tools_Tab)
