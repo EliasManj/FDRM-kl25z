@@ -48,15 +48,15 @@ PTD1 is also connected to the I/O header on J2 pin 10 (also known as D13)
 
 | Syntax | Meaning
 | ------ |:------------------:|
-| LSR{S}{cond} Rd, Rm, Rs   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
-| LSR{S}{cond} Rd, Rm, #n   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
-| ASR{S}{cond} Rd, Rm, Rs   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
-| ASR{S}{cond} Rd, Rm, #n   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
-| LSL{S}{cond} Rd, Rm, Rs   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
-| LSL{S}{cond} Rd, Rm, #n   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
-| ROR{S}{cond} Rd, Rm, Rs   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
-| ROR{S}{cond} Rd, Rm, #n   |  Logical shift right Rd=Rm>>Rs (unsigned)  |
-| RXX{S}{cond} Rd, Rm       |  Logical shift right Rd=Rm>>Rs (unsigned)  |
+| LSR{S}{cond} Rd, Rm, Rs   |  Logical shift right Rd=Rm>>Rs (unsigned)   |
+| LSR{S}{cond} Rd, Rm, #n   |  Logical shift right Rd=Rm>>n (unsigned)    |
+| ASR{S}{cond} Rd, Rm, Rs   |  Arithmetic shift right Rd=Rm>>Rs (signed)  |
+| ASR{S}{cond} Rd, Rm, #n   |  Arithmetic shift right Rd=Rm>>n (signed)   |
+| LSL{S}{cond} Rd, Rm, Rs   |  Logical shift right Rd=Rm>>Rs (unsigned)   |
+| LSL{S}{cond} Rd, Rm, #n   |  Logical shift right Rd=Rm>>Rs (unsigned)   |
+| ROR{S}{cond} Rd, Rm, Rs   |  Logical shift right Rd=Rm>>Rs (unsigned)   |
+| ROR{S}{cond} Rd, Rm, #n   |  Logical shift right Rd=Rm>>Rs (unsigned)   |
+| RXX{S}{cond} Rd, Rm       |  Logical shift right Rd=Rm>>Rs (unsigned)   |
 
 
 ## Other links
