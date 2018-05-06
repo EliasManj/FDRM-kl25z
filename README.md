@@ -16,6 +16,32 @@ PTD1 is also connected to the I/O header on J2 pin 10 (also known as D13)
 * Load the firmware by simply drag & drop the *.bin file on the device.
 * After power-cycling the hardware, the OpenSDA platform will show up as J-Link on the PC.
 
+## ARM Cortex-M Assembly Language
+
+### Load and Store Functions
+| Syntax | Meaning
+| ------ |:------------------:|
+| LDR{type}{cond} Rd, [Rn]            | Load memory at [Rn] to Rd         |
+| STR{type}{cond} Rt, [Rn]            | Store Rt to memory at [Rn]        |
+| LDR{type}{cond} Rd, [Rn, #n]        | Load memory an [Rn+n] to Rd       |
+| STR{type}{cond} Rt, [Rn, #n]        | Store Rt to memory [Rn+n]         |
+| LDR{type}{cond} Rd, [Rn,Rm,LSL #n]  | Load memory at [Rn+Rm<<n] to Rd   |
+| STR{type}{cond} Rt, [Rn,Rm,LSL #n]  | store Rt to memory at [Rn+Rm<<n]  |
+
+### Move instructions
+| Syntax | Meaning
+| ------ |:------------------:|
+| MOV{S}{cond} Rd, <op2>              | Set Rd equal to the value specified by op2  |
+| MOV{cond}    Rd, #im16              | Set Rd equal to im16, im16 is 0 to 65535    |
+| MVN{S}{cond} Rd, <op2>              | Set Rd equal to the -value specified by op2 |
+
+### Logical Instructions
+| Syntax | Meaning
+| ------ |:------------------:|
+| AND{S}{cond} {Rd, } Rn, <op2>   | Rd=Rn and op2
+| ORR{S}{cond} {Rd, } Rn, <op2>   | Rd=Rn or op2
+| EOR{S}{cond} {Rd, } Rn, <op2>   | Rd=Rn ^ op2
+
 ## Other links
 
 [FRDM-KL25Z: Freedom Development Platform for Kinetis® KL14, KL15, KL24, KL25 MCUs](https://www.nxp.com/products/processors-and-microcontrollers/arm-based-processors-and-mcus/kinetis-cortex-m-mcus/l-seriesultra-low-powerm0-plus/freedom-development-platform-for-kinetis-kl14-kl15-kl24-kl25-mcus:FRDM-KL25Z)
