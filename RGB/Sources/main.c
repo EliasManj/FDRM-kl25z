@@ -23,7 +23,7 @@ int main(void) {
 
 void LPTM_init(void) {
 	SIM_SCGC5 |= (1 << 0); //Activate the LPTMR in the system control gating register
-	LPTMR0_PSR = 0b00000101; //Bypass the preescaler and select the LPO(low power oscilator of 1Khz as the source of the timer)
+	LPTMR0_PSR = 0b0000101; //Bypass the preescaler and select the LPO(low power oscilator of 1Khz as the source of the timer)
 	LPTMR0_CMR = 500;			//compare of 500 clock cycles = .5 secs
 	LPTMR0_CSR = 0b01000001;	//Activate the timer and enable interrupts	
 	NVIC_ICPR = (1 << 28);		//Clean flag of LPTM in the interrupt vector
