@@ -68,3 +68,5 @@ PTD1 is also connected to the I/O header on J2 pin 10 (also known as D13)
 [KL25 Reference Manual](https://www.nxp.com/docs/en/reference-manual/KL25P80M48SF0RM.pdf)
 
 [MCU Bootloader Tools](https://www.nxp.com/pip/MCUBOOT?tab=Design_Tools_Tab)
+
+[Assembly in C](http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.100748_0606_00_en/lmi1470147220260.html)
